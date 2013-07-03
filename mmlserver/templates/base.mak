@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>${title}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style type="text/css">
+        body {
+            padding-top: 60px;
+        }
+        @media (max-width: 980px) {
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+    </style>
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    ##<link href="//netdna.bootstrapcdn.com/bootswatch/2.3.2/cerulean/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
+    <%block name="style">
+    </%block>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <button class="btn btn-navbar" data-target=".nav-collapse"
+                 data-toggle="collapse" type="button">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="brand" href="${request.route_url('home')}">MML Server</a>
+                <div class="nav-collapse collapse">
+                    <ul class="nav">
+                    <%def name="genclass(name)">
+                        % if name == title:
+                        <li class="active">
+                        % else:
+                        <li>
+                        % endif
+                    </%def>
+                        ${genclass('Home')}
+                            <a href="${request.route_url('home')}">Home</a>
+                        </li>
+                        ${genclass('Mod List')}
+                            <a href="${request.route_url('modlist')}">Mod List</a>
+                        </li>
+                        ${genclass('Pack List')}
+                            <a href="${request.route_url('packlist')}">Pack List</a>
+                        </li>
+                        ${genclass('About')}
+                            <a href="${request.route_url('about')}">About</a>
+                        </li>
+                    </ul>
+                    <ul class="nav pull-right">
+                    <%def name="makedropdown()">
+                        % if user == None:
+                        <li class="pull-right">
+                            <a href="${request.route_url('login')}">Login</a>
+                        </li>
+                        % else:
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                Logged in as ${user}
+                                <i class="icon-caret-down"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="${request.route_url('logout')}">Logout</a></li>
+                            </ul>
+                        </li>
+                        % endif
+                    </%def>
+                        ${makedropdown()}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        ${next.body()}
+    </div>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <%block name="endscripts">
+    </%block>
+</body>
+</html>

@@ -1,0 +1,9 @@
+Todo:
+- Add FAQ, Help
+- Make adding mod to modpack easier
+- Add pack, mod search
+- Design
+- Add credits page/about
+- Fix add two to pack problem
+- Add administration
+- Add delete confirmations
