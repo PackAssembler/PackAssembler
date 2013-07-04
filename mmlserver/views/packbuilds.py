@@ -9,4 +9,8 @@ class MMLServerPackBuild(MMLServerView):
     def addbuild(self):
         # Defaults
         error = ''
+        # Get post data
+        post = self.request.params
+        if 'btnSubmit' in post:
+            pass
         return self.return_dict(title='New Build', error=error)

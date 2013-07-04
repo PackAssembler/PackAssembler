@@ -56,9 +56,10 @@
         </div>
     % endif
 </%def>
-<%def name="formscripts(formid, include_parsley=True)">
-    % if include_parsley:
+<%def name="formscripts(formid, include_garlic=False)">
     <script src="${request.static_url('mmlserver:static/parsley.min.js')}"></script>
+    % if include_garlic:
+    <script src="${request.static_url('mmlserver:static/garlic.min.js')}"></script>
     % endif
     <script type="text/javascript">
         $(document).ready(function () {
