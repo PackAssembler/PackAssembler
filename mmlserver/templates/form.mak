@@ -33,10 +33,15 @@
         </select>
     </%self:horgeneric>
 </%def>
-<%def name="forgefield(name, label)">
-    ${horfield(name, label, 'text', attr={
-        'data-regexp': '^([0-9]\.){3}[0-9]{3}$'
-    })}
+<%def name="forgefield(name, label, required=False)">
+    <%
+        attrs = {
+            'data-regexp': '^([0-9]\.){3}[0-9]{3}$'
+        }
+        if required is True:
+            attrs['required'] = 'required'
+    %>
+    ${horfield(name, label, 'text', attr=attrs)}
 </%def>
 <%def name="horsubmit(cancel, name='btnSubmit', extracontrols='')">
     <div class="control-group">

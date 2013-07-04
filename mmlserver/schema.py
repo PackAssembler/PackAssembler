@@ -5,8 +5,6 @@ from datetime import datetime
 TARGETS = ('server', 'client', 'both')
 # Minecraft versions
 MCVERSIONS = ('1.4.7', '1.5', '1.5.1', '1.5.2')
-# Minecraft version length
-MCV = 8
 # Forge version length
 FV = 16
 
@@ -25,7 +23,7 @@ class User(Document):
 class ModVersion(Document):
     # Minecraft version
     mc_min = StringField(choices=MCVERSIONS, required=True)
-    mc_max = StringField(max_length=MCV, required=True)
+    mc_max = StringField(choices=MCVERSIONS, required=True)
     # Minecraft Forge version
     ## If not defined, default to any version
     forge_min = StringField(max_length=FV)
@@ -69,7 +67,7 @@ class PackBuild(Document):
     # Configuration, should be on external server
     config = URLField()
     # Version information
-    mc_version = StringField(required=True, max_length=MCV)
+    mc_version = StringField(required=True, choices=MCVERSIONS)
     forge_version = StringField(required=True, max_length=FV)
     # Reference Pack PackBuild belongs to
     pack = ReferenceField('Pack', required=True)

@@ -6,7 +6,7 @@
     <form class="form-horizontal" method="post" action="${request.url}" novalidate="novalidate" data-persist="garlic" data-destroy="false" id="edit-build">
         ${form.formerror(error)}
         ${form.mcselect('selMCVersion', 'Minecraft Version')}
-        ${form.forgefield('txtForgeVersion', 'Forge Version')}
+        ${form.forgefield('txtForgeVersion', 'Forge Version', required=True)}
         ${form.horfield('txtUrl', 'Config', 'text', attr={
             'data-type': 'url'
         })}

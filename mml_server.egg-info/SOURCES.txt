@@ -13,4 +13,11 @@ mmlserver/__init__.py
 mmlserver/schema.py
 mmlserver/security.py
 mmlserver/tests.py
-mmlserver/views.py
+mmlserver/views/__init__.py
+mmlserver/views/common.py
+mmlserver/views/general.py
+mmlserver/views/mods.py
+mmlserver/views/modversions.py
+mmlserver/views/packbuilds.py
+mmlserver/views/packs.py
+mmlserver/views/user.py
