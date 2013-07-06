@@ -62,7 +62,7 @@ class PackBuild(Document):
     revision = IntField(required=True)
     # Build itself
     ## JSON File with information about mod versions included in package
-    ## Should include all information except build date
+    ## Should include all information except build date and number
     build = StringField(required=True)
     # Configuration, should be on external server
     config = URLField()
@@ -79,6 +79,17 @@ class Pack(Document):
     # Mod List
     mods = ListField(ReferenceField(Mod, reverse_delete_rule=PULL))
     # Builds
-    builds = ListField(ReferenceField(PackBuild))
+    builds = ListField(ReferenceField(PackBuild, reverse_delete_rule=PULL))
+    # Latest PackBuild revision
+    latest = IntField(required=True, default=0)
     # Owner of Pack
+    owner = ReferenceField(User, required=True, reverse_delete_rule=NULLIFY)
+
+class Server(Document):
+    # Information
+    name = StringField(required=True, max_length=32)
+    url = URLField()
+    # Pack used
+    build = ReferenceField('PackBuild', required=True, reverse_delete_rule=CASCADE)
+    # Owner
     owner = ReferenceField(User, required=True, reverse_delete_rule=NULLIFY)

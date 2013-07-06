@@ -10,8 +10,7 @@ def findgroup(userid, request):
         return user.groups
 
 
-def check_pass(db, username, password):
-    connect(db)
+def check_pass(username, password):
     user = User.objects(username=username).first()
     if user is not None and user.password.decode() == password:
         return True

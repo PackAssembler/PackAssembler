@@ -7,7 +7,7 @@
         ${form.formerror(error)}
         ${form.mcselect('selMCVersion', 'Minecraft Version')}
         ${form.forgefield('txtForgeVersion', 'Forge Version', required=True)}
-        ${form.horfield('txtUrl', 'Config', 'text', attr={
+        ${form.horfield('txtConfig', 'Config', 'text', attr={
             'data-type': 'url'
         })}
         ${form.horsubmit(request.route_url('viewpack', packid=request.matchdict['packid']))}

@@ -57,7 +57,7 @@
 <%def name="formerror(error)">
     % if error != '':
         <div class="alert alert-error">
-            ${error}
+            ${error | n}
         </div>
     % endif
 </%def>

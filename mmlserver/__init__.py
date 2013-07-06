@@ -20,6 +20,7 @@ def main(global_config, **settings):
     config.add_route('taken', '/user/taken')
     config.add_route('login', '/user/login')
     config.add_route('logout', '/user/logout')
+    config.add_route('profile', '/user/{userid}')
     # Mods
     config.add_route('addmod', '/mod/add')
     config.add_route('editmod', '/mod/edit/{modid}')
@@ -43,6 +44,14 @@ def main(global_config, **settings):
     config.add_route('removepackmod', '/pack/removemod/{packid}/{modid}')
     ## Builds
     config.add_route('addbuild', '/pack/addbuild/{packid}')
+    config.add_route('removebuild', '/pack/removebuild/{buildid}')
+    config.add_route('getbuild', '/pack/getbuild/{buildid}')
+    # Servers
+    config.add_route('addserver', '/server/add')
+    config.add_route('editserver', '/server/edit/{serverid}')
+    config.add_route('serverlist', '/server/list')
+    config.add_route('deleteserver', '/server/delete/{serverid}')
+    config.add_route('viewserver', '/server/{serverid}')
 
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.scan()

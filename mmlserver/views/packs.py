@@ -8,9 +8,7 @@ import re
 class MMLServerPack(MMLServerView):
     @view_config(route_name='addpack', renderer='editpack.mak', permission='user')
     def addpack(self):
-        # Defaults
         error = ''
-        # Get post data
         post = self.request.params
         if 'btnSubmit' in post:
             params = opt_dict(name=post.get('txtName'))
@@ -27,11 +25,9 @@ class MMLServerPack(MMLServerView):
 
     @view_config(route_name='editpack', renderer='editpack.mak', permission='user')
     def editpack(self):
-        # Defaults
         error = ''
-        pack = Pack.objects.get(id=self.request.matchdict['packid'])
-        # Get post data
         post = self.request.params
+        pack = Pack.objects.get(id=self.request.matchdict['packid'])
         if 'btnSubmit' in post:
             params = opt_dict(name=post.get('txtName'))
             if 'name' in params:
@@ -78,9 +74,7 @@ class MMLServerPack(MMLServerView):
 
     @view_config(route_name='addpackmod', renderer='addpackmod.mak', permission='user')
     def addpackmod(self):
-        # Defaults
         error = ''
-        # Get post data
         post = self.request.params
         if self.has_perm(Pack.objects(id=self.request.matchdict['packid']).only('owner').first()):
             if 'btnSubmit' in post:

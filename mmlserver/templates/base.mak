@@ -50,6 +50,9 @@
                         ${genclass('Pack List')}
                             <a href="${request.route_url('packlist')}">Pack List</a>
                         </li>
+                        ${genclass('Server List')}
+                            <a href="${request.route_url('serverlist')}">Server List</a>
+                        </li>
                         ${genclass('About')}
                             <a href="${request.route_url('about')}">About</a>
                         </li>
@@ -63,11 +66,12 @@
                         % else:
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                Logged in as ${user}
+                                Logged in as ${user.username}
                                 <i class="icon-caret-down"></i>
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a href="${request.route_url('logout')}">Logout</a></li>
+                                <li><a href="${request.route_url('profile', userid=user.id)}">Profile</a></li>
                             </ul>
                         </li>
                         % endif

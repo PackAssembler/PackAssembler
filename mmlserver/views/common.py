@@ -1,8 +1,8 @@
 from pyramid.security import authenticated_userid, has_permission
 from pyramid.httpexceptions import HTTPFound
 from urllib.parse import urlencode
-from mongoengine import connect
 from ..security import Root
+from ..schema import *
 
 
 class MMLServerView(object):
@@ -13,7 +13,10 @@ class MMLServerView(object):
 
     def return_dict(self, **kwargs):
         rdict = kwargs
-        rdict['user'] = self.logged_in
+        try:
+            rdict['user'] = User.objects.get(username=self.logged_in)
+        except DoesNotExist:
+            rdict['user'] = None
         return rdict
 
     def success_url(self, redirect, message):
@@ -29,3 +32,5 @@ def opt_dict(**kwargs):
         if value != '':
             d[name] = value
     return d
+
+VERROR = "Your Data is not Valid. Install Javascript for More Information."

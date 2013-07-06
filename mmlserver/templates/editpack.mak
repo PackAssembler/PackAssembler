@@ -10,11 +10,11 @@
             'data-regexp': '^[\w ]+$',
             'required': 'required'
         })}
-        ${form.horsubmit(request.route_url('home'))}
+        ${form.horsubmit(request.route_url('packlist'))}
     </form>
 </div></div>
 <%block name="endscripts">
-    ${form.formscripts('add-pack')}
+    ${form.formscripts('edit-pack')}
     % if v is not UNDEFINED:
         <script type="text/javascript">
             $(document).ready(function(){

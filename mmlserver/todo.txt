@@ -1,9 +1,16 @@
 Todo:
-- Add FAQ, Help
-- Make adding mod to modpack easier
-- Add pack, mod search
-- Design
-- Add credits page/about
-- Fix add two to pack problem
-- Add administration
-- Add delete confirmations
+B Make adding mod to modpack easier
+B Add pack, mod search
+C Cleanup Python - 35%
+C Add FAQ, Help
+C Add email conformation
+C Edit user information
+D Design
+D Modify homepage
+D Fix add two to pack problem
+D Add delete confirmations
+D Forgot password
+D Cleanup Mako Files
+E Add credits page/about
+F Add administration
+F Organize mako files

@@ -48,6 +48,8 @@
 <table class="table table-hover table-bordered">
     <thead>
         <tr><th>Version</th><th>MC Min</th><th>MC Max</th><th>Uploaded</th><th>Action</th></tr>
+    </thead>
+    <tbody>
     % for version in mod.versions:
         <tr>
             <td>${version.version}</td>
@@ -70,4 +72,5 @@
             </td>
         </tr>
     % endfor
+    </tbody>
 </table>
