@@ -2,7 +2,6 @@ Todo:
 B Make adding mod to modpack easier
 B Add pack, mod search
 C Cleanup Python - 40%
- -> Check on 'jdict['mods'][str(mod.id)] = [selected.id, mod.install]' in packbuilds.py
 C Add FAQ, Help
 C Add email conformation
 C Edit user information

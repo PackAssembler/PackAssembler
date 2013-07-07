@@ -1,7 +1,7 @@
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPForbidden
-from .common import MMLServerView, opt_dict
 from pyramid.view import view_config
 from ..schema import *
+from .common import *
 import re
 
 
@@ -10,6 +10,7 @@ class MMLServerPack(MMLServerView):
     def addpack(self):
         error = ''
         post = self.request.params
+
         if 'btnSubmit' in post:
             params = opt_dict(name=post.get('txtName'))
             if 'name' in params:
@@ -18,16 +19,24 @@ class MMLServerPack(MMLServerView):
                         pack = Pack(owner=User.objects.get(username=self.logged_in), **params).save()
                         return HTTPFound(location=self.request.route_url('viewpack', packid=pack.id))
                     except ValidationError:
-                        error = 'Your data could not be validated. Enable javascript for more information.'
+                        error = VERROR
                 else:
-                    error = 'Your mod name must be alphanumeric (with spaces).'
+                    error = VERROR
         return self.return_dict(title="Add Pack", error=error)
 
     @view_config(route_name='editpack', renderer='editpack.mak', permission='user')
     def editpack(self):
         error = ''
         post = self.request.params
-        pack = Pack.objects.get(id=self.request.matchdict['packid'])
+
+        # Get pack
+        try:
+            pack = Pack.objects.get(id=self.request.matchdict['packid'])
+        except DoesNotExist:
+            return HTTPNotFound()
+        if not self.has_perm(pack):
+            return HTTPForbidden()
+
         if 'btnSubmit' in post:
             params = opt_dict(name=post.get('txtName'))
             if 'name' in params:
@@ -39,9 +48,9 @@ class MMLServerPack(MMLServerView):
                         pack.save()
                         return HTTPFound(location=self.request.route_url('viewpack', packid=pack.id))
                     except ValidationError:
-                        error = 'Your data could not be validated. Enable javascript for more information.'
+                        error = VERROR
                 else:
-                    error = 'Your mod name must be alphanumeric (with spaces).'
+                    error = VERROR
         return self.return_dict(title="Edit Pack", error=error, v=pack)
 
     @view_config(route_name='packlist', renderer='packlist.mak')
@@ -50,18 +59,16 @@ class MMLServerPack(MMLServerView):
 
     @view_config(route_name='deletepack', permission='user')
     def deletepack(self):
+        # Get pack
         try:
             pack = Pack.objects.get(id=self.request.matchdict['packid'])
         except DoesNotExist:
             return HTTPNotFound()
         if not self.has_perm(pack):
             return HTTPForbidden()
-        else:
-            name = pack.name
-            for build in pack.builds:
-                build.delete()
-            pack.delete()
-            return self.success_url('packlist', name + ' deleted successfully.')
+
+        pack.delete()
+        return self.success_url('packlist', pack.name + ' deleted successfully.')
 
     @view_config(route_name='viewpack', renderer='viewpack.mak')
     def viewpack(self):

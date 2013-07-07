@@ -1,4 +1,4 @@
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPForbidden, HTTPBadRequest
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPForbidden
 from pyramid.view import view_config
 from pyramid.response import Response
 from .common import MMLServerView, VERROR
@@ -38,8 +38,8 @@ class MMLServerPackBuild(MMLServerView):
                     'mods': {}
                 }
                 for mod in pack.mods:
-                    mc_compat = [i for i in mod.versions 
-                                 if i.mc_min.split('.') <= splitm 
+                    mc_compat = [i for i in mod.versions
+                                 if i.mc_min.split('.') <= splitm
                                  and i.mc_max.split('.') >= splitm]
                     if mc_compat:
                         forge_compat = []
@@ -52,7 +52,11 @@ class MMLServerPackBuild(MMLServerView):
                                 forge_compat.append(version)
                         if forge_compat:
                             selected = max(forge_compat, key=lambda v: v.version.split('.'))
-                            jdict['mods'][str(mod.id)] = [selected.id, mod.install]
+                            jdict['mods'][str(mod.id)] = {
+                                'install': mod.install,
+                                'target': mod.target,
+                                'version': selected.id
+                            }
                         else:
                             elist.append(self.linkerror(mod, 'is incompatible with Forge ' + post['txtForgeVersion']))
                     else:
@@ -64,7 +68,7 @@ class MMLServerPackBuild(MMLServerView):
                     error += '</ul>'
                 else:
                     pb = PackBuild(build=dumps(jdict, default=json_util.default), mc_version=post['selMCVersion'],
-                        forge_version=post['txtForgeVersion'], pack=pack, revision=pack.latest+1)
+                                   forge_version=post['txtForgeVersion'], pack=pack, revision=pack.latest+1)
                     if post['txtConfig']:
                         pb.config = post['txtConfig']
                     pb.save()
@@ -85,6 +89,8 @@ class MMLServerPackBuild(MMLServerView):
         if not self.has_perm(pb.pack):
             return HTTPForbidden()
 
+        for build in pb.builds:
+            build.delete()
         pb.delete()
         return HTTPFound(location=self.request.referer)
 

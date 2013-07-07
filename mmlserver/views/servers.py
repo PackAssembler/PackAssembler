@@ -1,14 +1,15 @@
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPForbidden
-from .common import MMLServerView, opt_dict
 from pyramid.view import view_config
 from ..schema import *
-import re
+from .common import *
+
 
 class MMLServerServers(MMLServerView):
-    @view_config(route_name='addserver', permission='user', renderer='editserver.mak')
+    @view_config(route_name='addserver', renderer='editserver.mak', permission='user')
     def addserver(self):
         error = ''
         post = self.request.params
+
         if 'btnSubmit' in post:
             params = opt_dict(
                 name=post['txtName'],
@@ -23,22 +24,23 @@ class MMLServerServers(MMLServerView):
                 return HTTPFound(location=self.request.route_url('viewserver', serverid=server.id))
             except DoesNotExist:
                 error = 'Pack or Revision Does Not Exist'
-            except MultipleObjectsReturned:
-                error = 'Something is Extremely Wrong with the Pack'
+            except ValidationError:
+                error = VERROR
         return self.return_dict(title='Add Server', error=error)
 
     @view_config(route_name='editserver', permission='user', renderer='editserver.mak')
     def editserver(self):
         error = ''
         post = self.request.params
+
         # Get current data
         try:
             server = Server.objects.get(id=self.request.matchdict['serverid'])
         except DoesNotExist:
             return HTTPNotFound()
-        # Check permission
         if not self.has_perm(server):
             return HTTPForbidden()
+
         if 'btnSubmit' in post:
             params = opt_dict(
                 name=post['txtName'],
@@ -55,8 +57,8 @@ class MMLServerServers(MMLServerView):
                 return HTTPFound(location=self.request.route_url('viewserver', serverid=server.id))
             except DoesNotExist:
                 error = 'Pack or Revision Does Not Exist'
-            except MultipleObjectsReturned:
-                error = 'Something is Extremely Wrong with the Pack'
+            except ValidationError:
+                error = VERROR
         return self.return_dict(title='Edit Server', error=error, v=server)
 
     @view_config(route_name='serverlist', renderer='serverlist.mak')
@@ -69,11 +71,11 @@ class MMLServerServers(MMLServerView):
             server = Server.objects.get(id=self.request.matchdict['serverid'])
         except DoesNotExist:
             return HTTPNotFound()
-        # Check permission
         if not self.has_perm(server):
             return HTTPForbidden()
+
         server.delete()
-        return HTTPFound(location=self.request.route_url('home'))
+        return HTTPFound(location=self.request.route_url('serverlist'))
 
     @view_config(route_name='viewserver', renderer='viewserver.mak')
     def viewserver(self):
@@ -81,4 +83,5 @@ class MMLServerServers(MMLServerView):
             server = Server.objects.get(id=self.request.matchdict['serverid'])
         except DoesNotExist:
             return HTTPNotFound()
+
         return self.return_dict(title=server.name, server=server, perm=self.has_perm(server))

@@ -85,6 +85,7 @@ class Pack(Document):
     # Owner of Pack
     owner = ReferenceField(User, required=True, reverse_delete_rule=NULLIFY)
 
+
 class Server(Document):
     # Information
     name = StringField(required=True, max_length=32)

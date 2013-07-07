@@ -23,10 +23,13 @@ class MMLServerVersions(MMLServerView):
         if 'btnSubmit' in post:
             params = get_params(post)
             if check_params(params):
-                mv = ModVersion(mod=mod, **params).save()
-                mod.versions.append(mv)
-                mod.save()
-                return HTTPFound(location=self.request.route_url('viewmod', modid=mod.id))
+                try:
+                    mv = ModVersion(mod=mod, **params).save()
+                    mod.versions.append(mv)
+                    mod.save()
+                    return HTTPFound(location=self.request.route_url('viewmod', modid=mod.id))
+                except ValidationError:
+                    error = VERROR
             else:
                 error = VERROR
         return self.return_dict(title="Add Mod Version", error=error)
@@ -49,16 +52,17 @@ class MMLServerVersions(MMLServerView):
             if check_params(params):
                 for key in params:
                     mv[key] = params[key]
-                mv.save()
-                return HTTPFound(location=self.request.route_url('viewmod', modid=mv.mod.id))
+                try:
+                    mv.save()
+                    return HTTPFound(location=self.request.route_url('viewmod', modid=mv.mod.id))
+                except ValidationError:
+                    error = VERROR
             else:
                 error = VERROR
         return self.return_dict(title="Edit Mod Version", v=mv, error=error)
 
     @view_config(route_name='downloadversion')
     def downloadversion(self):
-        d = self.request.matchdict
-
         # Get modversion
         try:
             mv = ModVersion.objects.get(id=self.request.matchdict['versionid'])
@@ -69,8 +73,6 @@ class MMLServerVersions(MMLServerView):
 
     @view_config(route_name='deleteversion', permission='user')
     def deleteversion(self):
-        d = self.request.matchdict
-
         # Get modversion
         try:
             mv = ModVersion.objects.get(id=self.request.matchdict['versionid'])
@@ -82,6 +84,7 @@ class MMLServerVersions(MMLServerView):
         mv.mod_file.delete()
         mv.delete()
         return HTTPFound(location=self.request.referer)
+
 
 def get_params(post):
     p = opt_dict(
@@ -96,6 +99,7 @@ def get_params(post):
     except AttributeError:
         pass
     return p
+
 
 def check_params(params):
     check_forge = lambda x: re.match('^([0-9]\.){3}[0-9]{3}$', params[x]) is not None if x in params else True
