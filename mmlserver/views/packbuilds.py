@@ -25,22 +25,22 @@ class MMLServerPackBuild(MMLServerView):
             return HTTPForbidden()
 
         if 'btnSubmit' in post:
-            if 'selMCVersion' in post and 'txtForgeVersion' in post and post['selMCVersion'] and post['txtForgeVersion']:
+            if 'selMCVersion' in post and 'txtForgeVersion' in post and 'txtConfig' in post \
+               and post['selMCVersion'] and post['txtForgeVersion']:
                 elist = []
                 splitm = post['selMCVersion'].split('.')
                 jdict = {
                     'pack_id': pack.id,
                     'pack_name': pack.name,
+                    'config': post['txtConfig'],
                     'mc_version': post['selMCVersion'],
                     'forge_version': post['txtForgeVersion'],
                     'mods': {}
                 }
-                try:
-                    jdict['config'] = post['txtConfig']
-                except AttributeError:
-                    return HTTPBadRequest()
                 for mod in pack.mods:
-                    mc_compat = [i for i in mod.versions if i.mc_min.split('.') <= splitm and i.mc_max.split('.') >= splitm]
+                    mc_compat = [i for i in mod.versions 
+                                 if i.mc_min.split('.') <= splitm 
+                                 and i.mc_max.split('.') >= splitm]
                     if mc_compat:
                         forge_compat = []
                         for version in mc_compat:
@@ -73,7 +73,7 @@ class MMLServerPackBuild(MMLServerView):
                     pack.save()
                     return HTTPFound(self.request.route_url('viewpack', packid=pack.id))
             else:
-                error = 'Your data could not be validated.'
+                error = VERROR
         return self.return_dict(title='New Build', error=error)
 
     @view_config(route_name='removebuild', permission='user')
