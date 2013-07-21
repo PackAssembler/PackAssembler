@@ -1,7 +1,6 @@
 Todo:
 B Make adding mod to modpack easier
 B Add pack, mod search
-C Cleanup Python - 40%
 C Add FAQ, Help
 C Add email conformation
 C Edit user information
