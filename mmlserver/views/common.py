@@ -33,4 +33,4 @@ def opt_dict(**kwargs):
             d[name] = value
     return d
 
-VERROR = "Your Data is not Valid. Install Javascript for More Information."
+VERROR = "Your Data is not Valid. Enable Javascript for More Information."

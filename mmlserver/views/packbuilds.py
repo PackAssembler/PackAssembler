@@ -89,15 +89,13 @@ class MMLServerPackBuild(MMLServerView):
         if not self.has_perm(pb.pack):
             return HTTPForbidden()
 
-        for build in pb.builds:
-            build.delete()
         pb.delete()
         return HTTPFound(location=self.request.referer)
 
-    @view_config(route_name='getbuild')
-    def getbuild(self):
+    @view_config(route_name='downloadbuild')
+    def downloadbuild(self):
         try:
             pb = PackBuild.objects.get(id=self.request.matchdict['buildid'])
         except DoesNotExist:
             return HTTPNotFound()
-        return Response(pb.build)
+        return Response(pb.build, content_type='application/json')

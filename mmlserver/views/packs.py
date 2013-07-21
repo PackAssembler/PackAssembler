@@ -1,4 +1,5 @@
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPForbidden
+from pyramid.response import Response
 from pyramid.view import view_config
 from ..schema import *
 from .common import *
@@ -76,8 +77,17 @@ class MMLServerPack(MMLServerView):
             pack = Pack.objects.get(id=self.request.matchdict['packid'])
         except DoesNotExist:
             return HTTPNotFound()
-        else:
-            return self.return_dict(title=pack.name, pack=pack, perm=self.has_perm(pack))
+
+        return self.return_dict(title=pack.name, pack=pack, perm=self.has_perm(pack))
+
+    @view_config(route_name='packjson')
+    def packjson(self):
+        try:
+            pack = Pack.objects.exclude('mods').get(id=self.request.matchdict['packid'])
+        except DoesNotExist:
+            return HTTPNotFound()
+
+        return Response(pack.to_json(), content_type='application/json')
 
     @view_config(route_name='addpackmod', renderer='addpackmod.mak', permission='user')
     def addpackmod(self):

@@ -35,10 +35,10 @@
                 $('#txtVersion').val("${v.version}");
                 $('#selMCMin').val("${v.mc_min}");
                 $('#selMCMax').val("${v.mc_max}");
-                % if v.forge_min != None:
+                % if v.forge_min:
                     $('#txtForgeMin').val("${v.forge_min}");
                 % endif
-                % if v.forge_max != None:
+                % if v.forge_max:
                     $('#txtForgeMax').val("${v.forge_max}");
                 % endif
                 $('#uplModFile').parsley('removeConstraint', 'required');

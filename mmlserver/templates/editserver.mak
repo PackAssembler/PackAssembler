@@ -13,6 +13,14 @@
         ${form.horfield('txtUrl', 'Homepage', 'text', attr={
             'data-type': 'url'
         })}
+        ${form.horfield('txtHost', 'Host', 'text', attr={
+            'required': 'required'
+        })}
+        ${form.horfield('txtPort', 'Port', 'text', attr={
+            'data-type': 'number',
+            'value': '25565',
+            'required': 'required'
+        })}
         ${form.horfield('txtPackID', 'Pack ID', 'text', attr={
             'data-regexp': '^[0-9a-f]{24}$',
             'required': 'required'
@@ -20,6 +28,9 @@
         ${form.horfield('txtRevision', 'Pack Revision', 'text', attr={
             'data-type': 'number',
             'required': 'required'
+        })}
+        ${form.horfield('txtConfig', 'Custom Config', 'text', attr={
+            'data-type': 'url'
         })}
         ${form.horsubmit(request.route_url('home'))}
     </form>
@@ -33,8 +44,13 @@
                 % if v.url:
                     $('#txtUrl').val("${v.url}");
                 % endif
+                $('#txtHost').val("${v.host}");
+                $('#txtPort').val("${v.port}");
                 $('#txtPackID').val("${v.build.pack.id}");
                 $('#txtRevision').val("${v.build.revision}");
+                % if v.config:
+                    $('#txtConfig').val("${v.config}");
+                % endif
             });
         </script>
     % endif

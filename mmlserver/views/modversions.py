@@ -69,7 +69,7 @@ class MMLServerVersions(MMLServerView):
         except DoesNotExist:
             return HTTPNotFound()
 
-        return Response(mv.mod_file.read(), content_type='application/zip')
+        return Response(mv.mod_file.read(), content_type='application/zip', content_disposition='attachment; filename="{0}-{1}.jar"'.format(mv.mod.name, mv.version))
 
     @view_config(route_name='deleteversion', permission='user')
     def deleteversion(self):

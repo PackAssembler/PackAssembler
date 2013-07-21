@@ -1,4 +1,5 @@
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPForbidden
+from pyramid.response import Response
 from pyramid.view import view_config
 from ..schema import *
 from .common import *
@@ -13,7 +14,10 @@ class MMLServerServers(MMLServerView):
         if 'btnSubmit' in post:
             params = opt_dict(
                 name=post['txtName'],
-                url=post['txtUrl']
+                url=post['txtUrl'],
+                host=post['txtHost'],
+                port=post['txtPort'],
+                config=post['txtConfig']
             )
             try:
                 pack = Pack.objects.get(id=post['txtPackID'])
@@ -44,7 +48,10 @@ class MMLServerServers(MMLServerView):
         if 'btnSubmit' in post:
             params = opt_dict(
                 name=post['txtName'],
-                url=post['txtUrl']
+                url=post['txtUrl'],
+                host=post['txtHost'],
+                port=post['txtPort'],
+                config=post['txtConfig']
             )
             try:
                 pack = Pack.objects.get(id=post['txtPackID'])
@@ -85,3 +92,12 @@ class MMLServerServers(MMLServerView):
             return HTTPNotFound()
 
         return self.return_dict(title=server.name, server=server, perm=self.has_perm(server))
+
+    @view_config(route_name='serverjson')
+    def serverjson(self):
+        try:
+            server = Server.objects.get(id=self.request.matchdict['serverid'])
+        except DoesNotExist:
+            return HTTPNotFound()
+
+        return Response(server.to_json(), content_type='application/json')

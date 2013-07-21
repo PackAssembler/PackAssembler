@@ -32,6 +32,11 @@
         ${form.horsubmit(request.route_url('modlist'))}
     </form>
 </div></div>
+<%!
+    import json
+    def js(text):
+        return json.dumps({'t': text})[7:-2]
+%>
 <%block name="endscripts">
     ${form.formscripts('edit-mod')}
     % if v is not UNDEFINED:
@@ -41,7 +46,9 @@
                 $('#txtInstall').val("${v.install}");
                 $('#txtUrl').val("${v.url}");
                 $('#selTarget').val("${v.target}");
-                $('#parPermission').val("${v.permission}");
+                % if v.permission:
+                    $('#parPermission').val("${v.permission | js}");
+                % endif
             });
         </script>
     % endif

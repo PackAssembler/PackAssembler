@@ -2,7 +2,7 @@
 <div class="row">
     <div class="span8">
         <h2>${title}</h2>
-        <h4 class="muted">${mod.owner.username}</h4>
+        <h4><a href="${request.route_url('profile', userid=mod.owner.id)}">${mod.owner.username}</a></h4>
     </div>
     <div class="span4">
     % if perm:
@@ -16,6 +16,7 @@
 <hr>
 <h3>Mod Information</h3>
 <table class="table table-hover table-bordered">
+    <tr><td>Added</td><td>${mod.id.generation_time.strftime('%e %b %Y %I:%m:%S %p')}</td></tr>
     <tr><td>Mod ID</td><td>${mod.id}</td></tr>
     <tr><td>Installs to</td><td>${mod.install}</td></tr>
     <tr><td>Runs on</td><td>
@@ -37,7 +38,13 @@
         <a href="${mod.url}">${mod.url}</a>
     % endif
     </td></tr>
-    <tr><td>Permission</td><td>${mod.permission}</td></tr>
+    <%
+        try:
+            p = '<br />'.join(mod.permission.splitlines())
+        except AttributeError:
+            p = 'None'
+    %>
+    <tr><td>Permission</td><td>${p | n}</td></tr>
 </table>
 <h3>Versions</h3>
 % if perm:
@@ -50,12 +57,12 @@
         <tr><th>Version</th><th>MC Min</th><th>MC Max</th><th>Uploaded</th><th>Action</th></tr>
     </thead>
     <tbody>
-    % for version in mod.versions:
+    % for version in mod.versions[::-1]:
         <tr>
             <td>${version.version}</td>
             <td>${version.mc_min}</td>
             <td>${version.mc_max}</td>
-            <td>${version.upload_date.strftime('%e %b %Y %I:%m:%S %p')}</td>
+            <td>${version.id.generation_time.strftime('%e %b %Y %I:%m:%S %p')}</td>
             <td>
                 <div class="btn-group">
                     <a class="btn btn-primary" href="#">Action</a>

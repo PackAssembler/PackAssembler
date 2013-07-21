@@ -14,6 +14,9 @@
                 padding-right: 5px;
             }
         }
+        .padded {
+            padding-bottom: 100px;
+        }
     </style>
     <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
     ##<link href="//netdna.bootstrapcdn.com/bootswatch/2.3.2/cerulean/bootstrap.min.css" rel="stylesheet">
@@ -70,8 +73,8 @@
                                 <i class="icon-caret-down"></i>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="${request.route_url('logout')}">Logout</a></li>
-                                <li><a href="${request.route_url('profile', userid=user.id)}">Profile</a></li>
+                                <li><a href="${request.route_url('profile', userid=user.id)}"><i class="icon-fixed-width icon-user"></i> Profile</a></li>
+                                <li><a href="${request.route_url('logout')}"><i class="icon-fixed-width icon-off"></i> Logout</a></li>
                             </ul>
                         </li>
                         % endif
@@ -82,7 +85,7 @@
             </div>
         </div>
     </div>
-    <div class="container">
+    <div class="container padded">
         ${next.body()}
     </div>
     <script src="http://code.jquery.com/jquery-latest.js"></script>

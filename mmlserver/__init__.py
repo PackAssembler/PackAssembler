@@ -30,7 +30,7 @@ def main(global_config, **settings):
     # Mod versions
     config.add_route('addversion', '/mod/addversion/{modid}')
     config.add_route('editversion', '/mod/editversion/{versionid}')
-    config.add_route('downloadversion', '/mod/download/{versionid}.jar')
+    config.add_route('downloadversion', '/mod/download/{versionid}')
     config.add_route('deleteversion', '/mod/deleteversion/{versionid}')
     # Packs
     ## General
@@ -39,19 +39,21 @@ def main(global_config, **settings):
     config.add_route('packlist', '/pack/list')
     config.add_route('deletepack', '/pack/delete/{packid}')
     config.add_route('viewpack', '/pack/{packid}')
+    config.add_route('packjson', '/pack/json/{packid}')
     ## Mods
     config.add_route('addpackmod', '/pack/addmod/{packid}')
     config.add_route('removepackmod', '/pack/removemod/{packid}/{modid}')
     ## Builds
     config.add_route('addbuild', '/pack/addbuild/{packid}')
     config.add_route('removebuild', '/pack/removebuild/{buildid}')
-    config.add_route('getbuild', '/pack/getbuild/{buildid}')
+    config.add_route('downloadbuild', '/pack/download/{buildid}')
     # Servers
     config.add_route('addserver', '/server/add')
     config.add_route('editserver', '/server/edit/{serverid}')
     config.add_route('serverlist', '/server/list')
     config.add_route('deleteserver', '/server/delete/{serverid}')
     config.add_route('viewserver', '/server/{serverid}')
+    config.add_route('serverjson', '/server/json/{serverid}')
 
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.scan()

@@ -1,5 +1,8 @@
 <%inherit file="base.mak"/>
-<h2>${title}</h2>
+<div class="row">
+    <div class="span2" id="gravatar">Loading Gravatar</div>
+    <div class="span10"><h2 style="line-height: 140px">${title}</h2></div>
+</div>
 <hr>
 <h3>Mods</h3>
 % if mods:
@@ -36,4 +39,12 @@
 </%block>
 <%block name="endscripts">
     <script src="${request.static_url('mmlserver:static/bootstrap-rowlink.min.js')}"></script>
+    <script src="${request.static_url('mmlserver:static/gravatar/md5.js')}"></script>
+    <script src="${request.static_url('mmlserver:static/gravatar/jquery.gravatar.js')}"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#gravatar').empty().append($.gravatar('${owner.email}', {rating: 'pg', secure: true, size: 150, image: 'identicon'}));
+            $('#gravatar').children(':first').addClass('img-polaroid');
+        });
+    </script>
 </%block>

@@ -75,5 +75,5 @@ class MMLServerUser(MMLServerView):
         except DoesNotExist:
             return HTTPNotFound()
 
-        return self.return_dict(title=user.username, mods=Mod.objects(owner=user),
+        return self.return_dict(title=user.username, owner=user, mods=Mod.objects(owner=user),
                                 packs=Pack.objects(owner=user), servers=Server.objects(owner=user))

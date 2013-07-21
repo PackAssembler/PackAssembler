@@ -8,7 +8,7 @@ class MMLServerViews(MMLServerView):
     def home(self):
         return self.return_dict(title='Home')
 
-    @view_config(route_name='about', renderer='home.mak')
+    @view_config(route_name='about', renderer='about.mak')
     def about(self):
         return self.return_dict(title='About')
 

@@ -1,5 +1,5 @@
 from mongoengine import *
-from datetime import datetime
+from functools import total_ordering
 
 # Mod targets
 TARGETS = ('server', 'client', 'both')
@@ -30,14 +30,19 @@ class ModVersion(Document):
     forge_max = StringField(max_length=FV)
     # Mod version and upload datetime
     version = StringField(required=True)
-    upload_date = DateTimeField(required=True, default=datetime.now)
     # The file itself
     mod_file = FileField(required=True, collection_name='modfs')
     # Reference Mod ModVersion belongs to
     mod = ReferenceField('Mod', required=True)
 
 
+@total_ordering
 class Mod(Document):
+    def __lt__(self, other):
+        return self.name.lower() < other.name.lower()
+
+    def __eq__(self, other):
+        return self.name == other.name
     # Information
     ## Name of mod
     name = StringField(required=True, max_length=32)
@@ -54,15 +59,17 @@ class Mod(Document):
     # Owner: Full permissions
     owner = ReferenceField(User, required=True, reverse_delete_rule=NULLIFY)
 
+    meta = {
+        'ordering': ['name']
+    }
+
 
 class PackBuild(Document):
-    # Date build added
-    build_date = DateTimeField(required=True, default=datetime.now)
     # Build number
     revision = IntField(required=True)
     # Build itself
     ## JSON File with information about mod versions included in package
-    ## Should include all information except build date and number
+    ## Should include all information except number
     build = StringField(required=True)
     # Configuration, should be on external server
     config = URLField()
@@ -75,7 +82,7 @@ class PackBuild(Document):
 
 class Pack(Document):
     # Information
-    name = StringField(required=True, max_length=32)
+    name = StringField(required=True, max_length=32, unique=True)
     # Mod List
     mods = ListField(ReferenceField(Mod, reverse_delete_rule=PULL))
     # Builds
@@ -85,12 +92,24 @@ class Pack(Document):
     # Owner of Pack
     owner = ReferenceField(User, required=True, reverse_delete_rule=NULLIFY)
 
+    meta = {
+        'ordering': ['name']
+    }
+
 
 class Server(Document):
     # Information
-    name = StringField(required=True, max_length=32)
+    name = StringField(required=True, max_length=32, unique=True)
     url = URLField()
+    host = StringField(required=True)
+    port = IntField(required=True)
     # Pack used
     build = ReferenceField('PackBuild', required=True, reverse_delete_rule=CASCADE)
     # Owner
     owner = ReferenceField(User, required=True, reverse_delete_rule=NULLIFY)
+    # Configuration, should be on external server
+    config = URLField()
+
+    meta = {
+        'ordering': ['name']
+    }

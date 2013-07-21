@@ -2,8 +2,8 @@
 <div class="row">
     <div class="span8">
         <h2>${title}</h2>
-        <a href="#" class="btn btn-primary" id='showid'>Show ID</a>
-        <h4 class="muted">${pack.owner.username}</h4>
+        <a href="#" class="btn btn-primary" id='showid'>Copy ID to Clipboard</a>
+        <h4><a href="${request.route_url('profile', userid=pack.owner.id)}">${pack.owner.username}</a></h4>
     </div>
     <div class="span4">
     % if perm:
@@ -29,7 +29,7 @@
     % for build in pack.builds[::-1]:
         <tr>
             <td>${build.revision}</td>
-            <td>${build.build_date.strftime('%e %b %Y %I:%m:%S %p')}</td>
+            <td>${build.id.generation_time.strftime('%e %b %Y %I:%m:%S %p')}</td>
             <td><a href="${build.config}">${build.config}</a></td>
             <td>${build.mc_version}</td>
             <td>${build.forge_version}</td>
@@ -39,7 +39,7 @@
                     <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
                         <span class="icon-caret-down"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="${request.route_url('getbuild', buildid=build.id)}"><i class="icon-fixed-width icon-download"></i> JSON</a></li>
+                        <li><a href="${request.route_url('downloadbuild', buildid=build.id)}"><i class="icon-fixed-width icon-download"></i> JSON</a></li>
                         % if perm:
                             <li><a href="${request.route_url('removebuild', buildid=build.id)}"><i class="icon-fixed-width icon-trash"></i> Delete</a></li>
                         % endif
@@ -53,7 +53,7 @@
 <h3>Mods</h3>
 % if pack.mods:
     <ul>
-    % for mod in pack.mods:
+    % for mod in sorted(pack.mods):
         <li><a href="${request.route_url('viewmod', modid=mod.id)}">${mod.name}</a> 
         % if perm:
             <a href="${request.route_url('removepackmod', modid=mod.id, packid=pack.id)}"><i class="icon-remove text-error"></i></a>
@@ -73,7 +73,7 @@
     <script type="text/javascript">
         $(document).ready(function(){
             $('#showid').click(function(){
-                $(this).replaceWith("${pack.id}")
+                window.prompt("Copy to clipboard: Ctrl+C, Enter", "${pack.id}");
             })
         })
     </script>
