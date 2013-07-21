@@ -53,7 +53,14 @@ class MMLServerMod(MMLServerView):
 
     @view_config(route_name='modlist', renderer='modlist.mak')
     def modlist(self):
-        return self.return_dict(title='Mod List', mods=Mod.objects)
+        post = self.request.params
+
+        if 'btnSubmit' in post:
+            mods = Mod.objects(name__icontains=post['txtSearch'])
+        else:
+            mods = Mod.objects
+
+        return self.return_dict(title='Mod List', mods=mods)
 
     @view_config(route_name='deletemod', permission='user')
     def deletemod(self):
@@ -80,7 +87,13 @@ class MMLServerMod(MMLServerView):
         except DoesNotExist:
             return HTTPNotFound()
 
-        return self.return_dict(title=mod.name, mod=mod, perm=self.has_perm(mod))
+        if self.logged_in is None:
+            packs = []
+        else:
+            user = User.objects.get(username=self.logged_in)
+            packs = Pack.objects(owner=user)
+
+        return self.return_dict(title=mod.name, mod=mod, packs=packs, perm=self.has_perm(mod))
 
 
 def get_params(post):
@@ -91,6 +104,7 @@ def get_params(post):
         target=post.get('selTarget'),
         permission=post.get('parPermission')
     )
+
 
 def check_params(params):
     return re.match('^[\w ]+$', params['name']) and params['install'].isalnum()

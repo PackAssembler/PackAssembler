@@ -70,7 +70,14 @@ class MMLServerServers(MMLServerView):
 
     @view_config(route_name='serverlist', renderer='serverlist.mak')
     def serverlist(self):
-        return self.return_dict(title="Server List", servers=Server.objects)
+        post = self.request.params
+
+        if 'btnSubmit' in post:
+            servers = Server.objects(name__icontains=post['txtSearch'])
+        else:
+            servers = Server.objects
+
+        return self.return_dict(title="Server List", servers=servers)
 
     @view_config(route_name='deleteserver', permission='user')
     def deleteserver(self):

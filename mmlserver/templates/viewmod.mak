@@ -2,6 +2,22 @@
 <div class="row">
     <div class="span8">
         <h2>${title}</h2>
+        <div class="btn-group">
+            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+                Add to Pack
+                <span class="icon-caret-down"></span></a>
+            <ul class="dropdown-menu">
+                % if packs:
+                    % for pack in packs:
+                    <li><a href="${request.route_url('addpackmod', packid=pack.id)}?btnSubmit&txtModID=${mod.id}">${pack.name}</a></li>
+                    % endfor
+                % else:
+                    <li><a href="#">You have no packs!</a></li>
+                % endif
+                <li class="divider"></li>
+                <li><a href="${request.route_url('addpack')}">Add Pack</a></li>
+            </ul>
+        </div>
         <h4><a href="${request.route_url('profile', userid=mod.owner.id)}">${mod.owner.username}</a></h4>
     </div>
     <div class="span4">
@@ -65,8 +81,8 @@
             <td>${version.id.generation_time.strftime('%e %b %Y %I:%m:%S %p')}</td>
             <td>
                 <div class="btn-group">
-                    <a class="btn btn-primary" href="#">Action</a>
                     <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+                        Action
                         <span class="icon-caret-down"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="${request.route_url('downloadversion', versionid=version.id)}"><i class="icon-fixed-width icon-download"></i> Download</a></li>

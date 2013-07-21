@@ -1,5 +1,6 @@
 <%inherit file="base.mak"/>
-<h2>${title}</h2>
+<%namespace name="listcommon" file="list.mak" />
+${listcommon.head()}
 <hr>
 <div class="pull-right" style="margin-bottom: 10px;">
     <a href="${request.route_url('addserver')}"><i class="icon-plus" style="text-decoration: none;"></i> Add Server</a>

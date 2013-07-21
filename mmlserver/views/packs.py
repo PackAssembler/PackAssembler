@@ -56,7 +56,14 @@ class MMLServerPack(MMLServerView):
 
     @view_config(route_name='packlist', renderer='packlist.mak')
     def packlist(self):
-        return self.return_dict(title="Pack List", packs=Pack.objects)
+        post = self.request.params
+
+        if 'btnSubmit' in post:
+            packs = Pack.objects(name__icontains=post['txtSearch'])
+        else:
+            packs = Pack.objects
+
+        return self.return_dict(title="Pack List", packs=packs)
 
     @view_config(route_name='deletepack', permission='user')
     def deletepack(self):
@@ -93,10 +100,14 @@ class MMLServerPack(MMLServerView):
     def addpackmod(self):
         error = ''
         post = self.request.params
+        print(post)
         if self.has_perm(Pack.objects(id=self.request.matchdict['packid']).only('owner').first()):
             if 'btnSubmit' in post:
-                Pack.objects(id=self.request.matchdict['packid']).update_one(push__mods=Mod.objects.get(id=post['txtModID']))
-                return HTTPFound(self.request.route_url('viewpack', packid=self.request.matchdict['packid']))
+                try:
+                    Pack.objects(id=self.request.matchdict['packid']).update_one(add_to_set__mods=Mod.objects.get(id=post['txtModID']))
+                    return HTTPFound(self.request.route_url('viewpack', packid=self.request.matchdict['packid']))
+                except DoesNotExist:
+                    error = 'Mod Does not Exist.'
         else:
             return HTTPForbidden()
         return self.return_dict(title="Add Mod to Pack", error=error)
