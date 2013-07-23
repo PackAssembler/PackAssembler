@@ -1,12 +1,9 @@
 Todo:
-C Add FAQ, Help
+C Add About, FAQ, Help
 C Add email conformation
 C Edit user information
-D Design
 D Modify homepage
 D Add delete confirmations
 D Forgot password
 D Cleanup Mako Files
-E Add credits page/about
 F Add administration
-F Organize mako files
