@@ -3,6 +3,7 @@ from pyramid.httpexceptions import HTTPFound
 from urllib.parse import urlencode
 from ..security import Root
 from ..schema import *
+import requests
 
 
 class MMLServerView(object):
@@ -40,5 +41,28 @@ def opt_dict(**kwargs):
         if value != '':
             d[name] = value
     return d
+
+CAPTCHA_URL = 'http://www.google.com/recaptcha/api/verify'
+CAPTCHA_KEY = '6LfMiuUSAAAAACSvxehnpk8IvIOwYZiSuJg58oa2'
+CAPTCHA_ERRORS = {
+    'invalid-site-private-key': 'Invalid API Key.',
+    'invalid-request-cookie': 'The challenge parameter of the verify script was incorrect.',
+    'incorrect-captcha-sol': 'The CAPTCHA solution was incorrect.',
+    'captcha-timeout': 'The solution was received after the CAPTCHA timed out.'
+}
+CAPTCHA_MESSAGE = 'Something Went Wrong When Verifying the Captcha. '
+
+def validate_captcha(request, challenge, response):
+    payload = {
+        'privatekey': CAPTCHA_KEY,
+        'remoteip': request.remote_addr,
+        'challenge': challenge,
+        'response': response
+    }
+    t = requests.post(CAPTCHA_URL, payload).text.split('\n')
+    try:
+        return t[0][0] == 't', CAPTCHA_MESSAGE + CAPTCHA_ERRORS[t[1]]
+    except KeyError:
+        return t[0][0] == 't', CAPTCHA_MESSAGE + t[1]
 
 VERROR = "Your Data is not Valid. Enable Javascript for More Information."

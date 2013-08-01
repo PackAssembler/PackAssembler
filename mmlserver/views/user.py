@@ -1,11 +1,10 @@
 from pyramid.view import view_config, forbidden_view_config
+from .common import MMLServerView, VERROR, validate_captcha
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.security import remember, forget
-from .common import MMLServerView, VERROR
 from pyramid.response import Response
 from ..security import check_pass
 from ..schema import *
-
 
 class MMLServerUser(MMLServerView):
     @view_config(route_name='signup', renderer='signup.mak')
@@ -21,16 +20,21 @@ class MMLServerUser(MMLServerView):
             username = post.get('txtUsername', '')
             email = post.get('txtEmail', '')
             password = post.get('txtPassword', '')
-            if username.isalnum() and email and password:
-                try:
-                    User(username=username, password=password.encode(), email=email, groups=['group:user']).save()
-                    return self.success_url('login', 'Successfully created an account.')
-                except ValidationError:
+
+            captcha_pass, captcha_error = validate_captcha(self.request, post.get('recaptcha_challenge_field', ''), post.get('recaptcha_response_field', ''))
+            if captcha_pass:
+                if username.isalnum() and email and password:
+                    try:
+                        User(username=username, password=password.encode(), email=email, groups=['group:user']).save()
+                        return self.success_url('login', 'Successfully created an account.')
+                    except ValidationError:
+                        error = VERROR
+                    except NotUniqueError:
+                        error = username + ' is taken'
+                else:
                     error = VERROR
-                except NotUniqueError:
-                    error = username + ' is taken'
             else:
-                error = VERROR
+                error = captcha_error
         return self.return_dict(title='Signup', error=error)
 
     @view_config(route_name='taken')

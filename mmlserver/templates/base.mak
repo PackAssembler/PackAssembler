@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>${title}</title>
+    <title>MC Manager &middot; ${title}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     ##<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/css/bootstrap.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/bootswatch/2.3.2/united/bootstrap.min.css" rel="stylesheet">
-    <link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
     <style type="text/css">
         body {
             padding-top: 60px;
@@ -35,7 +35,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="brand" href="${request.route_url('home')}">MML Server</a>
+                <a class="brand" href="${request.route_url('home')}">MC Manager</a>
                 <div class="nav-collapse collapse">
                     <ul class="nav">
                     <%def name="genclass(name)">
@@ -89,7 +89,7 @@
     <div class="container padded">
         ${next.body()}
     </div>
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="${request.static_url('mmlserver:static/jquery-latest.js')}"></script>
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
     ##<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>
     <%block name="endscripts">
