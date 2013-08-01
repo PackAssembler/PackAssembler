@@ -20,6 +20,7 @@ def main(global_config, **settings):
     config.add_route('taken', '/user/taken')
     config.add_route('login', '/user/login')
     config.add_route('logout', '/user/logout')
+    config.add_route('deleteuser', '/user/delete/{userid}')
     config.add_route('profile', '/user/{userid}')
     # Mods
     config.add_route('addmod', '/mod/add')

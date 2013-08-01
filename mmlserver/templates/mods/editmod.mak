@@ -10,6 +10,9 @@
             'data-regexp': '^[\w ]+$',
             'required': 'required'
         })}
+        ${form.horfield('txtAuthor', 'Author', 'text', attr={
+            'data-maxlength': '32'
+        })}
         ${form.horfield('txtInstall', 'Install Location', 'text', attr={
             'value': 'mods',
             'data-type': 'alphanum',
@@ -43,11 +46,14 @@
         <script type="text/javascript">
             $(document).ready(function(){
                 $('#txtName').val("${v.name}");
+                % if v.author:
+                    $('#txtAuthor').val("${v.author}");
+                % endif
                 $('#txtInstall').val("${v.install}");
                 $('#txtUrl').val("${v.url}");
                 $('#selTarget').val("${v.target}");
                 % if v.permission:
-                    $('#parPermission').val("${v.permission | js}");
+                    $('#parPermission').val("${v.permission | n,js}");
                 % endif
             });
         </script>

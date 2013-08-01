@@ -1,5 +1,4 @@
 <%inherit file="base.mak"/>
-<%namespace name="view" file="viewmod.mak" />
 <%namespace name="listcommon" file="list.mak" />
 ${listcommon.head()}
 <hr>
@@ -8,11 +7,11 @@ ${listcommon.head()}
 </div>
 <table class="table table-hover table-bordered" data-provides="rowlink">
     <thead>
-        <tr><th>Name</th><th>Owner</th><th>Target</th></tr>
+        <tr><th>Name</th><th>Author</th><th>Owner</th></tr>
     </thead>
     <tbody>
     % for mod in mods:
-        <tr><td><a href="${request.route_url('viewmod', modid=mod.id)}">${mod.name}</a></td><td>${mod.owner.username}</td><td>${view.runson(mod)}</td></tr>
+        <tr><td><a href="${request.route_url('viewmod', modid=mod.id)}">${mod.name}</a></td><td>${mod.author}<td>${mod.owner.username}</td></tr>
     % endfor
     </tbody>
 </table>

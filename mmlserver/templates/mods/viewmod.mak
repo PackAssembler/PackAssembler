@@ -32,6 +32,7 @@
 <hr>
 <h3>Mod Information</h3>
 <table class="table table-hover table-bordered">
+    <tr><td>Author</td><td><a href="${request.route_url('modlist')}?txtSearch=${mod.author}&btnSubmit=">${mod.author}</a></td></tr>
     <tr><td>Added</td><td>${mod.id.generation_time.strftime('%e %b %Y %I:%m:%S %p')}</td></tr>
     <tr><td>Mod ID</td><td>${mod.id}</td></tr>
     <tr><td>Installs to</td><td>${mod.install}</td></tr>

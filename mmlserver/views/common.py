@@ -22,8 +22,16 @@ class MMLServerView(object):
     def success_url(self, redirect, message):
         return HTTPFound(location=self.request.route_url('success') + '?' + urlencode({'redirect': redirect, 'message': message}))
 
-    def has_perm(self, data):
-        return self.logged_in == data.owner.username or has_permission('admin', Root, self.request)
+    def has_perm(self, data, is_user=False):
+        if is_user:
+            username = data.username
+        else:
+            username = data.owner.username
+
+        return self.logged_in == username or has_permission('admin', Root, self.request)
+
+    def get_orphan_user(self):
+        return User.objects.get(username="Orphan")
 
 
 def opt_dict(**kwargs):

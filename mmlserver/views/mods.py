@@ -56,7 +56,7 @@ class MMLServerMod(MMLServerView):
         post = self.request.params
 
         if 'btnSubmit' in post:
-            mods = Mod.objects(name__icontains=post['txtSearch'])
+            mods = Mod.objects(Q(name__icontains=post['txtSearch']) | Q(author__icontains=post['txtSearch']))
         else:
             mods = Mod.objects
 
@@ -99,6 +99,7 @@ class MMLServerMod(MMLServerView):
 def get_params(post):
     return opt_dict(
         name=post.get('txtName'),
+        author=post.get('txtAuthor'),
         install=post.get('txtInstall'),
         url=post.get('txtUrl'),
         target=post.get('selTarget'),

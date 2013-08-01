@@ -3,9 +3,13 @@
 <head>
     <title>${title}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    ##<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootswatch/2.3.2/united/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
     <style type="text/css">
         body {
             padding-top: 60px;
+            background: url("http://subtlepatterns.com/patterns/cream_pixels.png") repeat scroll 0% 0% transparent;
         }
         @media (max-width: 980px) {
             .navbar-text.pull-right {
@@ -18,9 +22,6 @@
             padding-bottom: 100px;
         }
     </style>
-    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
-    ##<link href="//netdna.bootstrapcdn.com/bootswatch/2.3.2/cerulean/bootstrap.min.css" rel="stylesheet">
-    <link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
     <%block name="style">
     </%block>
 </head>
@@ -90,6 +91,7 @@
     </div>
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    ##<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>
     <%block name="endscripts">
     </%block>
 </body>

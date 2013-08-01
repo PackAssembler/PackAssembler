@@ -46,6 +46,8 @@ class Mod(Document):
     # Information
     ## Name of mod
     name = StringField(required=True, max_length=32)
+    ## Author(s) of the mod
+    author = StringField(max_length=32)
     ## Where to download mod
     install = StringField(required=True, default="mods")
     ## Where to run mod (server, client, or both?)

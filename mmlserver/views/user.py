@@ -68,6 +68,25 @@ class MMLServerUser(MMLServerView):
     def logout(self):
         return HTTPFound(location=self.request.referer, headers=forget(self.request))
 
+    @view_config(route_name='deleteuser', permission='user')
+    def deleteuser(self):
+        # Get user
+        try:
+            user = User.objects.get(id=self.request.matchdict['userid'])
+        except DoesNotExist:
+            return HTTPNotFound()
+        if not self.has_perm(user, is_user=True):
+            return HTTPForbidden()
+
+        orphan = self.get_orphan_user()
+
+        Mod.objects(owner=user).update(set__owner=orphan)
+        Pack.objects(owner=user).update(set__owner=orphan)
+        Server.objects(owner=user).update(set__owner=orphan)
+
+        user.delete()
+        return self.success_url('logout', user.username + ' deleted successfully.')
+
     @view_config(route_name='profile', renderer='profile.mak')
     def profile(self):
         try:
@@ -76,4 +95,5 @@ class MMLServerUser(MMLServerView):
             return HTTPNotFound()
 
         return self.return_dict(title=user.username, owner=user, mods=Mod.objects(owner=user),
-                                packs=Pack.objects(owner=user), servers=Server.objects(owner=user))
+                                packs=Pack.objects(owner=user), servers=Server.objects(owner=user),
+                                perm=self.has_perm(user, is_user=True))

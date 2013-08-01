@@ -1,5 +1,5 @@
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPForbidden
-from pyramid.response import Response
+from pyramid.response import Response, FileIter
 from pyramid.view import view_config
 from ..schema import *
 from .common import *
@@ -69,7 +69,7 @@ class MMLServerVersions(MMLServerView):
         except DoesNotExist:
             return HTTPNotFound()
 
-        return Response(mv.mod_file.read(), content_type='application/zip', content_disposition='attachment; filename="{0}-{1}.jar"'.format(mv.mod.name, mv.version))
+        return Response(app_iter=FileIter(mv.mod_file), content_type='application/zip', content_disposition='attachment; filename="{0}-{1}.jar"'.format(mv.mod.name, mv.version))
 
     @view_config(route_name='deleteversion', permission='user')
     def deleteversion(self):

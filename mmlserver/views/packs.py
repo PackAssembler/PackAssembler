@@ -100,7 +100,6 @@ class MMLServerPack(MMLServerView):
     def addpackmod(self):
         error = ''
         post = self.request.params
-        print(post)
         if self.has_perm(Pack.objects(id=self.request.matchdict['packid']).only('owner').first()):
             if 'btnSubmit' in post:
                 try:

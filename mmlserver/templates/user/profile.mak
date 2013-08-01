@@ -1,7 +1,15 @@
 <%inherit file="base.mak"/>
 <div class="row">
     <div class="span2" id="gravatar">Loading Gravatar</div>
-    <div class="span10"><h2 style="line-height: 140px">${title}</h2></div>
+    <div class="span6"><h2 style="line-height: 140px">${title}</h2></div>
+    <div class="span4">
+    % if perm:
+        <div class="btn-group pull-right" style="margin-top: 10px">
+            <a href="#" class="btn btn-info">Edit Account</a>
+            <a href="${request.route_url('deleteuser', userid=user.id)}" class="btn btn-danger">Delete Account</a>
+        </div>
+    % endif
+    </div>
 </div>
 <hr>
 <h3>Mods</h3>
