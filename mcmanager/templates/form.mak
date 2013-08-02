@@ -62,9 +62,9 @@
     % endif
 </%def>
 <%def name="formscripts(formid, include_garlic=False)">
-    <script src="${request.static_url('mmlserver:static/parsley.min.js')}"></script>
+    <script src="${request.static_url('mcmanager:static/parsley.min.js')}"></script>
     % if include_garlic:
-    <script src="${request.static_url('mmlserver:static/garlic.min.js')}"></script>
+    <script src="${request.static_url('mcmanager:static/garlic.min.js')}"></script>
     % endif
     <script type="text/javascript">
         $(document).ready(function () {

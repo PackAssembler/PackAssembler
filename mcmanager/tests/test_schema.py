@@ -1,4 +1,4 @@
-from mmlserver.schema import *
+from mcmanager.schema import *
 from pymongo import MongoClient
 from mongoengine.errors import *
 

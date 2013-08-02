@@ -1,0 +1,15 @@
+Metadata-Version: 1.1
+Name: mcmanager
+Version: 0.1
+Summary: MC Manager Server
+Home-page: https://mml.stephenmac.com/
+Author: Stephen McIntosh
+Author-email: stephenmac7@gmail.com
+License: UNKNOWN
+Description: UNKNOWN
+Keywords: web pyramid pylons
+Platform: UNKNOWN
+Classifier: Programming Language :: Python
+Classifier: Framework :: Pyramid
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Internet :: WWW/HTTP :: WSGI :: Application

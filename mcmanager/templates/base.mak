@@ -89,7 +89,7 @@
     <div class="container padded">
         ${next.body()}
     </div>
-    <script src="${request.static_url('mmlserver:static/jquery-latest.js')}"></script>
+    <script src="${request.static_url('mcmanager:static/jquery-latest.js')}"></script>
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
     ##<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>
     <%block name="endscripts">

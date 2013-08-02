@@ -6,7 +6,7 @@ from .security import findgroup
 
 
 def main(global_config, **settings):
-    config = Configurator(settings=settings, root_factory='mmlserver.security.Root')
+    config = Configurator(settings=settings, root_factory='mcmanager.security.Root')
     authn_policy = AuthTktAuthenticationPolicy('authtktpolicysek', callback=findgroup, hashalg='sha512')
     authz_policy = ACLAuthorizationPolicy()
     config.set_authentication_policy(authn_policy)

@@ -1,4 +1,4 @@
-from mmlserver.schema import *
+from mcmanager.schema import *
 from sys import argv
 
 

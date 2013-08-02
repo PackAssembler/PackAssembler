@@ -43,12 +43,12 @@
     No servers.
 % endif
 <%block name="style">
-    <link href="${request.static_url('mmlserver:static/bootstrap-rowlink.min.css')}" rel="stylesheet">
+    <link href="${request.static_url('mcmanager:static/bootstrap-rowlink.min.css')}" rel="stylesheet">
 </%block>
 <%block name="endscripts">
-    <script src="${request.static_url('mmlserver:static/bootstrap-rowlink.min.js')}"></script>
-    <script src="${request.static_url('mmlserver:static/gravatar/md5.js')}"></script>
-    <script src="${request.static_url('mmlserver:static/gravatar/jquery.gravatar.js')}"></script>
+    <script src="${request.static_url('mcmanager:static/bootstrap-rowlink.min.js')}"></script>
+    <script src="${request.static_url('mcmanager:static/gravatar/md5.js')}"></script>
+    <script src="${request.static_url('mcmanager:static/gravatar/jquery.gravatar.js')}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             $('#gravatar').empty().append($.gravatar('${owner.email}', {rating: 'pg', secure: true, size: 150, image: 'identicon'}));

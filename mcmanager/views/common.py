@@ -10,7 +10,7 @@ class MMLServerView(object):
     def __init__(self, request):
         self.request = request
         self.logged_in = authenticated_userid(request)
-        connect(request.registry.settings.get('mongodb', 'mmlserver'))
+        connect(request.registry.settings.get('mongodb', 'mcmanager'))
 
     def return_dict(self, **kwargs):
         rdict = kwargs

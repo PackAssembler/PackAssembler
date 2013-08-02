@@ -27,9 +27,9 @@ setup(name='mcmanager',
       zip_safe=False,
       install_requires=requires,
       tests_require=requires,
-      test_suite="mmlserver",
+      test_suite="mcmanager",
       entry_points="""\
       [paste.app_factory]
-      main = mmlserver:main
+      main = mcmanager:main
       """,
       )

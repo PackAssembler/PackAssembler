@@ -4,7 +4,7 @@ from .schema import User
 
 
 def findgroup(userid, request):
-    connect(request.registry.settings.get('mongodb', 'mmlserver'))
+    connect(request.registry.settings.get('mongodb', 'mcmanager'))
     user = User.objects(username=userid).first()
     if user is not None:
         return user.groups
