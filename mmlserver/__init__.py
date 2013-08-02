@@ -14,6 +14,7 @@ def main(global_config, **settings):
     # General
     config.add_route('home', '/')
     config.add_route('about', '/about')
+    config.add_route('gettingstarted', '/gettingstarted')
     config.add_route('success', '/success')
     # User
     config.add_route('signup', '/user/signup')

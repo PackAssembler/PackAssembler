@@ -21,7 +21,7 @@
     <h1>MC Manager</h1>
     <p>The main server for MML compatible launchers, run by the creator of MML.</p>
     <p>
-        <a href="${request.route_url('about')}" class="btn btn-primary btn-large">Get Started <i class="icon-double-angle-right"></i></a>
+        <a href="${request.route_url('gettingstarted')}" class="btn btn-primary btn-large">Get Started <i class="icon-double-angle-right"></i></a>
     </p>
 </div>
 <div class="row">
@@ -53,7 +53,7 @@
             <i class="icon-download"></i>
             Download Mods Easily
         </h4>
-        With out simple and easy to use Mod index, you will never have to look in more than one place for your mod needs! All versions at your fingertips with the requirements listed plainly.
+        With our simple and easy to use Mod index, you will never have to look in more than one place for your mod needs! All versions at your fingertips with the requirements listed plainly.
     </div>
     <div class="span4">
         <h4>

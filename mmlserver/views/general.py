@@ -12,6 +12,10 @@ class MMLServerViews(MMLServerView):
     def about(self):
         return self.return_dict(title='About')
 
+    @view_config(route_name='gettingstarted', renderer='gettingstarted.mak')
+    def gettingstarted(self):
+        return self.return_dict(title='Getting Started')
+
     @view_config(route_name='success', renderer='success.mak')
     def success(self):
         d = self.request.params
