@@ -1,7 +1,9 @@
 Todo:
+B Cleanup code with tweens
 C Add FAQ, Getting Started
 C Add email conformation
 C Add password change
+C MCUpdater Support (Server-only)
 D Add delete confirmations
 D Forgot password
 F Add administration
