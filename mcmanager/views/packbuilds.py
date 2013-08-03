@@ -1,4 +1,4 @@
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPForbidden
+from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 from pyramid.response import Response
 from .common import MMLServerView, VERROR
@@ -17,12 +17,7 @@ class MMLServerPackBuild(MMLServerView):
         post = self.request.params
 
         # Get pack
-        try:
-            pack = Pack.objects.get(id=self.request.matchdict['packid'])
-        except DoesNotExist:
-            return HTTPNotFound()
-        if not self.has_perm(pack):
-            return HTTPForbidden()
+        pack = self.get_db_object(Pack, self.request.matchdict['packid'])
 
         if 'btnSubmit' in post:
             if 'selMCVersion' in post and 'txtForgeVersion' in post and 'txtConfig' in post \
@@ -82,20 +77,13 @@ class MMLServerPackBuild(MMLServerView):
 
     @view_config(route_name='removebuild', permission='user')
     def removebuild(self):
-        try:
-            pb = PackBuild.objects.get(id=self.request.matchdict['buildid'])
-        except DoesNotExist:
-            return HTTPNotFound()
-        if not self.has_perm(pb.pack):
-            return HTTPForbidden()
+        pb = self.get_db_object(PackBuild, self.request.matchdict['buildid'])
 
         pb.delete()
         return HTTPFound(location=self.request.referer)
 
     @view_config(route_name='downloadbuild')
     def downloadbuild(self):
-        try:
-            pb = PackBuild.objects.get(id=self.request.matchdict['buildid'])
-        except DoesNotExist:
-            return HTTPNotFound()
+        pb = self.get_db_object(PackBuild, self.request.matchdict['buildid'], perm=False)
+
         return Response(pb.build, content_type='application/json')

@@ -38,12 +38,7 @@ class MMLServerServers(MMLServerView):
         post = self.request.params
 
         # Get current data
-        try:
-            server = Server.objects.get(id=self.request.matchdict['serverid'])
-        except DoesNotExist:
-            return HTTPNotFound()
-        if not self.has_perm(server):
-            return HTTPForbidden()
+        server = self.get_db_object(Server, self.request.matchdict['serverid'])
 
         if 'btnSubmit' in post:
             params = opt_dict(
@@ -81,30 +76,19 @@ class MMLServerServers(MMLServerView):
 
     @view_config(route_name='deleteserver', permission='user')
     def deleteserver(self):
-        try:
-            server = Server.objects.get(id=self.request.matchdict['serverid'])
-        except DoesNotExist:
-            return HTTPNotFound()
-        if not self.has_perm(server):
-            return HTTPForbidden()
+        server = self.get_db_object(Server, self.request.matchdict['serverid'])
 
         server.delete()
         return HTTPFound(location=self.request.route_url('serverlist'))
 
     @view_config(route_name='viewserver', renderer='viewserver.mak')
     def viewserver(self):
-        try:
-            server = Server.objects.get(id=self.request.matchdict['serverid'])
-        except DoesNotExist:
-            return HTTPNotFound()
+        server = self.get_db_object(Server, self.request.matchdict['serverid'], perm=False)
 
         return self.return_dict(title=server.name, server=server, perm=self.has_perm(server))
 
     @view_config(route_name='serverjson')
     def serverjson(self):
-        try:
-            server = Server.objects.get(id=self.request.matchdict['serverid'])
-        except DoesNotExist:
-            return HTTPNotFound()
+        server = self.get_db_object(Server, self.request.matchdict['serverid'], perm=False)
 
         return Response(server.to_json(), content_type='application/json')

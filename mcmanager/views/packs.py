@@ -31,12 +31,7 @@ class MMLServerPack(MMLServerView):
         post = self.request.params
 
         # Get pack
-        try:
-            pack = Pack.objects.get(id=self.request.matchdict['packid'])
-        except DoesNotExist:
-            return HTTPNotFound()
-        if not self.has_perm(pack):
-            return HTTPForbidden()
+        pack = self.get_db_object(Pack, self.request.matchdict['packid'])
 
         if 'btnSubmit' in post:
             params = opt_dict(name=post.get('txtName'))
@@ -68,31 +63,20 @@ class MMLServerPack(MMLServerView):
     @view_config(route_name='deletepack', permission='user')
     def deletepack(self):
         # Get pack
-        try:
-            pack = Pack.objects.get(id=self.request.matchdict['packid'])
-        except DoesNotExist:
-            return HTTPNotFound()
-        if not self.has_perm(pack):
-            return HTTPForbidden()
+        pack = self.get_db_object(Pack, self.request.matchdict['packid'])
 
         pack.delete()
         return self.success_url('packlist', pack.name + ' deleted successfully.')
 
     @view_config(route_name='viewpack', renderer='viewpack.mak')
     def viewpack(self):
-        try:
-            pack = Pack.objects.get(id=self.request.matchdict['packid'])
-        except DoesNotExist:
-            return HTTPNotFound()
+        pack = self.get_db_object(Pack, self.request.matchdict['packid'], perm=False)
 
         return self.return_dict(title=pack.name, pack=pack, perm=self.has_perm(pack))
 
     @view_config(route_name='packjson')
     def packjson(self):
-        try:
-            pack = Pack.objects.exclude('mods').get(id=self.request.matchdict['packid'])
-        except DoesNotExist:
-            return HTTPNotFound()
+        pack = self.get_db_object(Pack, self.request.matchdict['packid'], perm=False)
 
         return Response(pack.to_json(), content_type='application/json')
 

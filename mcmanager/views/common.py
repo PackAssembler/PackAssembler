@@ -5,6 +5,16 @@ from ..security import Root
 from ..schema import *
 import requests
 
+CAPTCHA_URL = 'http://www.google.com/recaptcha/api/verify'
+CAPTCHA_KEY = '6LfMiuUSAAAAACSvxehnpk8IvIOwYZiSuJg58oa2'
+CAPTCHA_ERRORS = {
+    'invalid-site-private-key': 'Invalid API Key.',
+    'invalid-request-cookie': 'The challenge parameter of the verify script was incorrect.',
+    'incorrect-captcha-sol': 'The CAPTCHA solution was incorrect.',
+    'captcha-timeout': 'The solution was received after the CAPTCHA timed out.'
+}
+CAPTCHA_MESSAGE = 'Something Went Wrong When Verifying the Captcha. '
+VERROR = 'Your Data is not Valid. Enable Javascript for More Information.'
 
 class MMLServerView(object):
     def __init__(self, request):
@@ -23,6 +33,9 @@ class MMLServerView(object):
     def success_url(self, redirect, message):
         return HTTPFound(location=self.request.route_url('success') + '?' + urlencode({'redirect': redirect, 'message': message}))
 
+    def get_orphan_user(self):
+        return User.objects.get(username="Orphan")
+
     def has_perm(self, data, is_user=False):
         if is_user:
             username = data.username
@@ -31,8 +44,12 @@ class MMLServerView(object):
 
         return self.logged_in == username or has_permission('admin', Root, self.request)
 
-    def get_orphan_user(self):
-        return User.objects.get(username="Orphan")
+    def get_db_object(self, collection, did, perm=True):
+        # Overwritten in MMLServerUser
+        data = collection.objects.get(id=did)
+        if perm and not self.has_perm(data):
+            raise NoPermission
+        return data
 
 
 def opt_dict(**kwargs):
@@ -42,15 +59,8 @@ def opt_dict(**kwargs):
             d[name] = value
     return d
 
-CAPTCHA_URL = 'http://www.google.com/recaptcha/api/verify'
-CAPTCHA_KEY = '6LfMiuUSAAAAACSvxehnpk8IvIOwYZiSuJg58oa2'
-CAPTCHA_ERRORS = {
-    'invalid-site-private-key': 'Invalid API Key.',
-    'invalid-request-cookie': 'The challenge parameter of the verify script was incorrect.',
-    'incorrect-captcha-sol': 'The CAPTCHA solution was incorrect.',
-    'captcha-timeout': 'The solution was received after the CAPTCHA timed out.'
-}
-CAPTCHA_MESSAGE = 'Something Went Wrong When Verifying the Captcha. '
+class NoPermission(Exception):
+    pass
 
 def validate_captcha(request, challenge, response):
     payload = {
@@ -64,5 +74,3 @@ def validate_captcha(request, challenge, response):
         return t[0][0] == 't', CAPTCHA_MESSAGE + CAPTCHA_ERRORS[t[1]]
     except KeyError:
         return t[0][0] == 't', CAPTCHA_MESSAGE + t[1]
-
-VERROR = "Your Data is not Valid. Enable Javascript for More Information."

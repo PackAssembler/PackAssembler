@@ -1,7 +1,7 @@
+from .common import MMLServerView, VERROR, validate_captcha, opt_dict, NoPermission
 from pyramid.view import view_config, forbidden_view_config
-from .common import MMLServerView, VERROR, validate_captcha
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.security import remember, forget
+from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
 from ..security import check_pass
 from ..schema import *
@@ -72,15 +72,31 @@ class MMLServerUser(MMLServerView):
     def logout(self):
         return HTTPFound(location=self.request.referer, headers=forget(self.request))
 
+    @view_config(route_name='edituser', renderer='edituser.mak', permission='user')
+    def edituser(self):
+        error = ''
+        post = self.request.params
+
+        # Get user
+        user = self.get_db_object(self.request.matchdict['userid'])
+
+        if 'btnSubmit' in post and check_pass(self.logged_in, post['txtCurrentPassword']):
+            params = opt_dict(password=post.get('txtNewPassword').encode())
+            if 'password' in params:
+                try:
+                    for key in params:
+                        if user[key] != params[key]:
+                            user[key] = params[key]
+                    user.save()
+                    return HTTPFound(location=self.request.route_url('profile', userid=user.id))
+                except ValidationError:
+                    error = VERROR
+        return self.return_dict(title="Edit Account", error=error)
+
     @view_config(route_name='deleteuser', permission='user')
     def deleteuser(self):
         # Get user
-        try:
-            user = User.objects.get(id=self.request.matchdict['userid'])
-        except DoesNotExist:
-            return HTTPNotFound()
-        if not self.has_perm(user, is_user=True):
-            return HTTPForbidden()
+        user = self.get_db_object(self.request.matchdict['userid'])
 
         orphan = self.get_orphan_user()
 
@@ -93,11 +109,16 @@ class MMLServerUser(MMLServerView):
 
     @view_config(route_name='profile', renderer='profile.mak')
     def profile(self):
-        try:
-            user = User.objects.get(id=self.request.matchdict['userid'])
-        except DoesNotExist:
-            return HTTPNotFound()
+        # Get user
+        user = self.get_db_object(self.request.matchdict['userid'], perm=False)
 
         return self.return_dict(title=user.username, owner=user, mods=Mod.objects(owner=user),
                                 packs=Pack.objects(owner=user), servers=Server.objects(owner=user),
                                 perm=self.has_perm(user, is_user=True))
+
+    def get_db_object(self, did, perm=True):
+        # Overwrites from MMLServerView
+        data = User.objects.get(id=did)
+        if perm and not self.has_perm(data, is_user=True):
+            raise NoPermission
+        return data

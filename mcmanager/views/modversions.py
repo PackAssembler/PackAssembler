@@ -13,12 +13,7 @@ class MMLServerVersions(MMLServerView):
         post = self.request.params
 
         # Get mod
-        try:
-            mod = Mod.objects.get(id=self.request.matchdict['modid'])
-        except DoesNotExist:
-            return HTTPNotFound()
-        if not self.has_perm(mod):
-            return HTTPForbidden()
+        mod = self.get_db_object(Mod, self.request.matchdict['modid'])
 
         if 'btnSubmit' in post:
             params = get_params(post)
@@ -40,12 +35,7 @@ class MMLServerVersions(MMLServerView):
         post = self.request.params
 
         # Get modversion
-        try:
-            mv = ModVersion.objects.get(id=self.request.matchdict['versionid'])
-        except DoesNotExist:
-            return HTTPNotFound()
-        if not self.has_perm(mv.mod):
-            return HTTPForbidden()
+        mv = self.get_db_object(ModVersion, self.request.matchdict['versionid'])
 
         if 'btnSubmit' in post:
             params = get_params(post)
@@ -64,22 +54,14 @@ class MMLServerVersions(MMLServerView):
     @view_config(route_name='downloadversion')
     def downloadversion(self):
         # Get modversion
-        try:
-            mv = ModVersion.objects.get(id=self.request.matchdict['versionid'])
-        except DoesNotExist:
-            return HTTPNotFound()
+        mv = self.get_db_object(ModVersion, self.request.matchdict['versionid'], perm=False)
 
         return Response(app_iter=FileIter(mv.mod_file), content_type='application/zip', content_disposition='attachment; filename="{0}-{1}.jar"'.format(mv.mod.name, mv.version))
 
     @view_config(route_name='deleteversion', permission='user')
     def deleteversion(self):
         # Get modversion
-        try:
-            mv = ModVersion.objects.get(id=self.request.matchdict['versionid'])
-        except DoesNotExist:
-            return HTTPNotFound()
-        if not self.has_perm(mv.mod):
-            return HTTPForbidden()
+        mv = self.get_db_object(ModVersion, self.request.matchdict['versionid'])
 
         mv.mod_file.delete()
         mv.delete()

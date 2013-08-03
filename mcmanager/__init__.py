@@ -11,6 +11,7 @@ def main(global_config, **settings):
     authz_policy = ACLAuthorizationPolicy()
     config.set_authentication_policy(authn_policy)
     config.set_authorization_policy(authz_policy)
+    config.add_tween('mcmanager.tweens.exception_tween_factory')
     # General
     config.add_route('home', '/')
     config.add_route('about', '/about')

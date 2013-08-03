@@ -30,12 +30,7 @@ class MMLServerMod(MMLServerView):
         post = self.request.params
 
         # Get mod
-        try:
-            mod = Mod.objects.get(id=self.request.matchdict['modid'])
-        except DoesNotExist:
-            return HTTPNotFound()
-        if not self.has_perm(mod):
-            return HTTPForbidden()
+        mod = self.get_db_object(Mod, self.request.matchdict['modid'])
 
         if 'btnSubmit' in post:
             params = get_params(post)
@@ -65,12 +60,7 @@ class MMLServerMod(MMLServerView):
     @view_config(route_name='deletemod', permission='user')
     def deletemod(self):
         # Get mod
-        try:
-            mod = Mod.objects.get(id=self.request.matchdict['modid'])
-        except DoesNotExist:
-            return HTTPNotFound()
-        if not self.has_perm(mod):
-            return HTTPForbidden()
+        mod = self.get_db_object(Mod, self.request.matchdict['modid'])
 
         name = mod.name
         for version in mod.versions:
@@ -82,10 +72,7 @@ class MMLServerMod(MMLServerView):
 
     @view_config(route_name='viewmod', renderer='viewmod.mak')
     def viewmod(self):
-        try:
-            mod = Mod.objects.get(id=self.request.matchdict['modid'])
-        except DoesNotExist:
-            return HTTPNotFound()
+        mod = self.get_db_object(Mod, self.request.matchdict['modid'], perm=False)
 
         if self.logged_in is None:
             packs = []
