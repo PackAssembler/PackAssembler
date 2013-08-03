@@ -3,7 +3,7 @@
     <div class="span8">
         <h2>${title}</h2>
         <a href="#" class="btn btn-primary" id='showid'>Copy ID to Clipboard</a>
-        <h4><a href="${request.route_url('profile', userid=server.owner.id)}">${server.owner.username}</a></h4>
+        <h4><a href="${request.route_url('profile', id=server.owner.id)}">${server.owner.username}</a></h4>
     </div>
     <div class="span4">
     % if perm:
