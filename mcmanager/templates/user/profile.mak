@@ -5,8 +5,8 @@
     <div class="span4">
     % if perm:
         <div class="btn-group pull-right" style="margin-top: 10px">
-            <a href="${request.route_url('edituser', userid=owner.id)}" class="btn btn-info">Edit Account</a>
-            <a href="${request.route_url('deleteuser', userid=owner.id)}" class="btn btn-danger">Delete Account</a>
+            <a href="${request.route_url('edituser', id=owner.id)}" class="btn btn-info">Edit Account</a>
+            <a href="${request.route_url('deleteuser', id=owner.id)}" class="btn btn-danger">Delete Account</a>
         </div>
     % endif
     </div>

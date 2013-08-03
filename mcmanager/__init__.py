@@ -22,9 +22,9 @@ def main(global_config, **settings):
     config.add_route('taken', '/user/taken')
     config.add_route('login', '/user/login')
     config.add_route('logout', '/user/logout')
-    config.add_route('edituser', '/user/edit/{userid}')
-    config.add_route('deleteuser', '/user/delete/{userid}')
-    config.add_route('profile', '/user/{userid}')
+    config.add_route('edituser', '/user/edit/{id}')
+    config.add_route('deleteuser', '/user/delete/{id}')
+    config.add_route('profile', '/user/{id}')
     # Mods
     config.add_route('addmod', '/mod/add')
     config.add_route('editmod', '/mod/edit/{modid}')

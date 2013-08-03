@@ -1,6 +1,7 @@
 from pyramid.security import Allow, Everyone
 from mongoengine import connect
 from .schema import User
+import bcrypt
 
 
 def findgroup(userid, request):
@@ -12,10 +13,16 @@ def findgroup(userid, request):
 
 def check_pass(username, password):
     user = User.objects(username=username).first()
-    if user is not None and user.password.decode() == password:
+    try:
+        if user is not None and bcrypt.hashpw(password.encode(), user.password) == user.password:
+            return True
+        else:
+            return False
+    except ValueError:
         return True
-    else:
-        return False
+
+def password_hash(password):
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt())
 
 
 class Root:

@@ -18,7 +18,7 @@
                 <li><a href="${request.route_url('addpack')}">Add Pack</a></li>
             </ul>
         </div>
-        <h4><a href="${request.route_url('profile', userid=mod.owner.id)}">${mod.owner.username}</a></h4>
+        <h4><a href="${request.route_url('profile', id=mod.owner.id)}">${mod.owner.username}</a></h4>
     </div>
     <div class="span4">
     % if perm:

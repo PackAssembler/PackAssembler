@@ -3,7 +3,7 @@ from pyramid.view import view_config, forbidden_view_config
 from pyramid.security import remember, forget
 from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
-from ..security import check_pass
+from ..security import check_pass, password_hash
 from ..schema import *
 
 class MMLServerUser(MMLServerView):
@@ -19,13 +19,13 @@ class MMLServerUser(MMLServerView):
         if 'btnSubmit' in post:
             username = post.get('txtUsername', '')
             email = post.get('txtEmail', '')
-            password = post.get('txtPassword', '')
+            password = password_hash(post.get('txtPassword', ''))
 
             captcha_pass, captcha_error = validate_captcha(self.request, post.get('recaptcha_challenge_field', ''), post.get('recaptcha_response_field', ''))
             if captcha_pass:
                 if username.isalnum() and email and password:
                     try:
-                        User(username=username, password=password.encode(), email=email, groups=['group:user']).save()
+                        User(username=username, password=password, email=email, groups=['group:user']).save()
                         return self.success_url('login', 'Successfully created an account.')
                     except ValidationError:
                         error = VERROR
@@ -78,25 +78,28 @@ class MMLServerUser(MMLServerView):
         post = self.request.params
 
         # Get user
-        user = self.get_db_object(self.request.matchdict['userid'])
+        user = self.get_db_object()
 
-        if 'btnSubmit' in post and check_pass(self.logged_in, post['txtCurrentPassword']):
-            params = opt_dict(password=post.get('txtNewPassword').encode())
-            if 'password' in params:
-                try:
-                    for key in params:
-                        if user[key] != params[key]:
-                            user[key] = params[key]
-                    user.save()
-                    return HTTPFound(location=self.request.route_url('profile', userid=user.id))
-                except ValidationError:
-                    error = VERROR
+        if 'btnSubmit' in post:
+            if check_pass(self.logged_in, post['txtCurrentPassword']):
+                params = opt_dict(password=password_hash(post.get('txtNewPassword')))
+                if 'password' in params:
+                    try:
+                        for key in params:
+                            if user[key] != params[key]:
+                                user[key] = params[key]
+                        user.save()
+                        return HTTPFound(location=self.request.route_url('profile', id=user.id))
+                    except ValidationError:
+                        error = VERROR
+            else:
+                error = "Please enter your current password correctly."
         return self.return_dict(title="Edit Account", error=error)
 
     @view_config(route_name='deleteuser', permission='user')
     def deleteuser(self):
         # Get user
-        user = self.get_db_object(self.request.matchdict['userid'])
+        user = self.get_db_object()
 
         orphan = self.get_orphan_user()
 
@@ -110,15 +113,15 @@ class MMLServerUser(MMLServerView):
     @view_config(route_name='profile', renderer='profile.mak')
     def profile(self):
         # Get user
-        user = self.get_db_object(self.request.matchdict['userid'], perm=False)
+        user = self.get_db_object(perm=False)
 
         return self.return_dict(title=user.username, owner=user, mods=Mod.objects(owner=user),
                                 packs=Pack.objects(owner=user), servers=Server.objects(owner=user),
                                 perm=self.has_perm(user, is_user=True))
 
-    def get_db_object(self, did, perm=True):
+    def get_db_object(self, perm=True):
         # Overwrites from MMLServerView
-        data = User.objects.get(id=did)
+        data = User.objects.get(id=self.request.matchdict['id'])
         if perm and not self.has_perm(data, is_user=True):
             raise NoPermission
         return data

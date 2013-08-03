@@ -74,7 +74,7 @@
                                 <i class="icon-caret-down"></i>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="${request.route_url('profile', userid=user.id)}"><i class="icon-fixed-width icon-user"></i> Profile</a></li>
+                                <li><a href="${request.route_url('profile', id=user.id)}"><i class="icon-fixed-width icon-user"></i> Profile</a></li>
                                 <li><a href="${request.route_url('logout')}"><i class="icon-fixed-width icon-off"></i> Logout</a></li>
                             </ul>
                         </li>

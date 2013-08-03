@@ -1,4 +1,4 @@
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPForbidden
+from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 from ..schema import *
 from .common import *
