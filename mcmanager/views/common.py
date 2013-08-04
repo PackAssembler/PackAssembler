@@ -50,7 +50,6 @@ class MMLServerView(object):
         return self.logged_in == user.username or has_permission('admin', Root, self.request)
 
     def get_db_object(self, collection, perm=True):
-        # Overwritten in MMLServerUser
         data = collection.objects.get(id=self.request.matchdict['id'])
         if perm and not self.has_perm(data):
             raise NoPermission

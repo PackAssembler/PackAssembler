@@ -1,9 +1,9 @@
-from .common import MMLServerView, VERROR, validate_captcha, opt_dict, NoPermission
+from .common import MMLServerView, VERROR, validate_captcha, opt_dict
 from pyramid.view import view_config, forbidden_view_config
+from ..security import check_pass, password_hash
 from pyramid.security import remember, forget
 from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
-from ..security import check_pass, password_hash
 from ..schema import *
 
 class MMLServerUser(MMLServerView):
@@ -78,7 +78,7 @@ class MMLServerUser(MMLServerView):
         post = self.request.params
 
         # Get user
-        user = self.get_db_object()
+        user = self.get_db_object(User)
 
         if 'btnSubmit' in post:
             if check_pass(self.logged_in, post['txtCurrentPassword']):
@@ -99,7 +99,7 @@ class MMLServerUser(MMLServerView):
     @view_config(route_name='deleteuser', permission='user')
     def deleteuser(self):
         # Get user
-        user = self.get_db_object()
+        user = self.get_db_object(User)
 
         orphan = self.get_orphan_user()
 
@@ -113,15 +113,8 @@ class MMLServerUser(MMLServerView):
     @view_config(route_name='profile', renderer='profile.mak')
     def profile(self):
         # Get user
-        user = self.get_db_object(perm=False)
+        user = self.get_db_object(User, perm=False)
 
         return self.return_dict(title=user.username, owner=user, mods=Mod.objects(owner=user),
                                 packs=Pack.objects(owner=user), servers=Server.objects(owner=user),
                                 perm=self.has_perm(user, is_user=True))
-
-    def get_db_object(self, perm=True):
-        # Overwrites from MMLServerView
-        data = User.objects.get(id=self.request.matchdict['id'])
-        if perm and not self.has_perm(data):
-            raise NoPermission
-        return data
