@@ -1,5 +1,5 @@
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPForbidden
 from pyramid.response import Response, FileIter
+from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 from ..schema import *
 from .common import *
@@ -13,7 +13,7 @@ class MMLServerVersions(MMLServerView):
         post = self.request.params
 
         # Get mod
-        mod = self.get_db_object(Mod, self.request.matchdict['modid'])
+        mod = self.get_db_object(Mod)
 
         if 'btnSubmit' in post:
             params = get_params(post)
@@ -22,7 +22,7 @@ class MMLServerVersions(MMLServerView):
                     mv = ModVersion(mod=mod, **params).save()
                     mod.versions.append(mv)
                     mod.save()
-                    return HTTPFound(location=self.request.route_url('viewmod', modid=mod.id))
+                    return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
                 except ValidationError:
                     error = VERROR
             else:
@@ -35,7 +35,7 @@ class MMLServerVersions(MMLServerView):
         post = self.request.params
 
         # Get modversion
-        mv = self.get_db_object(ModVersion, self.request.matchdict['versionid'])
+        mv = self.get_db_object(ModVersion)
 
         if 'btnSubmit' in post:
             params = get_params(post)
@@ -44,7 +44,7 @@ class MMLServerVersions(MMLServerView):
                     mv[key] = params[key]
                 try:
                     mv.save()
-                    return HTTPFound(location=self.request.route_url('viewmod', modid=mv.mod.id))
+                    return HTTPFound(location=self.request.route_url('viewmod', id=mv.mod.id))
                 except ValidationError:
                     error = VERROR
             else:
@@ -54,14 +54,14 @@ class MMLServerVersions(MMLServerView):
     @view_config(route_name='downloadversion')
     def downloadversion(self):
         # Get modversion
-        mv = self.get_db_object(ModVersion, self.request.matchdict['versionid'], perm=False)
+        mv = self.get_db_object(ModVersion, perm=False)
 
         return Response(app_iter=FileIter(mv.mod_file), content_type='application/zip', content_disposition='attachment; filename="{0}-{1}.jar"'.format(mv.mod.name, mv.version))
 
     @view_config(route_name='deleteversion', permission='user')
     def deleteversion(self):
         # Get modversion
-        mv = self.get_db_object(ModVersion, self.request.matchdict['versionid'])
+        mv = self.get_db_object(ModVersion)
 
         mv.mod_file.delete()
         mv.delete()

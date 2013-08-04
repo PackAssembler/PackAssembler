@@ -16,7 +16,7 @@ class MMLServerMod(MMLServerView):
             if check_params(params):
                 try:
                     mod = Mod(owner=User.objects.get(username=self.logged_in), **params).save()
-                    return HTTPFound(location=self.request.route_url('viewmod', modid=mod.id))
+                    return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
                 except ValidationError:
                     error = VERROR
             else:
@@ -30,7 +30,7 @@ class MMLServerMod(MMLServerView):
         post = self.request.params
 
         # Get mod
-        mod = self.get_db_object(Mod, self.request.matchdict['modid'])
+        mod = self.get_db_object(Mod)
 
         if 'btnSubmit' in post:
             params = get_params(post)
@@ -39,7 +39,7 @@ class MMLServerMod(MMLServerView):
                     for key in params:
                         mod[key] = params[key]
                     mod.save()
-                    return HTTPFound(location=self.request.route_url('viewmod', modid=mod.id))
+                    return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
                 except ValidationError:
                     error = VERROR
             else:
@@ -60,7 +60,7 @@ class MMLServerMod(MMLServerView):
     @view_config(route_name='deletemod', permission='user')
     def deletemod(self):
         # Get mod
-        mod = self.get_db_object(Mod, self.request.matchdict['modid'])
+        mod = self.get_db_object(Mod)
 
         name = mod.name
         for version in mod.versions:
@@ -72,7 +72,7 @@ class MMLServerMod(MMLServerView):
 
     @view_config(route_name='viewmod', renderer='viewmod.mak')
     def viewmod(self):
-        mod = self.get_db_object(Mod, self.request.matchdict['modid'], perm=False)
+        mod = self.get_db_object(Mod, perm=False)
 
         if self.logged_in is None:
             packs = []

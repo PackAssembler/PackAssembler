@@ -9,7 +9,7 @@
             <ul class="dropdown-menu">
                 % if packs:
                     % for pack in packs:
-                    <li><a href="${request.route_url('addpackmod', packid=pack.id)}?btnSubmit&txtModID=${mod.id}">${pack.name}</a></li>
+                    <li><a href="${request.route_url('addpackmod', id=pack.id)}?btnSubmit&txtModID=${mod.id}">${pack.name}</a></li>
                     % endfor
                 % else:
                     <li><a href="#">You have no packs!</a></li>
@@ -23,8 +23,8 @@
     <div class="span4">
     % if perm:
         <div class="btn-group pull-right" style="margin-top: 10px">
-            <a href="${request.route_url('editmod', modid=mod.id)}" class="btn btn-info">Edit Mod</a>
-            <a href="${request.route_url('deletemod', modid=mod.id)}" class="btn btn-danger">Delete Mod</a>
+            <a href="${request.route_url('editmod', id=mod.id)}" class="btn btn-info">Edit Mod</a>
+            <a href="${request.route_url('deletemod', id=mod.id)}" class="btn btn-danger">Delete Mod</a>
         </div>
     % endif
     </div>
@@ -66,7 +66,7 @@
 <h3>Versions</h3>
 % if perm:
     <div class="pull-right" style="margin-bottom: 10px;">
-        <a href="${request.route_url('addversion', modid=mod.id)}"><i class="icon-plus" style="text-decoration: none;"></i> Add Version</a>
+        <a href="${request.route_url('addversion', id=mod.id)}"><i class="icon-plus" style="text-decoration: none;"></i> Add Version</a>
     </div>
 % endif
 <table class="table table-hover table-bordered">
@@ -86,10 +86,10 @@
                         Action
                         <span class="icon-caret-down"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="${request.route_url('downloadversion', versionid=version.id)}"><i class="icon-fixed-width icon-download"></i> Download</a></li>
+                        <li><a href="${request.route_url('downloadversion', id=version.id)}"><i class="icon-fixed-width icon-download"></i> Download</a></li>
                         % if perm:
-                            <li><a href="${request.route_url('deleteversion', versionid=version.id)}"><i class="icon-fixed-width icon-trash"></i> Delete</a></li>
-                            <li><a href="${request.route_url('editversion', versionid=version.id)}"><i class="icon-fixed-width icon-pencil"></i> Edit</a></li>
+                            <li><a href="${request.route_url('deleteversion', id=version.id)}"><i class="icon-fixed-width icon-trash"></i> Delete</a></li>
+                            <li><a href="${request.route_url('editversion', id=version.id)}"><i class="icon-fixed-width icon-pencil"></i> Edit</a></li>
                         % endif
                     </ul>
                 </div>

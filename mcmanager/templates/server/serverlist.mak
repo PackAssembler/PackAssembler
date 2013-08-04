@@ -11,7 +11,7 @@ ${listcommon.head()}
     </thead>
     <tbody>
     % for server in servers:
-        <tr><td><a href="${request.route_url('viewserver', serverid=server.id)}">${server.name}</a></td><td>${server.owner.username}</td><td>${server.build.pack.name}</td></tr>
+        <tr><td><a href="${request.route_url('viewserver', id=server.id)}">${server.name}</a></td><td>${server.owner.username}</td><td>${server.build.pack.name}</td></tr>
     % endfor
     </tbody>
 </table>

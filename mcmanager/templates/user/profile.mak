@@ -16,7 +16,7 @@
 % if mods:
     <table class="table table-hover table-bordered" data-provides="rowlink">
     % for mod in mods:
-        <tr><td><a href="${request.route_url('viewmod', modid=mod.id)}">${mod.name}</a></td></tr>
+        <tr><td><a href="${request.route_url('viewmod', id=mod.id)}">${mod.name}</a></td></tr>
     % endfor
     </table>
 % else:
@@ -26,7 +26,7 @@
 % if packs:
     <table class="table table-hover table-bordered" data-provides="rowlink">
     % for pack in packs:
-        <tr><td><a href="${request.route_url('viewpack', packid=pack.id)}">${pack.name}</a></td></tr>
+        <tr><td><a href="${request.route_url('viewpack', id=pack.id)}">${pack.name}</a></td></tr>
     % endfor
     </table>
 % else:
@@ -36,7 +36,7 @@
 % if servers:
     <table class="table table-hover table-bordered" data-provides="rowlink">
     % for server in servers:
-        <tr><td><a href="${request.route_url('viewserver', serverid=server.id)}">${server.name}</a></td></tr>
+        <tr><td><a href="${request.route_url('viewserver', id=server.id)}">${server.name}</a></td></tr>
     % endfor
     </table>
 % else:

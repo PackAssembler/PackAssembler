@@ -122,6 +122,6 @@ class MMLServerUser(MMLServerView):
     def get_db_object(self, perm=True):
         # Overwrites from MMLServerView
         data = User.objects.get(id=self.request.matchdict['id'])
-        if perm and not self.has_perm(data, is_user=True):
+        if perm and not self.has_perm(data):
             raise NoPermission
         return data

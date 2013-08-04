@@ -1,4 +1,4 @@
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPForbidden
+from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
 from pyramid.view import view_config
 from ..schema import *
@@ -25,7 +25,7 @@ class MMLServerServers(MMLServerView):
                 params['build'] = pb
                 params['owner'] = User.objects.get(username=self.logged_in)
                 server = Server(**params).save()
-                return HTTPFound(location=self.request.route_url('viewserver', serverid=server.id))
+                return HTTPFound(location=self.request.route_url('viewserver', id=server.id))
             except DoesNotExist:
                 error = 'Pack or Revision Does Not Exist'
             except ValidationError:
@@ -38,7 +38,7 @@ class MMLServerServers(MMLServerView):
         post = self.request.params
 
         # Get current data
-        server = self.get_db_object(Server, self.request.matchdict['serverid'])
+        server = self.get_db_object(Server)
 
         if 'btnSubmit' in post:
             params = opt_dict(
@@ -56,7 +56,7 @@ class MMLServerServers(MMLServerView):
                     if server[key] != params[key]:
                         server[key] = params[key]
                 server.save()
-                return HTTPFound(location=self.request.route_url('viewserver', serverid=server.id))
+                return HTTPFound(location=self.request.route_url('viewserver', id=server.id))
             except DoesNotExist:
                 error = 'Pack or Revision Does Not Exist'
             except ValidationError:
@@ -76,19 +76,19 @@ class MMLServerServers(MMLServerView):
 
     @view_config(route_name='deleteserver', permission='user')
     def deleteserver(self):
-        server = self.get_db_object(Server, self.request.matchdict['serverid'])
+        server = self.get_db_object(Server)
 
         server.delete()
         return HTTPFound(location=self.request.route_url('serverlist'))
 
     @view_config(route_name='viewserver', renderer='viewserver.mak')
     def viewserver(self):
-        server = self.get_db_object(Server, self.request.matchdict['serverid'], perm=False)
+        server = self.get_db_object(Server, perm=False)
 
         return self.return_dict(title=server.name, server=server, perm=self.has_perm(server))
 
     @view_config(route_name='serverjson')
     def serverjson(self):
-        server = self.get_db_object(Server, self.request.matchdict['serverid'], perm=False)
+        server = self.get_db_object(Server, perm=False)
 
         return Response(server.to_json(), content_type='application/json')

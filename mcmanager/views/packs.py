@@ -1,4 +1,4 @@
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPForbidden
+from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
 from pyramid.view import view_config
 from ..schema import *
@@ -18,7 +18,7 @@ class MMLServerPack(MMLServerView):
                 if re.match('^[\w ]+$', params['name']):
                     try:
                         pack = Pack(owner=User.objects.get(username=self.logged_in), **params).save()
-                        return HTTPFound(location=self.request.route_url('viewpack', packid=pack.id))
+                        return HTTPFound(location=self.request.route_url('viewpack', id=pack.id))
                     except ValidationError:
                         error = VERROR
                 else:
@@ -31,7 +31,7 @@ class MMLServerPack(MMLServerView):
         post = self.request.params
 
         # Get pack
-        pack = self.get_db_object(Pack, self.request.matchdict['packid'])
+        pack = self.get_db_object(Pack)
 
         if 'btnSubmit' in post:
             params = opt_dict(name=post.get('txtName'))
@@ -42,7 +42,7 @@ class MMLServerPack(MMLServerView):
                             if pack[key] != params[key]:
                                 pack[key] = params[key]
                         pack.save()
-                        return HTTPFound(location=self.request.route_url('viewpack', packid=pack.id))
+                        return HTTPFound(location=self.request.route_url('viewpack', id=pack.id))
                     except ValidationError:
                         error = VERROR
                 else:
@@ -63,20 +63,20 @@ class MMLServerPack(MMLServerView):
     @view_config(route_name='deletepack', permission='user')
     def deletepack(self):
         # Get pack
-        pack = self.get_db_object(Pack, self.request.matchdict['packid'])
+        pack = self.get_db_object(Pack)
 
         pack.delete()
         return self.success_url('packlist', pack.name + ' deleted successfully.')
 
     @view_config(route_name='viewpack', renderer='viewpack.mak')
     def viewpack(self):
-        pack = self.get_db_object(Pack, self.request.matchdict['packid'], perm=False)
+        pack = self.get_db_object(Pack, perm=False)
 
         return self.return_dict(title=pack.name, pack=pack, perm=self.has_perm(pack))
 
     @view_config(route_name='packjson')
     def packjson(self):
-        pack = self.get_db_object(Pack, self.request.matchdict['packid'], perm=False)
+        pack = self.get_db_object(Pack, perm=False)
 
         return Response(pack.to_json(), content_type='application/json')
 
@@ -84,11 +84,11 @@ class MMLServerPack(MMLServerView):
     def addpackmod(self):
         error = ''
         post = self.request.params
-        if self.has_perm(Pack.objects(id=self.request.matchdict['packid']).only('owner').first()):
+        if self.has_perm(Pack.objects(id=self.request.matchdict['id']).only('owner').first()):
             if 'btnSubmit' in post:
                 try:
-                    Pack.objects(id=self.request.matchdict['packid']).update_one(add_to_set__mods=Mod.objects.get(id=post['txtModID']))
-                    return HTTPFound(self.request.route_url('viewpack', packid=self.request.matchdict['packid']))
+                    Pack.objects(id=self.request.matchdict['id']).update_one(add_to_set__mods=Mod.objects.get(id=post['txtModID']))
+                    return HTTPFound(self.request.route_url('viewpack', id=self.request.matchdict['id']))
                 except DoesNotExist:
                     error = 'Mod Does not Exist.'
         else:

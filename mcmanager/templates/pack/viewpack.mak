@@ -8,8 +8,8 @@
     <div class="span4">
     % if perm:
         <div class="btn-group pull-right" style="margin-top: 10px">
-            <a href="${request.route_url('editpack', packid=pack.id)}" class="btn btn-info">Edit Pack</a>
-            <a href="${request.route_url('deletepack', packid=pack.id)}" class="btn btn-danger">Delete Pack</a>
+            <a href="${request.route_url('editpack', id=pack.id)}" class="btn btn-info">Edit Pack</a>
+            <a href="${request.route_url('deletepack', id=pack.id)}" class="btn btn-danger">Delete Pack</a>
         </div>
     % endif
     </div>
@@ -18,7 +18,7 @@
 <h3>Builds</h3>
 % if perm:
     <div class="pull-right" style="margin-bottom: 10px;">
-        <a href="${request.route_url('addbuild', packid=pack.id)}"><i class="icon-plus" style="text-decoration: none;"></i> New Build</a>
+        <a href="${request.route_url('addbuild', id=pack.id)}"><i class="icon-plus" style="text-decoration: none;"></i> New Build</a>
     </div>
 % endif
 <table class="table table-hover table-bordered">
@@ -39,9 +39,9 @@
                     <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
                         <span class="icon-caret-down"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="${request.route_url('downloadbuild', buildid=build.id)}"><i class="icon-fixed-width icon-download"></i> JSON</a></li>
+                        <li><a href="${request.route_url('downloadbuild', id=build.id)}"><i class="icon-fixed-width icon-download"></i> JSON</a></li>
                         % if perm:
-                            <li><a href="${request.route_url('removebuild', buildid=build.id)}"><i class="icon-fixed-width icon-trash"></i> Delete</a></li>
+                            <li><a href="${request.route_url('removebuild', id=build.id)}"><i class="icon-fixed-width icon-trash"></i> Delete</a></li>
                         % endif
                     </ul>
                 </div>
@@ -54,7 +54,7 @@
 % if pack.mods:
     <ul>
     % for mod in sorted(pack.mods):
-        <li><a href="${request.route_url('viewmod', modid=mod.id)}">${mod.name}</a> 
+        <li><a href="${request.route_url('viewmod', id=mod.id)}">${mod.name}</a> 
         % if perm:
             <a href="${request.route_url('removepackmod', modid=mod.id, packid=pack.id)}"><i class="icon-remove text-error"></i></a>
         % endif
@@ -66,7 +66,7 @@
 % endif
 % if perm:
     <div style="margin-top: 11px">
-        <a href="${request.route_url('addpackmod', packid=pack.id)}"><i class="icon-plus" style="text-decoration: none;"></i> Add Mod to Pack</a>
+        <a href="${request.route_url('addpackmod', id=pack.id)}"><i class="icon-plus" style="text-decoration: none;"></i> Add Mod to Pack</a>
     </div>
 % endif
 <%block name="endscripts">

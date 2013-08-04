@@ -11,7 +11,7 @@ ${listcommon.head()}
     </thead>
     <tbody>
     % for pack in packs:
-        <tr><td><a href="${request.route_url('viewpack', packid=pack.id)}">${pack.name}</a></td><td>${pack.owner.username}</td></tr>
+        <tr><td><a href="${request.route_url('viewpack', id=pack.id)}">${pack.name}</a></td><td>${pack.owner.username}</td></tr>
     % endfor
     </tbody>
 </table>

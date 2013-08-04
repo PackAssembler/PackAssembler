@@ -8,8 +8,8 @@
     <div class="span4">
     % if perm:
         <div class="btn-group pull-right" style="margin-top: 10px">
-            <a href="${request.route_url('editserver', serverid=server.id)}" class="btn btn-info">Edit Server</a>
-            <a href="${request.route_url('deleteserver', serverid=server.id)}" class="btn btn-danger">Delete Server</a>
+            <a href="${request.route_url('editserver', id=server.id)}" class="btn btn-info">Edit Server</a>
+            <a href="${request.route_url('deleteserver', id=server.id)}" class="btn btn-danger">Delete Server</a>
         </div>
     % endif
     </div>
@@ -21,7 +21,7 @@
     <tr><td>Homepage</td><td>${server.url}</td></tr>
     <tr><td>Host</td><td>${server.host}</td></tr>
     <tr><td>Port</td><td>${server.port}</td></tr>
-    <tr><td>Pack</td><td><a href="${request.route_url('viewpack', packid=server.build.pack.id)}">${server.build.pack.name}</a></td></tr>
+    <tr><td>Pack</td><td><a href="${request.route_url('viewpack', id=server.build.pack.id)}">${server.build.pack.name}</a></td></tr>
     <tr><td>Pack Revision</td><td>${server.build.revision}</td></tr>
     <tr><td>Custom Config</td><td>${server.config}</td></tr>
 </table>

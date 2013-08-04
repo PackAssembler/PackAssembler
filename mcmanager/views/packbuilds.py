@@ -9,7 +9,7 @@ from bson import json_util
 
 class MMLServerPackBuild(MMLServerView):
     def linkerror(self, mod, message):
-        return '<a href="' + self.request.route_url('viewmod', modid=mod.id) + '">' + mod.name + '</a>' + ' ' + message
+        return '<a href="' + self.request.route_url('viewmod', id=mod.id) + '">' + mod.name + '</a>' + ' ' + message
 
     @view_config(route_name='addbuild', renderer='editbuild.mak', permission='user')
     def addbuild(self):
@@ -17,7 +17,7 @@ class MMLServerPackBuild(MMLServerView):
         post = self.request.params
 
         # Get pack
-        pack = self.get_db_object(Pack, self.request.matchdict['packid'])
+        pack = self.get_db_object(Pack)
 
         if 'btnSubmit' in post:
             if 'selMCVersion' in post and 'txtForgeVersion' in post and 'txtConfig' in post \
@@ -70,20 +70,20 @@ class MMLServerPackBuild(MMLServerView):
                     pack.latest = pb.revision
                     pack.builds.append(pb)
                     pack.save()
-                    return HTTPFound(self.request.route_url('viewpack', packid=pack.id))
+                    return HTTPFound(self.request.route_url('viewpack', id=pack.id))
             else:
                 error = VERROR
         return self.return_dict(title='New Build', error=error)
 
     @view_config(route_name='removebuild', permission='user')
     def removebuild(self):
-        pb = self.get_db_object(PackBuild, self.request.matchdict['buildid'])
+        pb = self.get_db_object(PackBuild)
 
         pb.delete()
         return HTTPFound(location=self.request.referer)
 
     @view_config(route_name='downloadbuild')
     def downloadbuild(self):
-        pb = self.get_db_object(PackBuild, self.request.matchdict['buildid'], perm=False)
+        pb = self.get_db_object(PackBuild, perm=False)
 
         return Response(pb.build, content_type='application/json')

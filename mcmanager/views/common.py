@@ -36,17 +36,22 @@ class MMLServerView(object):
     def get_orphan_user(self):
         return User.objects.get(username="Orphan")
 
-    def has_perm(self, data, is_user=False):
-        if is_user:
-            username = data.username
+    def has_perm(self, data):
+        dtype = data.__class__.__name__
+        if dtype == 'User':
+            user = data
+        elif dtype == 'ModVersion':
+            user = data.mod.owner
+        elif dtype == 'PackBuild':
+            user = data.pack.owner
         else:
-            username = data.owner.username
+            user = data.owner
 
-        return self.logged_in == username or has_permission('admin', Root, self.request)
+        return self.logged_in == user.username or has_permission('admin', Root, self.request)
 
-    def get_db_object(self, collection, did, perm=True):
+    def get_db_object(self, collection, perm=True):
         # Overwritten in MMLServerUser
-        data = collection.objects.get(id=did)
+        data = collection.objects.get(id=self.request.matchdict['id'])
         if perm and not self.has_perm(data):
             raise NoPermission
         return data

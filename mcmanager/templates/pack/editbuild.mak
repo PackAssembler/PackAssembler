@@ -10,7 +10,7 @@
         ${form.horfield('txtConfig', 'Config', 'text', attr={
             'data-type': 'url'
         })}
-        ${form.horsubmit(request.route_url('viewpack', packid=request.matchdict['packid']))}
+        ${form.horsubmit(request.route_url('viewpack', id=request.matchdict['id']))}
     </form>
 </div></div>
 <%block name="style">
