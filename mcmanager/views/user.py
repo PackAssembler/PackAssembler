@@ -4,6 +4,8 @@ from ..security import check_pass, password_hash
 from pyramid.security import remember, forget
 from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
+from random import getrandbits
+from mandrill import Mandrill
 from ..schema import *
 
 class MMLServerUser(MMLServerView):
@@ -25,17 +27,29 @@ class MMLServerUser(MMLServerView):
             if captcha_pass:
                 if username.isalnum() and email and password:
                     try:
-                        User(username=username, password=password, email=email, groups=['group:user']).save()
-                        return self.success_url('login', 'Successfully created an account.')
+                        user = User(username=username, password=password, email=email, groups=['group:user'], activate=getrandbits(32)).save()
+                        self.send_confirmation(user)
+                        return self.success_url('login', 'Successfully created an account please check your email to activate it.')
                     except ValidationError:
                         error = VERROR
                     except NotUniqueError:
-                        error = username + ' is taken'
+                        error = 'Username or Email Already in Use.'
                 else:
                     error = VERROR
             else:
                 error = captcha_error
         return self.return_dict(title='Signup', error=error)
+
+    @view_config(route_name='activate')
+    def activate(self):
+        user = self.get_db_object(User, perm=False)
+
+        if user.activate == int(self.request.matchdict['key']):
+            user.activate = None
+            user.save()
+            return HTTPFound(location=self.request.route_url('login'))
+        else:
+            return Response('Key Incorrect')
 
     @view_config(route_name='taken')
     def taken(self):
@@ -108,7 +122,7 @@ class MMLServerUser(MMLServerView):
         Server.objects(owner=user).update(set__owner=orphan)
 
         user.delete()
-        return self.success_url('logout', user.username + ' deleted successfully.')
+        return HTTPFound(location=self.request.route_url('home'), headers=forget(self.request))
 
     @view_config(route_name='profile', renderer='profile.mak')
     def profile(self):
@@ -117,4 +131,12 @@ class MMLServerUser(MMLServerView):
 
         return self.return_dict(title=user.username, owner=user, mods=Mod.objects(owner=user),
                                 packs=Pack.objects(owner=user), servers=Server.objects(owner=user),
-                                perm=self.has_perm(user, is_user=True))
+                                perm=self.has_perm(user))
+
+    def send_confirmation(self, user):
+        sender = Mandrill('tv_A60S7VKgqFx8IPcENHg')
+        message = {
+            'to': [{'email': user.email, 'name': user.username}],
+            'global_merge_vars': [{'content': self.request.route_url('activate', id=user.id, key=user.activate), 'name': 'confirmaddress'}]
+        }
+        sender.messages.send_template(template_name='confirmmcm', template_content=[], message=message, async=True)

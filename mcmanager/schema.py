@@ -1,5 +1,5 @@
-from mongoengine import *
 from functools import total_ordering
+from mongoengine import *
 
 # Mod targets
 TARGETS = ('server', 'client', 'both')
@@ -15,9 +15,11 @@ class User(Document):
     # Password, should be bcrypt hashed
     password = BinaryField(required=True)
     # Email, should be validated on client side first
-    email = EmailField(required=True)
+    email = EmailField(required=True, unique=True)
     # Groups, used for authorization
     groups = ListField(StringField(), required=True)
+    # Activation code
+    activate = IntField()
 
 
 class ModVersion(Document):

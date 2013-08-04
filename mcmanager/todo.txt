@@ -1,10 +1,10 @@
 Todo:
 C Add FAQ, Getting Started
 C Prevent deletions when packs, servers depend
-C Add email conformation
 C MCUpdater Support (Server-only)
 D Adopt/Disown
 D TU System
 D Flag out of date
 D Add delete confirmations
 F Add administration
+F Reset API keys and don't put them on github :P

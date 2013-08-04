@@ -16,7 +16,7 @@ hpass = lambda password: hmac.new(password.encode()).digest()
 
 def check_pass(username, password):
     user = User.objects(username=username).first()
-    if user is not None and bcrypt.hashpw(hpass(password), user.password) == user.password:
+    if user is not None and bcrypt.hashpw(hpass(password), user.password) == user.password and user.activate is None:
         return True
     else:
         return False

@@ -7,6 +7,9 @@ here = os.path.abspath(os.path.dirname(__file__))
 requires = [
     'pyramid',
     'mongoengine',
+    'cffi',
+    'bcrypt',
+    'mandrill',
     ]
 
 setup(name='mcmanager',

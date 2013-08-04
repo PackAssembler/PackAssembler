@@ -3,6 +3,7 @@ mcmanager/__init__.py
 mcmanager/schema.py
 mcmanager/security.py
 mcmanager/tests.py
+mcmanager/tweens.py
 mcmanager.egg-info/PKG-INFO
 mcmanager.egg-info/SOURCES.txt
 mcmanager.egg-info/dependency_links.txt

@@ -1,2 +1,5 @@
 pyramid
 mongoengine
+cffi
+bcrypt
+mandrill
