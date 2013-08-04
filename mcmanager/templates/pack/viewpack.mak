@@ -9,7 +9,7 @@
     % if perm:
         <div class="btn-group pull-right" style="margin-top: 10px">
             <a href="${request.route_url('editpack', id=pack.id)}" class="btn btn-info">Edit Pack</a>
-            <a href="${request.route_url('deletepack', id=pack.id)}" class="btn btn-danger">Delete Pack</a>
+            <a id="delete" class="btn btn-danger">Delete Pack</a>
         </div>
     % endif
     </div>
@@ -76,5 +76,16 @@
                 window.prompt("Copy to clipboard: Ctrl+C, Enter", "${pack.id}");
             })
         })
+    </script>
+    <script src="//github.com/makeusabrew/bootbox/releases/v3.3.0/1141/bootbox.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#delete').click(function(){
+                bootbox.confirm("Are you sure you want to delete this pack?", function(result){
+                    if (result)
+                        window.location = "${request.route_url('deletepack', id=pack.id)}";
+                });
+            });
+        });
     </script>
 </%block>
