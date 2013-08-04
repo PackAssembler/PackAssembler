@@ -55,6 +55,17 @@ class MMLServerView(object):
             raise NoPermission
         return data
 
+    def check_depends(self, data):
+        dtype =  data.__class__.__name__
+        if dtype == 'Mod':
+            return Pack.objects(mods=data).first() is None
+        elif dtype == 'Pack':
+            return Server.objects(build__in=data.builds).first() is None
+        elif dtype == 'PackBuild':
+            return Server.objects(build=data).first() is None
+        else:
+            return TypeError('Cannot only check dependencies for Mod and Pack types')
+
 
 def opt_dict(**kwargs):
     d = {}

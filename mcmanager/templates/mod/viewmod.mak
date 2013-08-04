@@ -64,11 +64,18 @@
     <tr><td>Permission</td><td>${p | n}</td></tr>
 </table>
 <h3>Versions</h3>
-% if perm:
-    <div class="pull-right" style="margin-bottom: 10px;">
-        <a href="${request.route_url('addversion', id=mod.id)}"><i class="icon-plus" style="text-decoration: none;"></i> Add Version</a>
+<div class="row bmargin bdiv">
+    <div class="span8">
+        <a href="${request.route_url('flagmod', id=mod.id)}" class="btn${' btn-danger' if not mod.outdated else ''}"><i class="icon-flag"></i> ${'Unf' if mod.outdated else 'F'}lag as Outdated</a>
     </div>
-% endif
+    % if perm:
+    <div class="span4 divbottom">
+        <div class="pull-right">
+            <a href="${request.route_url('addversion', id=mod.id)}"><i class="icon-plus" style="text-decoration: none;"></i> Add Version</a>
+        </div>
+    </div>
+    % endif
+</div>
 <table class="table table-hover table-bordered">
     <thead>
         <tr><th>Version</th><th>MC Min</th><th>MC Max</th><th>Uploaded</th><th>Action</th></tr>
@@ -98,3 +105,15 @@
     % endfor
     </tbody>
 </table>
+<%block name="style">
+    <style type="text/css">
+        .divbottom {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }
+        .bdiv {
+            position: relative;
+        }
+    </style>
+</%block>

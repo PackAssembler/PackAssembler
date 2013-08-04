@@ -11,7 +11,7 @@ ${listcommon.head()}
     </thead>
     <tbody>
     % for mod in mods:
-        <tr><td><a href="${request.route_url('viewmod', id=mod.id)}">${mod.name}</a></td><td>${mod.author}<td>${mod.owner.username}</td></tr>
+        <tr class="${'error' if mod.outdated else ''}"><td><a href="${request.route_url('viewmod', id=mod.id)}">${mod.name}</a></td><td>${mod.author}<td>${mod.owner.username}</td></tr>
     % endfor
     </tbody>
 </table>

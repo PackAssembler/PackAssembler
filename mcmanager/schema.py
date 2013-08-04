@@ -62,6 +62,8 @@ class Mod(Document):
     versions = ListField(ReferenceField(ModVersion, reverse_delete_rule=PULL))
     # Owner: Full permissions
     owner = ReferenceField(User, required=True, reverse_delete_rule=NULLIFY)
+    # Is outdated?
+    outdated = BooleanField(required=True, default=False)
 
     meta = {
         'ordering': ['name']
@@ -88,7 +90,7 @@ class Pack(Document):
     # Information
     name = StringField(required=True, max_length=32, unique=True)
     # Mod List
-    mods = ListField(ReferenceField(Mod, reverse_delete_rule=PULL))
+    mods = ListField(ReferenceField(Mod, reverse_delete_rule=DENY))
     # Builds
     builds = ListField(ReferenceField(PackBuild, reverse_delete_rule=PULL))
     # Latest PackBuild revision
@@ -108,7 +110,7 @@ class Server(Document):
     host = StringField(required=True)
     port = IntField(required=True)
     # Pack used
-    build = ReferenceField('PackBuild', required=True, reverse_delete_rule=CASCADE)
+    build = ReferenceField('PackBuild', required=True, reverse_delete_rule=DENY)
     # Owner
     owner = ReferenceField(User, required=True, reverse_delete_rule=NULLIFY)
     # Configuration, should be on external server

@@ -16,7 +16,7 @@
 % if mods:
     <table class="table table-hover table-bordered" data-provides="rowlink">
     % for mod in mods:
-        <tr><td><a href="${request.route_url('viewmod', id=mod.id)}">${mod.name}</a></td></tr>
+        <tr class="${'error' if mod.outdated else ''}"><td><a href="${request.route_url('viewmod', id=mod.id)}">${mod.name}</a></td></tr>
     % endfor
     </table>
 % else:

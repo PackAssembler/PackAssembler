@@ -14,9 +14,10 @@ def main(global_config, **settings):
     config.add_tween('mcmanager.tweens.exception_tween_factory')
     # General
     config.add_route('home', '/')
-    config.add_route('about', '/about')
+    config.add_route('faq', '/faq')
     config.add_route('gettingstarted', '/gettingstarted')
     config.add_route('success', '/success')
+    config.add_route('error', '/error/{type}')
     # User
     config.add_route('signup', '/user/signup')
     config.add_route('activate', '/user/activate/{id}/{key}')
@@ -30,6 +31,7 @@ def main(global_config, **settings):
     config.add_route('addmod', '/mod/add')
     config.add_route('editmod', '/mod/edit/{id}')
     config.add_route('modlist', '/mod/list')
+    config.add_route('flagmod', '/mod/flag/{id}')
     config.add_route('deletemod', '/mod/delete/{id}')
     config.add_route('viewmod', '/mod/{id}')
     # Mod versions

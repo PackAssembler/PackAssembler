@@ -79,8 +79,11 @@ class MMLServerPackBuild(MMLServerView):
     def removebuild(self):
         pb = self.get_db_object(PackBuild)
 
-        pb.delete()
-        return HTTPFound(location=self.request.referer)
+        if self.check_depends(pb):
+            pb.delete()
+            return HTTPFound(location=self.request.referer)
+        else:
+            return HTTPFound(self.request.route_url('error', type='depends'))
 
     @view_config(route_name='downloadbuild')
     def downloadbuild(self):

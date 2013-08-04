@@ -21,6 +21,9 @@
         .padded {
             padding-bottom: 100px;
         }
+        .bmargin {
+            margin-bottom: 10px;
+        }
     </style>
     <%block name="style">
     </%block>
@@ -57,8 +60,8 @@
                         ${genclass('Server List')}
                             <a href="${request.route_url('serverlist')}">Server List</a>
                         </li>
-                        ${genclass('About')}
-                            <a href="${request.route_url('about')}">About</a>
+                        ${genclass('FAQ')}
+                            <a href="${request.route_url('faq')}">FAQ</a>
                         </li>
                     </ul>
                     <ul class="nav pull-right">

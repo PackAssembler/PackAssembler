@@ -65,8 +65,11 @@ class MMLServerPack(MMLServerView):
         # Get pack
         pack = self.get_db_object(Pack)
 
-        pack.delete()
-        return self.success_url('packlist', pack.name + ' deleted successfully.')
+        if self.check_depends(pack):
+            pack.delete()
+            return self.success_url('packlist', pack.name + ' deleted successfully.')
+        else:
+            return HTTPFound(self.request.route_url('error', type='depends'))
 
     @view_config(route_name='viewpack', renderer='viewpack.mak')
     def viewpack(self):

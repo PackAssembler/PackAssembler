@@ -57,18 +57,27 @@ class MMLServerMod(MMLServerView):
 
         return self.return_dict(title='Mod List', mods=mods)
 
+    @view_config(route_name='flagmod', permission='user')
+    def flagmod(self):
+        mod = self.get_db_object(Mod, perm=False)
+        mod.outdated = not mod.outdated
+        mod.save()
+
+        return HTTPFound(location=self.request.referrer)
+
     @view_config(route_name='deletemod', permission='user')
     def deletemod(self):
         # Get mod
         mod = self.get_db_object(Mod)
 
-        name = mod.name
-        for version in mod.versions:
-            version.mod_file.delete()
-            version.delete()
-        mod.delete()
-
-        return self.success_url('modlist', name + ' deleted successfully.')
+        if self.check_depends(mod):
+            for version in mod.versions:
+                version.mod_file.delete()
+                version.delete()
+            mod.delete()
+            return self.success_url('modlist', mod.name + ' deleted successfully.')
+        else:
+            return HTTPFound(self.request.route_url('error', type='depends'))
 
     @view_config(route_name='viewmod', renderer='viewmod.mak')
     def viewmod(self):
