@@ -1,7 +1,7 @@
 Todo:
 D TU System
 D Work on FAQ, Getting Started
-F MCUpdater Support (Server-only)
+F MCUpdater Support
 F Add administration
 F Reset API keys and don't put them on github :P
 
