@@ -34,13 +34,13 @@
             <div class="container">
                 <a class="brand navbar-brand" href="${request.route_url('home')}">MC Manager</a>
                 <ul class="nav navbar-nav">
-                <%def name="genclass(name)">
-                    % if name == title:
-                    <li class="active">
-                    % else:
-                    <li>
-                    % endif
-                </%def>
+                    <%def name="genclass(name)">
+                        % if name == title:
+                        <li class="active">
+                        % else:
+                        <li>
+                        % endif
+                    </%def>
                     ${genclass('Home')}
                         <a href="${request.route_url('home')}">Home</a>
                     </li>
