@@ -7,4 +7,5 @@ F Add administration
 F Reset API keys and don't put them on github :P
 
 Minor:
+B Better way to check for dependencies? Maybe DENY reverse_delete_rule is enough.
 C Easier way to get the current user object

@@ -18,7 +18,16 @@
                 <li><a href="${request.route_url('addpack')}">Add Pack</a></li>
             </ul>
         </div>
-        <h4><a href="${request.route_url('profile', id=mod.owner.id)}">${mod.owner.username}</a></h4>
+        ## VERY BAD IDEA! Find a better way to do this. Hardcoding username -> not good.
+        % if mod.owner.username == 'Orphan':
+            <br class="bmargin"><a href="${request.route_url('adoptmod', id=mod.id)}" class="btn">Adopt</a>
+        % else:
+            % if perm:
+                <br class="bmargin"><a href="${request.route_url('disownmod', id=mod.id)}" class="btn">Disown</a>
+            % else:
+                <h4><a href="${request.route_url('profile', id=mod.owner.id)}">${mod.owner.username}</a></h4>
+            % endif
+        % endif
     </div>
     <div class="span4">
     % if perm:
