@@ -5,3 +5,6 @@ D Work on FAQ, Getting Started
 F MCUpdater Support (Server-only)
 F Add administration
 F Reset API keys and don't put them on github :P
+
+Minor:
+C Easier way to get the current user object

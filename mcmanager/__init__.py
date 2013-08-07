@@ -36,8 +36,8 @@ def main(global_config, **settings):
     ## Listing
     config.add_route('modlist', '/mod/list')
     ## Spcial Actions
-    config.add_route('adopt', '/mod/adopt/{id}')
-    config.add_route('disown', '/mod/disown/{id}')
+    config.add_route('adoptmod', '/mod/adopt/{id}')
+    config.add_route('disownmod', '/mod/disown/{id}')
     config.add_route('flagmod', '/mod/flag/{id}')
     ## CRUD
     config.add_route('addmod', '/mod/add')
