@@ -1,5 +1,4 @@
 Todo:
-D Adopt/Disown
 D TU System
 D Work on FAQ, Getting Started
 F MCUpdater Support (Server-only)

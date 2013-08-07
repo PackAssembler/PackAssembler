@@ -20,7 +20,9 @@
         </div>
         ## VERY BAD IDEA! Find a better way to do this. Hardcoding username -> not good.
         % if mod.owner.username == 'Orphan':
-            <br class="bmargin"><a href="${request.route_url('adoptmod', id=mod.id)}" class="btn">Adopt</a>
+            % if user is not None:
+                <br class="bmargin"><a href="${request.route_url('adoptmod', id=mod.id)}" class="btn">Adopt</a>
+            % endif
         % else:
             % if perm:
                 <br class="bmargin"><a href="${request.route_url('disownmod', id=mod.id)}" class="btn">Disown</a>
