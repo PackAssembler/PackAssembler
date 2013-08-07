@@ -8,6 +8,8 @@ from random import getrandbits
 from mandrill import Mandrill
 from ..schema import *
 
+MANDRILL_KEY = 'tv_A60S7VKgqFx8IPcENHg'
+
 class MMLServerUser(MMLServerView):
     @view_config(route_name='signup', renderer='signup.mak')
     def signup(self):
@@ -49,7 +51,7 @@ class MMLServerUser(MMLServerView):
             user.save()
             return HTTPFound(location=self.request.route_url('login'))
         else:
-            return Response('Key Incorrect')
+            return Response('Invalid Key')
 
     @view_config(route_name='taken')
     def taken(self):
@@ -85,6 +87,38 @@ class MMLServerUser(MMLServerView):
     @view_config(route_name='logout')
     def logout(self):
         return HTTPFound(location=self.request.referer, headers=forget(self.request))
+
+    @view_config(route_name='sendreset', renderer='sendreset.mak')
+    def sendreset(self):
+        post = self.request.params
+
+        if 'btnSubmit' in post:
+            user = User.objects.get(email=post['txtEmail'])
+            user.reset = getrandbits(32)
+            user.save()
+
+            self.send_password_reset(user)
+            return self.success_url('login', 'Please check your email to continue resetting your password.')
+
+        return self.return_dict(title='Forgot Password')
+
+    @view_config(route_name='reset', renderer='reset.mak')
+    def reset(self):
+        user = self.get_db_object(User, perm=False)
+        post = self.request.params
+
+        # Make sure the key is correct
+        if user.reset != int(self.request.matchdict['key']):
+            return Response('Invalid Key')
+
+        if 'btnSubmit' in post:
+            user.password = password_hash(post['txtPassword'])
+            user.reset = None
+            user.save()
+            return self.success_url('login', 'Password reset successfully.')
+
+        return self.return_dict(title='Reset Password')
+
 
     @view_config(route_name='edituser', renderer='edituser.mak', permission='user')
     def edituser(self):
@@ -134,9 +168,17 @@ class MMLServerUser(MMLServerView):
                                 perm=self.has_perm(user))
 
     def send_confirmation(self, user):
-        sender = Mandrill('tv_A60S7VKgqFx8IPcENHg')
+        sender = Mandrill(MANDRILL_KEY)
         message = {
             'to': [{'email': user.email, 'name': user.username}],
             'global_merge_vars': [{'content': self.request.route_url('activate', id=user.id, key=user.activate), 'name': 'confirmaddress'}]
         }
         sender.messages.send_template(template_name='confirmmcm', template_content=[], message=message, async=True)
+
+    def send_password_reset(self, user):
+        sender = Mandrill(MANDRILL_KEY)
+        message = {
+            'to': [{'email': user.email, 'name': user.username}],
+            'global_merge_vars': [{'content': self.request.route_url('reset', id=user.id, key=user.reset), 'name': 'reseturl'}]
+        }
+        sender.messages.send_template(template_name='resetmcm', template_content=[], message=message, async=True)

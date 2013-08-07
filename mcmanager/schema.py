@@ -18,8 +18,12 @@ class User(Document):
     email = EmailField(required=True, unique=True)
     # Groups, used for authorization
     groups = ListField(StringField(), required=True)
-    # Activation code
+
+    # Codes
+    ## Activation code
     activate = IntField()
+    ## Password reset code
+    reset = IntField()
 
 
 class ModVersion(Document):

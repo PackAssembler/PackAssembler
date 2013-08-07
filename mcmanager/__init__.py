@@ -12,6 +12,7 @@ def main(global_config, **settings):
     config.set_authentication_policy(authn_policy)
     config.set_authorization_policy(authz_policy)
     config.add_tween('mcmanager.tweens.exception_tween_factory')
+
     # General
     config.add_route('home', '/')
     config.add_route('faq', '/faq')
@@ -27,6 +28,9 @@ def main(global_config, **settings):
     ## Login/Logout
     config.add_route('login', '/user/login')
     config.add_route('logout', '/user/logout')
+    ## Password Reset
+    config.add_route('sendreset', '/user/reset')
+    config.add_route('reset', '/user/reset/{id}/{key}')
     ## RUD
     config.add_route('edituser', '/user/edit/{id}')
     config.add_route('deleteuser', '/user/delete/{id}')

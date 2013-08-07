@@ -8,7 +8,8 @@
     ${form.horfield('txtUsername', 'Username', 'text', attr={'required': 'required'})}
     ${form.horfield('txtPassword', 'Password', 'password', attr={'required': 'required'})}
     <%
-        ec = '<a href="' + request.route_url('signup') + '">Create a new account</a>'
+        ec = '<a href="' + request.route_url('signup') + '">Create a new account</a><br>'
+        ec += '<a href="' + request.route_url('sendreset') + '">Forgot Password</a>'
     %>
     ${form.horsubmit(came_from, extracontrols=ec)}
 </form>
