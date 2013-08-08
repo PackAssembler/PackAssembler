@@ -18,9 +18,6 @@
         ${form.horsubmit(request.route_url('profile', id=request.matchdict['id']))}
     </form>
 </div></div>
-<%block name="style">
-    ${form.formstyle()}
-</%block>
 <%block name="endscripts">
     ${form.formscripts('edit-build')}
 </%block>

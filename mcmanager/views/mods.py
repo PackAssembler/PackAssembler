@@ -17,7 +17,7 @@ class MMLServerMod(MMLServerView):
 
         return self.return_dict(title='Mod List', mods=mods)
 
-    @view_config(route_name='adoptmod', permission='user')
+    @view_config(route_name='adoptmod', permission='trusted')
     def adopt(self):
         # Get mod
         mod = self.get_db_object(Mod, perm=False)
@@ -47,7 +47,7 @@ class MMLServerMod(MMLServerView):
 
         return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
 
-    @view_config(route_name='addmod', renderer='editmod.mak', permission='user')
+    @view_config(route_name='addmod', renderer='editmod.mak', permission='trusted')
     def addmod(self):
         error = ''
         post = self.request.params

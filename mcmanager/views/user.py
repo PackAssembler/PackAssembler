@@ -1,8 +1,8 @@
 from .common import MMLServerView, VERROR, validate_captcha, opt_dict
 from pyramid.view import view_config, forbidden_view_config
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from ..security import check_pass, password_hash
 from pyramid.security import remember, forget
-from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
 from random import getrandbits
 from mandrill import Mandrill
@@ -74,6 +74,8 @@ class MMLServerUser(MMLServerView):
 
         # Make sure no one is logged in
         if self.logged_in is not None:
+            if type(self.request.exception) is HTTPForbidden:
+                return HTTPFound(location=self.request.route_url('error', type='not_trusted'))
             return HTTPFound(location=self.request.route_url('home'))
 
         if 'btnSubmit' in post:

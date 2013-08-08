@@ -1,0 +1,56 @@
+/* Base */
+body {
+    padding-top: 60px;
+    background: url("http://subtlepatterns.com/patterns/cream_pixels.png") repeat scroll 0% 0% transparent;
+}
+
+@media (max-width: 980px) {
+    .navbar-text.pull-right {
+        float: none;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+}
+
+.padded-top {
+    padding-bottom: 100px;
+}
+
+/* Common */
+.bmargin {margin-bottom: 10px;}
+.relative-position {position: relative;}
+.force-bottom {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+/* Form */
+form:not(.clearform) textarea, select, input {
+    width: 60%;
+}
+
+
+/* Individual Pages */
+/* Home */
+div.info-block
+{
+    margin-bottom: 20px;
+}
+div.info-block h4 [class^="icon-"]:before
+{
+    font-size: 28px;
+    display: inline-block;
+    font-size: 28px;
+    margin-right: 5px;
+    text-align: center;
+    vertical-align: -10%;
+    width: 1.07143em;
+}
+
+/* Profile */
+.profilebox{overflow: hidden;}
+.profilebox-avatar{float:left; margin-right:6px;}
+.profilebox-info{float:left;padding-top: 34px;}
+.profilebox-info h2{line-height: normal; font-size:32px;}
+.profilebox-info h3{margin:0; line-height: normal; font-size:18px; color: red;}

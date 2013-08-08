@@ -6,25 +6,7 @@
     ##<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/css/bootstrap.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/bootswatch/2.3.2/united/bootstrap.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
-    <style type="text/css">
-        body {
-            padding-top: 60px;
-            background: url("http://subtlepatterns.com/patterns/cream_pixels.png") repeat scroll 0% 0% transparent;
-        }
-        @media (max-width: 980px) {
-            .navbar-text.pull-right {
-                float: none;
-                padding-left: 5px;
-                padding-right: 5px;
-            }
-        }
-        .padded {
-            padding-bottom: 100px;
-        }
-        .bmargin {
-            margin-bottom: 10px;
-        }
-    </style>
+    <link href="${request.static_url('mcmanager:static/css/master.css')}" rel="stylesheet">
     <%block name="style">
     </%block>
 </head>
@@ -78,10 +60,10 @@
             </div>
         </div>
     </div>
-    <div class="container padded">
+    <div class="container padded-top">
         ${next.body()}
     </div>
-    <script src="${request.static_url('mcmanager:static/jquery-latest.js')}"></script>
+    <script src="${request.static_url('mcmanager:static/js/jquery-latest.js')}"></script>
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
     ##<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>
     <%block name="endscripts">

@@ -32,7 +32,11 @@
         <%form:horgeneric name="parPermission" label="Permission">
             <textarea rows=5 name="parPermission" id="parPermission"></textarea>
         </%form:horgeneric>
-        ${form.horsubmit(request.route_url('modlist'))}
+        % if v is UNDEFINED:
+            ${form.horsubmit(request.route_url('modlist'))}
+        % else:
+            ${form.horsubmit(request.route_url('viewmod', id=v.id))}
+        % endif
     </form>
 </div></div>
 <%!
@@ -58,7 +62,4 @@
             });
         </script>
     % endif
-</%block>
-<%block name="style">
-    ${form.formstyle()}
 </%block>

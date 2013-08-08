@@ -2,12 +2,12 @@ from pyramid.config import Configurator
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 
-from .security import findgroup
+from .security import find_group
 
 
 def main(global_config, **settings):
     config = Configurator(settings=settings, root_factory='mcmanager.security.Root')
-    authn_policy = AuthTktAuthenticationPolicy('authtktpolicysek', callback=findgroup, hashalg='sha512')
+    authn_policy = AuthTktAuthenticationPolicy('authtktpolicysek', callback=find_group, hashalg='sha512')
     authz_policy = ACLAuthorizationPolicy()
     config.set_authentication_policy(authn_policy)
     config.set_authorization_policy(authz_policy)

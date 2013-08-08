@@ -23,11 +23,10 @@
     </form>
 </div></div>
 <%block name="style">
-    <link href="${request.static_url('mcmanager:static/bootstrap-fileupload.min.css')}" rel="stylesheet">
-    ${form.formstyle()}
+    <link href="${request.static_url('mcmanager:static/css/bootstrap-fileupload.min.css')}" rel="stylesheet">
 </%block>
 <%block name="endscripts">
-    <script src="${request.static_url('mcmanager:static/bootstrap-fileupload.min.js')}"></script>
+    <script src="${request.static_url('mcmanager:static/js/bootstrap-fileupload.min.js')}"></script>
     ${form.formscripts('edit-version')}
     % if v is not UNDEFINED:
         <script type="text/javascript">

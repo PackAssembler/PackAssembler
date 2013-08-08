@@ -23,6 +23,3 @@
         </script>
     % endif
 </%block>
-<%block name="style">
-    ${form.formstyle()}
-</%block>

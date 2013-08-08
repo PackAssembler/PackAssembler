@@ -20,14 +20,16 @@
         </div>
         ## VERY BAD IDEA! Find a better way to do this. Hardcoding username -> not good.
         % if mod.owner.username == 'Orphan':
-            % if user is not None:
+            % if user is not None and 'group:user' not in user.groups:
                 <br class="bmargin"><a href="${request.route_url('adoptmod', id=mod.id)}" class="btn">Adopt</a>
+            % else:
+                <%block name="userlink"><h4><a href="${request.route_url('profile', id=mod.owner.id)}">${mod.owner.username}</a></h4></%block>
             % endif
         % else:
             % if perm:
                 <br class="bmargin"><a href="${request.route_url('disownmod', id=mod.id)}" class="btn">Disown</a>
             % else:
-                <h4><a href="${request.route_url('profile', id=mod.owner.id)}">${mod.owner.username}</a></h4>
+                ${userlink()}
             % endif
         % endif
     </div>
@@ -75,12 +77,14 @@
     <tr><td>Permission</td><td>${p | n}</td></tr>
 </table>
 <h3>Versions</h3>
-<div class="row bmargin bdiv">
+<div class="row bmargin relative-position">
     <div class="span8">
-        <a href="${request.route_url('flagmod', id=mod.id)}" class="btn${' btn-danger' if not mod.outdated else ''}"><i class="icon-flag"></i> ${'Unf' if mod.outdated else 'F'}lag as Outdated</a>
+        <a href="${request.route_url('flagmod', id=mod.id)}" class="btn${' btn-danger' if not mod.outdated else ''}">
+            <i class="icon-flag"></i> ${'Unf' if mod.outdated else 'F'}lag as Outdated
+        </a>
     </div>
     % if perm:
-    <div class="span4 divbottom">
+    <div class="span4 force-bottom">
         <div class="pull-right">
             <a href="${request.route_url('addversion', id=mod.id)}"><i class="icon-plus" style="text-decoration: none;"></i> Add Version</a>
         </div>
@@ -116,18 +120,6 @@
     % endfor
     </tbody>
 </table>
-<%block name="style">
-    <style type="text/css">
-        .divbottom {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-        }
-        .bdiv {
-            position: relative;
-        }
-    </style>
-</%block>
 <%block name="endscripts">
     <script src="//github.com/makeusabrew/bootbox/releases/v3.3.0/1141/bootbox.min.js"></script>
     <script type="text/javascript">

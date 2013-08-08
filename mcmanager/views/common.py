@@ -47,7 +47,7 @@ class MMLServerView(object):
         else:
             user = data.owner
 
-        return self.logged_in == user.username or has_permission('admin', Root, self.request)
+        return self.logged_in == user.username or has_permission('moderator', Root, self.request)
 
     def get_db_object(self, collection, perm=True):
         data = collection.objects.get(id=self.request.matchdict['id'])

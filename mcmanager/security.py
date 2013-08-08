@@ -5,14 +5,13 @@ import bcrypt
 import hmac
 
 
-def findgroup(userid, request):
+hpass = lambda password: hmac.new(password.encode()).digest()
+
+def find_group(userid, request):
     connect(request.registry.settings.get('mongodb', 'mcmanager'))
     user = User.objects(username=userid).first()
     if user is not None:
         return user.groups
-
-
-hpass = lambda password: hmac.new(password.encode()).digest()
 
 def check_pass(username, password):
     user = User.objects(username=username).first()
@@ -28,7 +27,10 @@ def password_hash(password):
 class Root:
     __acl__ = [(Allow, Everyone, 'view'),
                (Allow, 'group:user', 'user'),
-               (Allow, 'group:admin', 'admin')]
+               (Allow, 'group:trusted', ('user', 'trusted')),
+               (Allow, 'group:mod', ('user', 'trusted', 'moderator')),
+               (Allow, 'group:admin', ('user', 'trusted', 'moderator', 'admin'))
+               ]
 
     def __init__(self, request):
         pass

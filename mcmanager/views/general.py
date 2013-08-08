@@ -28,5 +28,7 @@ class MMLServerViews(MMLServerView):
         if e == 'depends':
             return self.return_dict(title='Unable to Delete', message='Unable to delete the requested object.' + 
                                     ' Something depends on it. If you would not like to maintain it any longer, please disown it.')
+        elif e == 'not_trusted':
+            return self.return_dict(title='Not Trusted User', message='You may not create nor adopt mods unless you are a trusted user.')
         else:
             return self.return_dict(title='Error', message='An unknown error has occured: ' + e)

@@ -1,8 +1,12 @@
 <%inherit file="base.mak"/>
 <div class="row">
-    <div class="span2" id="gravatar">Loading Gravatar</div>
-    <div class="span6"><h2 style="line-height: 140px">${title}</h2></div>
-    <div class="span4">
+    <div class="span6">
+        <div class="profilebox">
+            <div class="profilebox-avatar" id="gravatar">Loading Gravatar</div>
+            <div class="profilebox-info"><h2>${title}</h2><h3>${owner.groups[0].split(':')[1].title()}</h3></div>
+        </div>
+    </div>
+    <div class="span6">
     % if perm:
         <div class="btn-group pull-right" style="margin-top: 10px">
             <a href="${request.route_url('edituser', id=owner.id)}" class="btn btn-info">Edit Account</a>
@@ -11,6 +15,7 @@
     % endif
     </div>
 </div>
+
 <hr>
 <h3>Mods</h3>
 % if mods:
@@ -43,12 +48,12 @@
     No servers.
 % endif
 <%block name="style">
-    <link href="${request.static_url('mcmanager:static/bootstrap-rowlink.min.css')}" rel="stylesheet">
+    <link href="${request.static_url('mcmanager:static/css/bootstrap-rowlink.min.css')}" rel="stylesheet">
 </%block>
 <%block name="endscripts">
-    <script src="${request.static_url('mcmanager:static/bootstrap-rowlink.min.js')}"></script>
-    <script src="${request.static_url('mcmanager:static/gravatar/md5.js')}"></script>
-    <script src="${request.static_url('mcmanager:static/gravatar/jquery.gravatar.js')}"></script>
+    <script src="${request.static_url('mcmanager:static/js/bootstrap-rowlink.min.js')}"></script>
+    <script src="${request.static_url('mcmanager:static/js/gravatar/md5.js')}"></script>
+    <script src="${request.static_url('mcmanager:static/js/gravatar/jquery.gravatar.js')}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             $('#gravatar').empty().append($.gravatar('${owner.email}', {rating: 'pg', secure: true, size: 150, image: 'identicon'}));

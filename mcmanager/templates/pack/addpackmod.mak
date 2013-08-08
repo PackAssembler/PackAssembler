@@ -13,9 +13,6 @@
         ${form.horsubmit(request.route_url('viewpack', id=request.matchdict['id']))}
     </form>
 </div></div>
-<%block name="style">
-    ${form.formstyle()}
-</%block>
 <%block name="endscripts">
     ${form.formscripts('add-pack-mod')}
 </%block>
