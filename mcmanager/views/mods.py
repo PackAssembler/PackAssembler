@@ -45,7 +45,7 @@ class MMLServerMod(MMLServerView):
         mod.outdated = not mod.outdated
         mod.save()
 
-        return HTTPFound(location=self.request.referrer)
+        return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
 
     @view_config(route_name='addmod', renderer='editmod.mak', permission='user')
     def addmod(self):
