@@ -3,12 +3,15 @@
     <div class="span6">
         <div class="profilebox">
             <div class="profilebox-avatar" id="gravatar">Loading Gravatar</div>
-            <div class="profilebox-info"><h2>${title}</h2><h3>${owner.groups[0].split(':')[1].title()}</h3></div>
+            <div class="profilebox-info">
+                <h2>${title}</h2>
+                <h3>${owner.groups[0].split(':')[1].title()}</h3>
+            </div>
         </div>
     </div>
     <div class="span6">
     % if perm:
-        <div class="btn-group pull-right" style="margin-top: 10px">
+        <div class="btn-group pull-right tmargin">
             <a href="${request.route_url('edituser', id=owner.id)}" class="btn btn-info">Edit Account</a>
             <a href="${request.route_url('deleteuser', id=owner.id)}" class="btn btn-danger">Delete Account</a>
         </div>

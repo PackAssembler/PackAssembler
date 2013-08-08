@@ -18,6 +18,8 @@ body {
 
 /* Common */
 .bmargin {margin-bottom: 10px;}
+.tmargin {margin-top: 10px;}
+.no-decoration {text-decoration: none;}
 .relative-position {position: relative;}
 .force-bottom {
     position: absolute;

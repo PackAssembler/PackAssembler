@@ -2,8 +2,8 @@
 <%namespace name="listcommon" file="list.mak" />
 ${listcommon.head()}
 <hr>
-<div class="pull-right" style="margin-bottom: 10px;">
-    <a href="${request.route_url('addserver')}"><i class="icon-plus" style="text-decoration: none;"></i> Add Server</a>
+<div class="pull-right bmargin">
+    <a href="${request.route_url('addserver')}"><i class="icon-plus no-decoration"></i> Add Server</a>
 </div>
 <table class="table table-hover table-bordered" data-provides="rowlink">
     <thead>

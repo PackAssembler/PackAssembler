@@ -7,7 +7,7 @@
     </div>
     <div class="span4">
     % if perm:
-        <div class="btn-group pull-right" style="margin-top: 10px">
+        <div class="btn-group pull-right tmargin">
             <a href="${request.route_url('editserver', id=server.id)}" class="btn btn-info">Edit Server</a>
             <a id="delete" class="btn btn-danger">Delete Server</a>
         </div>

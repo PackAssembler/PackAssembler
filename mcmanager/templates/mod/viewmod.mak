@@ -35,7 +35,7 @@
     </div>
     <div class="span4">
     % if perm:
-        <div class="btn-group pull-right" style="margin-top: 10px">
+        <div class="btn-group pull-right tmargin">
             <a href="${request.route_url('editmod', id=mod.id)}" class="btn btn-info">Edit Mod</a>
             <a id="delete" class="btn btn-danger">Delete Mod</a>
         </div>
@@ -86,7 +86,7 @@
     % if perm:
     <div class="span4 force-bottom">
         <div class="pull-right">
-            <a href="${request.route_url('addversion', id=mod.id)}"><i class="icon-plus" style="text-decoration: none;"></i> Add Version</a>
+            <a href="${request.route_url('addversion', id=mod.id)}"><i class="icon-plus no-decoration"></i> Add Version</a>
         </div>
     </div>
     % endif

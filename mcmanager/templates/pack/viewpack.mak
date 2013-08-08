@@ -7,7 +7,7 @@
     </div>
     <div class="span4">
     % if perm:
-        <div class="btn-group pull-right" style="margin-top: 10px">
+        <div class="btn-group pull-right tmargin">
             <a href="${request.route_url('editpack', id=pack.id)}" class="btn btn-info">Edit Pack</a>
             <a id="delete" class="btn btn-danger">Delete Pack</a>
         </div>
@@ -17,8 +17,8 @@
 <hr>
 <h3>Builds</h3>
 % if perm:
-    <div class="pull-right" style="margin-bottom: 10px;">
-        <a href="${request.route_url('addbuild', id=pack.id)}"><i class="icon-plus" style="text-decoration: none;"></i> New Build</a>
+    <div class="pull-right bmargin">
+        <a href="${request.route_url('addbuild', id=pack.id)}"><i class="icon-plus no-decoration"></i> New Build</a>
     </div>
 % endif
 <table class="table table-hover table-bordered">
@@ -65,8 +65,8 @@
     No Mods Yet!
 % endif
 % if perm:
-    <div style="margin-top: 11px">
-        <a href="${request.route_url('addpackmod', id=pack.id)}"><i class="icon-plus" style="text-decoration: none;"></i> Add Mod to Pack</a>
+    <div class="tmargin">
+        <a href="${request.route_url('addpackmod', id=pack.id)}"><i class="icon-plus no-decoration"></i> Add Mod to Pack</a>
     </div>
 % endif
 <%block name="endscripts">
