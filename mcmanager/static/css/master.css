@@ -28,7 +28,7 @@ body {
 }
 
 /* Form */
-form:not(.clearform) textarea, select, input {
+form.form-horizontal textarea, select, input {
     width: 60%;
 }
 

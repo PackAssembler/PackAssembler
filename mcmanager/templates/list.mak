@@ -6,7 +6,7 @@
     <div class="span4">
         <div class="pull-right">
             <form class="form-search" method="GET" action="${request.url}">
-                <input type="text" name="txtSearch" class="input-medium search-query">
+                <input type="search" name="txtSearch" class="input-medium search-query">
                 <button type="submit" name="btnSubmit" class="btn">Search</button>
             </form>
         </div>
