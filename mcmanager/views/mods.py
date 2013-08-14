@@ -10,8 +10,8 @@ class MMLServerMod(MMLServerView):
     def modlist(self):
         post = self.request.params
 
-        if 'btnSubmit' in post:
-            mods = Mod.objects(Q(name__icontains=post['txtSearch']) | Q(author__icontains=post['txtSearch']))
+        if 'q' in post:
+            mods = Mod.objects(Q(name__icontains=post['q']) | Q(author__icontains=post['q']))
         else:
             mods = Mod.objects
 

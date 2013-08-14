@@ -144,6 +144,10 @@ class MMLServerUser(MMLServerView):
                         error = VERROR
             else:
                 error = "Please enter your current password correctly."
+        elif 'selGroup' in post and self.specperm('admin'):
+            user.groups = ['group:' + post['selGroup']]
+            user.save()
+            return HTTPFound(location=self.request.route_url('profile', id=user.id))
         return self.return_dict(title="Edit Account", error=error)
 
     @view_config(route_name='deleteuser', permission='user')
@@ -167,7 +171,7 @@ class MMLServerUser(MMLServerView):
 
         return self.return_dict(title=user.username, owner=user, mods=Mod.objects(owner=user),
                                 packs=Pack.objects(owner=user), servers=Server.objects(owner=user),
-                                perm=self.has_perm(user))
+                                perm=self.has_perm(user), admin=self.specperm('admin'))
 
     def send_confirmation(self, user):
         sender = Mandrill(MANDRILL_KEY)

@@ -5,7 +5,22 @@
             <div class="profilebox-avatar" id="gravatar">Loading Gravatar</div>
             <div class="profilebox-info">
                 <h2>${title}</h2>
-                <h3>${owner.groups[0].split(':')[1].title()}</h3>
+                % if admin:
+                    <form method="post" action="${request.route_url('edituser', id=owner.id)}">
+                        <select class="longer" id="selGroup" name="selGroup" value="">
+                            <option value="user">User</option>
+                            <option value="trusted">Trusted</option>
+                            <option value="moderator">Moderator</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </form>
+                % else:
+                    <%
+                        g = owner.groups[0].split(':')[1].title()
+                        colors = {'User': '', 'Trusted': 'text-success', 'Moderator': 'text-info', 'Admin': 'text-error'}
+                    %>
+                    <h3 class="${colors[g]}">${g}</h3>
+                % endif
             </div>
         </div>
     </div>
@@ -61,6 +76,10 @@
         $(document).ready(function(){
             $('#gravatar').empty().append($.gravatar('${owner.email}', {rating: 'pg', secure: true, size: 150, image: 'identicon'}));
             $('#gravatar').children(':first').addClass('img-polaroid');
+            $('#selGroup').val('${owner.groups[0].split(':')[1]}');
+            $('#selGroup').change(function(){
+                $(this).parent().submit();
+            });
         });
     </script>
 </%block>

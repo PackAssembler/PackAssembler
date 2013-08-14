@@ -6,8 +6,8 @@
     <div class="span4">
         <div class="pull-right">
             <form class="form-search" method="GET" action="${request.url}">
-                <input type="search" name="txtSearch" class="input-medium search-query">
-                <button type="submit" name="btnSubmit" class="btn">Search</button>
+                <input type="search" name="q" class="input-medium search-query" value="${request.params['q'] if 'q' in request.params else ''}">
+                <button type="submit" class="btn">Search</button>
             </form>
         </div>
     </div>

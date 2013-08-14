@@ -53,8 +53,8 @@ class MMLServerPack(MMLServerView):
     def packlist(self):
         post = self.request.params
 
-        if 'btnSubmit' in post:
-            packs = Pack.objects(name__icontains=post['txtSearch'])
+        if 'q' in post:
+            packs = Pack.objects(name__icontains=post['q'])
         else:
             packs = Pack.objects
 

@@ -31,6 +31,9 @@ body {
 form.form-horizontal textarea, select, input {
     width: 60%;
 }
+select.longer {
+    width: 100%;
+}
 
 
 /* Individual Pages */
@@ -54,5 +57,5 @@ div.info-block h4 [class^="icon-"]:before
 .profilebox{overflow: hidden;}
 .profilebox-avatar{float:left; margin-right:6px;}
 .profilebox-info{float:left;padding-top: 34px;}
-.profilebox-info h2{line-height: normal; font-size:32px;}
-.profilebox-info h3{margin:0; line-height: normal; font-size:18px; color: red;}
+.profilebox-info h2{line-height: normal; font-size:32px; margin: 10px 0 0 0;}
+.profilebox-info h3{margin:0; line-height: normal; font-size:18px;}

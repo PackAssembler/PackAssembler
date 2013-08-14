@@ -67,8 +67,8 @@ class MMLServerServers(MMLServerView):
     def serverlist(self):
         post = self.request.params
 
-        if 'btnSubmit' in post:
-            servers = Server.objects(name__icontains=post['txtSearch'])
+        if 'q' in post:
+            servers = Server.objects(name__icontains=post['q'])
         else:
             servers = Server.objects
 
