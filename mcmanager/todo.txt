@@ -1,10 +1,12 @@
 Todo:
-D TU System
-D Work on FAQ, Getting Started
+D Change the way forms are handled
+D Change the way groups are handled
 F MCUpdater Support
 F Add administration
 F Reset API keys and don't put them on github :P
 
 Minor:
+A Rename Trusted User to Contributor
 B Better way to check for dependencies? Maybe DENY reverse_delete_rule is enough.
 C Easier way to get the current user object
+D Improve FAQ, Getting Started

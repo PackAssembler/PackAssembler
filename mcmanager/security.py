@@ -28,7 +28,7 @@ class Root:
     __acl__ = [(Allow, Everyone, 'view'),
                (Allow, 'group:user', 'user'),
                (Allow, 'group:trusted', ('user', 'trusted')),
-               (Allow, 'group:mod', ('user', 'trusted', 'moderator')),
+               (Allow, 'group:moderator', ('user', 'trusted', 'moderator')),
                (Allow, 'group:admin', ('user', 'trusted', 'moderator', 'admin'))
                ]
 
