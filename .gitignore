@@ -1,5 +1,4 @@
 *pycache*
-config.ini
 logs.log
 uwsgi.pid
 mcmanager.egg-info
