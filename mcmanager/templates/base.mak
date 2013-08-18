@@ -7,6 +7,7 @@
     <link href="//netdna.bootstrapcdn.com/bootswatch/2.3.2/united/bootstrap.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
     <link href="${request.static_url('mcmanager:static/css/master.css')}" rel="stylesheet">
+    <link href="${request.static_url('mcmanager:static/img/favicon.ico')}" rel="icon">
     <%block name="style">
     </%block>
 </head>
