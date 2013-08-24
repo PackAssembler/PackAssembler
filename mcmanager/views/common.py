@@ -13,7 +13,7 @@ CAPTCHA_ERRORS = {
     'incorrect-captcha-sol': 'The CAPTCHA solution was incorrect.',
     'captcha-timeout': 'The solution was received after the CAPTCHA timed out.'
 }
-CAPTCHA_MESSAGE = 'Something Went Wrong When Verifying the Captcha. '
+CAPTCHA_MESSAGE = 'Something went wrong when verifying the Captcha. '
 VERROR = 'Your Data is not Valid. Enable Javascript for More Information.'
 
 class MMLServerView(object):
@@ -80,12 +80,12 @@ def opt_dict(**kwargs):
 class NoPermission(Exception):
     pass
 
-def validate_captcha(request, challenge, response):
+def validate_captcha(request):
     payload = {
         'privatekey': CAPTCHA_KEY,
         'remoteip': request.remote_addr,
-        'challenge': challenge,
-        'response': response
+        'challenge': request.params.get('recaptcha_challenge_field', ''),
+        'response': request.params.get('recaptcha_response_field', '')
     }
     t = requests.post(CAPTCHA_URL, payload).text.split('\n')
     try:

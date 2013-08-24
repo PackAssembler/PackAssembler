@@ -1,13 +1,13 @@
 <%inherit file="base.mak"/>
 <div class="row">
-    <div class="span6">
+    <div class="col-lg-6">
         <div class="profilebox">
             <div class="profilebox-avatar" id="gravatar">Loading Gravatar</div>
             <div class="profilebox-info">
                 <h2>${title}</h2>
                 % if admin:
                     <form method="post" action="${request.route_url('edituser', id=owner.id)}">
-                        <select class="longer" id="selGroup" name="selGroup" value="">
+                        <select class="longer" id="group" name="group" value="">
                             <option value="user">User</option>
                             <option value="trusted">Trusted</option>
                             <option value="moderator">Moderator</option>
@@ -17,14 +17,14 @@
                 % else:
                     <%
                         g = owner.groups[0].split(':')[1].title()
-                        colors = {'User': '', 'Trusted': 'text-success', 'Moderator': 'text-info', 'Admin': 'text-error'}
+                        colors = {'User': '', 'Trusted': 'text-success', 'Moderator': 'text-info', 'Admin': 'text-danger'}
                     %>
                     <h3 class="${colors[g]}">${g}</h3>
                 % endif
             </div>
         </div>
     </div>
-    <div class="span6">
+    <div class="col-lg-6">
     % if perm:
         <div class="btn-group pull-right tmargin">
             <a href="${request.route_url('edituser', id=owner.id)}" class="btn btn-info">Edit Account</a>
@@ -37,31 +37,31 @@
 <hr>
 <h3>Mods</h3>
 % if mods:
-    <table class="table table-hover table-bordered" data-provides="rowlink">
-    % for mod in mods:
-        <tr class="${'error' if mod.outdated else ''}"><td><a href="${request.route_url('viewmod', id=mod.id)}">${mod.name}</a></td></tr>
-    % endfor
-    </table>
+    <div class="list-group">
+        % for mod in mods:
+            <a href="${request.route_url('viewmod', id=mod.id)}" class="list-group-item">${mod.name}</a>
+        % endfor
+    </div>
 % else:
     No mods.
 % endif
 <h3>Packs</h3>
 % if packs:
-    <table class="table table-hover table-bordered" data-provides="rowlink">
-    % for pack in packs:
-        <tr><td><a href="${request.route_url('viewpack', id=pack.id)}">${pack.name}</a></td></tr>
-    % endfor
-    </table>
+    <div class="list-group">
+        % for pack in packs:
+            <a href="${request.route_url('viewpack', id=pack.id)}" class="list-group-item">${pack.name}</a>
+        % endfor
+    </div>
 % else:
     No packs.
 % endif
 <h3>Servers</h3>
 % if servers:
-    <table class="table table-hover table-bordered" data-provides="rowlink">
-    % for server in servers:
-        <tr><td><a href="${request.route_url('viewserver', id=server.id)}">${server.name}</a></td></tr>
-    % endfor
-    </table>
+    <div class="list-group">
+        % for server in servers:
+            <a href="${request.route_url('viewserver', id=server.id)}" class="list-group-item">${server.name}</a>
+        % endfor
+    </div>
 % else:
     No servers.
 % endif
@@ -76,8 +76,8 @@
         $(document).ready(function(){
             $('#gravatar').empty().append($.gravatar('${owner.email}', {rating: 'pg', secure: true, size: 150, image: 'identicon'}));
             $('#gravatar').children(':first').addClass('img-polaroid');
-            $('#selGroup').val('${owner.groups[0].split(':')[1]}');
-            $('#selGroup').change(function(){
+            $('#group').val('${owner.groups[0].split(':')[1]}');
+            $('#group').change(function(){
                 $(this).parent().submit();
             });
         });

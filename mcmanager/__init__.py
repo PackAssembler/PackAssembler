@@ -24,7 +24,6 @@ def main(global_config, **settings):
     ## Signup Process
     config.add_route('signup', '/user/signup')
     config.add_route('activate', '/user/activate/{id}/{key}')
-    config.add_route('taken', '/user/taken')
     ## Login/Logout
     config.add_route('login', '/user/login')
     config.add_route('logout', '/user/logout')

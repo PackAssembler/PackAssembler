@@ -2,22 +2,22 @@
 <%namespace name="form" file="form.mak" />
 <h2>${title}</h2>
 <hr>
-<div class="row"><div class="span10">
-    <form class="form-horizontal" method="post" action="${request.url}" novalidate="novalidate" id="edit-build">
-        ${form.formerror(error)}
-        ${form.horfield('txtCurrentPassword', 'Current Password', 'password', auto=False, attr={
-            'required': 'required'
-        })}
-        ${form.horfield('txtNewPassword', 'New Password', 'password', auto=False, attr={
-            'required': 'required'
-        })}
-        ${form.horfield('txtConfirmPassword', 'Confirm Password', 'password', auto=False, attr={
-            'data-equalto': '#txtNewPassword',
-            'required': 'required'
-        })}
-        ${form.horsubmit(request.route_url('profile', id=request.matchdict['id']))}
-    </form>
-</div></div>
-<%block name="endscripts">
-    ${form.formscripts('edit-build')}
-</%block>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>Change Password</h3>
+            </div>
+            <div class="panel-body">
+                <form method="POST" action="" role="form" class="form-horizontal">
+                    ${form.showfield(f.password)}
+                    ${form.showfield(f.confirm)}
+                    <hr>
+                    ${form.showfield(f.current)}
+                    ${f.current_user()}
+                    ${form.showsubmit(request.referrer or cancel)}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

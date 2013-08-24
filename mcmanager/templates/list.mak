@@ -1,12 +1,14 @@
 <%def name="head()">
 <div class="row">
-    <div class="span8">
+    <div class="col-lg-6">
         <h2>${title}</h2>
     </div>
-    <div class="span4">
+    <div class="col-lg-6">
         <div class="pull-right">
-            <form class="form-search" method="GET" action="${request.url}">
-                <input type="search" name="q" class="input-medium search-query" value="${request.params['q'] if 'q' in request.params else ''}">
+            <form class="form-inline" method="GET" action="${request.url}">
+                <div class="form-group">
+                    <input type="search" name="q" class="form-control" value="${request.params['q'] if 'q' in request.params else ''}">
+                </div>
                 <button type="submit" class="btn">Search</button>
             </form>
         </div>

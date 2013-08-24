@@ -1,11 +1,14 @@
+from wtforms import Form, validators, TextField, PasswordField, HiddenField
 from .common import MMLServerView, VERROR, validate_captcha, opt_dict
 from pyramid.view import view_config, forbidden_view_config
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
+from wtforms import ValidationError as WTValidationError
 from ..security import check_pass, password_hash
 from pyramid.security import remember, forget
 from pyramid.response import Response
 from random import getrandbits
 from mandrill import Mandrill
+from ..form import isalnum
 from ..schema import *
 
 MANDRILL_KEY = 'tv_A60S7VKgqFx8IPcENHg'
@@ -15,32 +18,27 @@ class MMLServerUser(MMLServerView):
     def signup(self):
         error = ''
         post = self.request.params
+        form = UserForm(post)
 
         # Make sure no one is logged in
         if self.logged_in is not None:
             return HTTPFound(location=self.request.route_url('home'))
 
-        if 'btnSubmit' in post:
-            username = post.get('txtUsername', '')
-            email = post.get('txtEmail', '')
-            password = password_hash(post.get('txtPassword', ''))
+        if 'submit' in post and form.validate():
+            password = password_hash(form.password.data)
+            captcha_pass, captcha_error = validate_captcha(self.request)
 
-            captcha_pass, captcha_error = validate_captcha(self.request, post.get('recaptcha_challenge_field', ''), post.get('recaptcha_response_field', ''))
             if captcha_pass:
-                if username.isalnum() and email and password:
-                    try:
-                        user = User(username=username, password=password, email=email, groups=['group:user'], activate=getrandbits(32)).save()
-                        self.send_confirmation(user)
-                        return self.success_url('login', 'Successfully created an account please check your email to activate it.')
-                    except ValidationError:
-                        error = VERROR
-                    except NotUniqueError:
-                        error = 'Username or Email Already in Use.'
-                else:
-                    error = VERROR
+                try:
+                    user = User(username=form.username.data, password=password, email=form.email.data, groups=['group:user'], activate=getrandbits(32)).save()
+                    self.send_confirmation(user)
+                    return self.success_url('login', 'Successfully created an account please check your email to activate it.')
+                except NotUniqueError:
+                    error = 'Username or Email Already in Use.'
             else:
                 error = captcha_error
-        return self.return_dict(title='Signup', error=error)
+
+        return self.return_dict(title='Signup', error=error, f=form)
 
     @view_config(route_name='activate')
     def activate(self):
@@ -53,102 +51,91 @@ class MMLServerUser(MMLServerView):
         else:
             return Response('Invalid Key')
 
-    @view_config(route_name='taken')
-    def taken(self):
-        if User.objects(username=self.request.params['txtUsername']).first() is None:
-            return Response('1')
-        else:
-            return Response('0')
-
     @view_config(route_name='login', renderer='login.mak')
     @forbidden_view_config(renderer='login.mak')
     def login(self):
         error = ''
         post = self.request.params
+        form = LoginForm(post)
 
-        # Check referrer
+        # Get referrer
         referrer = self.request.url
         if referrer == self.request.route_url('login'):
             referrer = '/'
         came_from = post.get('came_from', referrer)
+        form.came_from.data = came_from
 
         # Make sure no one is logged in
         if self.logged_in is not None:
+            # If this is happening because the user has no permission
             if type(self.request.exception) is HTTPForbidden:
                 return HTTPFound(location=self.request.route_url('error', type='not_trusted'))
             return HTTPFound(location=self.request.route_url('home'))
 
-        if 'btnSubmit' in post:
-            username = post.get('txtUsername', '')
-            password = post.get('txtPassword', '')
-            if check_pass(username, password):
+        if 'submit' in post and form.validate():
+            username = form.username.data
+            if check_pass(username, form.password.data):
                 return HTTPFound(location=came_from, headers=remember(self.request, username))
             error = 'Invalid username or password.'
-        return self.return_dict(title='Login', error=error, came_from=came_from)
+
+        return self.return_dict(title='Login', error=error, f=form)
 
     @view_config(route_name='logout')
     def logout(self):
         return HTTPFound(location=self.request.referer, headers=forget(self.request))
 
-    @view_config(route_name='sendreset', renderer='sendreset.mak')
+    @view_config(route_name='sendreset', renderer='genericform.mak')
     def sendreset(self):
         post = self.request.params
+        form = SendResetForm(post)
 
-        if 'btnSubmit' in post:
-            user = User.objects.get(email=post['txtEmail'])
+        if 'submit' in post and form.validate():
+            user = User.objects.get(email=form.email.data)
             user.reset = getrandbits(32)
             user.save()
 
             self.send_password_reset(user)
             return self.success_url('login', 'Please check your email to continue resetting your password.')
 
-        return self.return_dict(title='Forgot Password')
+        return self.return_dict(title='Forgot Password', f=form, cancel=self.request.route_url('login'))
 
-    @view_config(route_name='reset', renderer='reset.mak')
+    @view_config(route_name='reset', renderer='genericform.mak')
     def reset(self):
         user = self.get_db_object(User, perm=False)
         post = self.request.params
+        form = ResetForm(post)
 
         # Make sure the key is correct
         if user.reset != int(self.request.matchdict['key']):
             return Response('Invalid Key')
 
-        if 'btnSubmit' in post:
-            user.password = password_hash(post['txtPassword'])
+        if 'submit' in post and form.validate():
+            user.password = password_hash(form.password.data)
             user.reset = None
             user.save()
             return self.success_url('login', 'Password reset successfully.')
 
-        return self.return_dict(title='Reset Password')
+        return self.return_dict(title='Reset Password', f=form, cancel=self.request.route_url('login'))
 
 
     @view_config(route_name='edituser', renderer='edituser.mak', permission='user')
     def edituser(self):
-        error = ''
-        post = self.request.params
-
-        # Get user
         user = self.get_db_object(User)
+        post = self.request.params
+        form = EditUserForm(post)
+        form.current_user.data = self.logged_in
 
-        if 'btnSubmit' in post:
-            if check_pass(self.logged_in, post['txtCurrentPassword']):
-                params = opt_dict(password=password_hash(post.get('txtNewPassword')))
-                if 'password' in params:
-                    try:
-                        for key in params:
-                            if user[key] != params[key]:
-                                user[key] = params[key]
-                        user.save()
-                        return HTTPFound(location=self.request.route_url('profile', id=user.id))
-                    except ValidationError:
-                        error = VERROR
-            else:
-                error = "Please enter your current password correctly."
-        elif 'selGroup' in post and self.specperm('admin'):
-            user.groups = ['group:' + post['selGroup']]
+        if 'submit' in post and form.validate():
+            user.password = password_hash(form.password.data)
             user.save()
             return HTTPFound(location=self.request.route_url('profile', id=user.id))
-        return self.return_dict(title="Edit Account", error=error)
+
+        elif 'group' in post and self.specperm('admin'):
+            user.groups = ['group:' + post['group']]
+            user.save()
+            return HTTPFound(location=self.request.route_url('profile', id=user.id))
+
+        return self.return_dict(title="Edit Account", f=form, cancel=self.request.route_url('profile', id=user.id))
 
     @view_config(route_name='deleteuser', permission='user')
     def deleteuser(self):
@@ -188,3 +175,35 @@ class MMLServerUser(MMLServerView):
             'global_merge_vars': [{'content': self.request.route_url('reset', id=user.id, key=user.reset), 'name': 'reseturl'}]
         }
         sender.messages.send_template(template_name='resetmcm', template_content=[], message=message, async=True)
+
+
+# Form classes
+class UserForm(Form):
+    username = TextField('Username', validators=[validators.required(), validators.Length(min=6, max=32), isalnum])
+    email = TextField('Email', validators=[validators.required(), validators.Email()])
+    password = PasswordField('Password', validators=[validators.required()])
+    confirm = PasswordField('Confirm', validators=[validators.required(), validators.EqualTo('password', 'Field must be same as password.')])
+
+class LoginForm(Form):
+    username = TextField('Username', validators=[validators.required()])
+    password = PasswordField('Password', validators=[validators.required()])
+    came_from = HiddenField()
+
+class SendResetForm(Form):
+    email = TextField('Email', validators=[validators.required(), validators.Email()])
+
+    def validate_email(form, field):
+        if User.objects(email=field.data).first() == None:
+            raise WTValidationError('No user with that email exists.')
+
+class ResetForm(Form):
+    password = PasswordField('New Password', validators=[validators.required()])
+    confirm = PasswordField('Confirm', validators=[validators.required(), validators.EqualTo('password', 'Field must be same as password.')])
+
+class EditUserForm(ResetForm):
+    current = PasswordField('Current Password', validators=[validators.required()])
+    current_user = HiddenField()
+
+    def validate_current(form, field):
+        if not check_pass(form.current_user.data, field.data):
+            raise WTValidationError('Current password incorrect.')

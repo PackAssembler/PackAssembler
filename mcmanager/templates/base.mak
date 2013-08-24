@@ -3,8 +3,8 @@
 <head>
     <title>MC Manager &middot; ${title}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    ##<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/css/bootstrap.min.css" rel="stylesheet">
-    <link href="//netdna.bootstrapcdn.com/bootswatch/2.3.2/united/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/united/bootstrap.min.css" rel="stylesheet">
+    ##<link href="//netdna.bootstrapcdn.com/bootswatch/2.3.2/united/bootstrap.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
     <link href="${request.static_url('mcmanager:static/css/master.css')}" rel="stylesheet">
     <link href="${request.static_url('mcmanager:static/img/favicon.ico')}" rel="icon">
@@ -15,7 +15,9 @@
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container">
-                <a class="brand navbar-brand" href="${request.route_url('home')}">MC Manager</a>
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="${request.route_url('home')}">MC Manager</a>
+                </div>
                 <ul class="nav navbar-nav">
                     <%def name="genclass(name)">
                         % if name == title:
@@ -65,8 +67,8 @@
         ${next.body()}
     </div>
     <script src="${request.static_url('mcmanager:static/js/jquery-latest.js')}"></script>
-    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-    ##<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>
+    ##<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <%block name="endscripts">
     </%block>
 </body>

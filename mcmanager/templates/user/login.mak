@@ -2,14 +2,18 @@
 <%namespace name="form" file="form.mak" />
 <h2>${title}</h2>
 <hr>
-<form class="form-horizontal" method="post" action="${request.route_url('login')}">
-    ${form.formerror(error)}
-    <input type="hidden" name="came_from" value="${came_from}" />
-    ${form.horfield('txtUsername', 'Username', 'text', attr={'required': 'required'})}
-    ${form.horfield('txtPassword', 'Password', 'password', attr={'required': 'required'})}
-    <%
-        ec = '<a href="' + request.route_url('signup') + '">Create a new account</a><br>'
-        ec += '<a href="' + request.route_url('sendreset') + '">Forgot Password</a>'
-    %>
-    ${form.horsubmit(came_from, extracontrols=ec)}
-</form>
+<div class="row">
+    <div class="col-lg-12">
+        ${form.formerror(error)}
+        <form method="POST" action="" role="form" class="form-horizontal">
+            ${form.showfield(f.username)}
+            ${form.showfield(f.password)}
+            ${f.came_from()}
+            ${form.showsubmit(f.came_from.data)}
+            <div class="col-lg-offset-2 col-lg-10">
+                <a href="${request.route_url('signup')}">Create a new account</a><br>
+                <a href="${request.route_url('sendreset')}">Forgot Password</a>
+            </div>
+        </form>
+    </div>
+</div>
