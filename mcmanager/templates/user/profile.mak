@@ -35,36 +35,31 @@
 </div>
 
 <hr>
-<h3>Mods</h3>
-% if mods:
-    <div class="list-group">
-        % for mod in mods:
-            <a href="${request.route_url('viewmod', id=mod.id)}" class="list-group-item">${mod.name}</a>
-        % endfor
+<div class="row">
+    ${showlist('Mods', mods)}
+    ${showlist('Packs', packs)}
+    ${showlist('Servers', servers)}
+</div>
+<%def name="showlist(heading, items)">
+    <div class="col-lg-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>${heading}</h4>
+            </div>
+            % if items:
+                <div class="list-group">
+                    % for mod in mods:
+                        <a href="${request.route_url('viewmod', id=mod.id)}" class="list-group-item">${mod.name}</a>
+                    % endfor
+                </div>
+            % else:
+                <div class="panel-body">
+                    No ${heading.lower()}.
+                </div>
+            % endif
+        </div>
     </div>
-% else:
-    No mods.
-% endif
-<h3>Packs</h3>
-% if packs:
-    <div class="list-group">
-        % for pack in packs:
-            <a href="${request.route_url('viewpack', id=pack.id)}" class="list-group-item">${pack.name}</a>
-        % endfor
-    </div>
-% else:
-    No packs.
-% endif
-<h3>Servers</h3>
-% if servers:
-    <div class="list-group">
-        % for server in servers:
-            <a href="${request.route_url('viewserver', id=server.id)}" class="list-group-item">${server.name}</a>
-        % endfor
-    </div>
-% else:
-    No servers.
-% endif
+</%def>
 <%block name="style">
     <link href="${request.static_url('mcmanager:static/css/bootstrap-rowlink.min.css')}" rel="stylesheet">
 </%block>
