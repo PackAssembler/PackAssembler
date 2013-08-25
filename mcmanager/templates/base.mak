@@ -13,17 +13,22 @@
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="navbar-inner">
-            <div class="container">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="${request.route_url('home')}">MC Manager</a>
-                </div>
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="${request.route_url('home')}">MC Manager</a>
+            </div>
+            <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <%def name="genclass(name)">
                         % if name == title:
-                        <li class="active">
+                            <li class="active">
                         % else:
-                        <li>
+                            <li>
                         % endif
                     </%def>
                     ${genclass('Home')}
@@ -43,22 +48,22 @@
                     </li>
                 </ul>
                 <ul class="nav navbar-nav pull-right">
-                % if user == None:
-                <li class="pull-right">
-                    <a href="${request.route_url('login')}">Login</a>
-                </li>
-                % else:
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        Logged in as ${user.username}
-                        <i class="icon-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="${request.route_url('profile', id=user.id)}"><i class="icon-fixed-width icon-user"></i> Profile</a></li>
-                        <li><a href="${request.route_url('logout')}"><i class="icon-fixed-width icon-off"></i> Logout</a></li>
-                    </ul>
-                </li>
-                % endif
+                    % if user == None:
+                        <li class="pull-right">
+                            <a href="${request.route_url('login')}">Login</a>
+                        </li>
+                    % else:
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                Logged in as ${user.username}
+                                <i class="icon-caret-down"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="${request.route_url('profile', id=user.id)}"><i class="icon-fixed-width icon-user"></i> Profile</a></li>
+                                <li><a href="${request.route_url('logout')}"><i class="icon-fixed-width icon-off"></i> Logout</a></li>
+                            </ul>
+                        </li>
+                    % endif
                 </ul>
             </div>
         </div>
