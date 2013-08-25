@@ -1,4 +1,4 @@
-from wtforms import Form, validators, TextField, PasswordField, HiddenField
+from ..form import UserForm, LoginForm, SendResetForm, ResetForm, EditUserForm
 from .common import MMLServerView, VERROR, validate_captcha, opt_dict
 from pyramid.view import view_config, forbidden_view_config
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
@@ -8,7 +8,6 @@ from pyramid.security import remember, forget
 from pyramid.response import Response
 from random import getrandbits
 from mandrill import Mandrill
-from ..form import isalnum
 from ..schema import *
 
 MANDRILL_KEY = 'tv_A60S7VKgqFx8IPcENHg'
@@ -175,35 +174,3 @@ class MMLServerUser(MMLServerView):
             'global_merge_vars': [{'content': self.request.route_url('reset', id=user.id, key=user.reset), 'name': 'reseturl'}]
         }
         sender.messages.send_template(template_name='resetmcm', template_content=[], message=message, async=True)
-
-
-# Form classes
-class UserForm(Form):
-    username = TextField('Username', validators=[validators.required(), validators.Length(min=6, max=32), isalnum])
-    email = TextField('Email', validators=[validators.required(), validators.Email()])
-    password = PasswordField('Password', validators=[validators.required()])
-    confirm = PasswordField('Confirm', validators=[validators.required(), validators.EqualTo('password', 'Field must be same as password.')])
-
-class LoginForm(Form):
-    username = TextField('Username', validators=[validators.required()])
-    password = PasswordField('Password', validators=[validators.required()])
-    came_from = HiddenField()
-
-class SendResetForm(Form):
-    email = TextField('Email', validators=[validators.required(), validators.Email()])
-
-    def validate_email(form, field):
-        if User.objects(email=field.data).first() == None:
-            raise WTValidationError('No user with that email exists.')
-
-class ResetForm(Form):
-    password = PasswordField('New Password', validators=[validators.required()])
-    confirm = PasswordField('Confirm', validators=[validators.required(), validators.EqualTo('password', 'Field must be same as password.')])
-
-class EditUserForm(ResetForm):
-    current = PasswordField('Current Password', validators=[validators.required()])
-    current_user = HiddenField()
-
-    def validate_current(form, field):
-        if not check_pass(form.current_user.data, field.data):
-            raise WTValidationError('Current password incorrect.')

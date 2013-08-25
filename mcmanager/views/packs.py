@@ -1,4 +1,5 @@
 from pyramid.httpexceptions import HTTPFound
+from ..form import PackForm, PackModForm
 from pyramid.response import Response
 from pyramid.view import view_config
 from ..schema import *
@@ -7,47 +8,36 @@ import re
 
 
 class MMLServerPack(MMLServerView):
-    @view_config(route_name='addpack', renderer='editpack.mak', permission='user')
+    @view_config(route_name='addpack', renderer='genericform.mak', permission='user')
     def addpack(self):
         error = ''
         post = self.request.params
+        form = PackForm(post)
 
-        if 'btnSubmit' in post:
-            params = opt_dict(name=post.get('txtName'))
-            if 'name' in params:
-                if re.match('^[\w ]+$', params['name']):
-                    try:
-                        pack = Pack(owner=User.objects.get(username=self.logged_in), **params).save()
-                        return HTTPFound(location=self.request.route_url('viewpack', id=pack.id))
-                    except ValidationError:
-                        error = VERROR
-                else:
-                    error = VERROR
-        return self.return_dict(title="Add Pack", error=error)
+        if 'submit' in post and form.validate():
+            try:
+                pack = Pack(owner=User.objects.get(username=self.logged_in), name=form.name.data).save()
+                return HTTPFound(location=self.request.route_url('viewpack', id=pack.id))
+            except NotUniqueError:
+                form.name.errors.append('Already exists.')
 
-    @view_config(route_name='editpack', renderer='editpack.mak', permission='user')
+        return self.return_dict(title="Add Pack", f=form, cancel=self.request.route_url('modlist'))
+
+    @view_config(route_name='editpack', renderer='genericform.mak', permission='user')
     def editpack(self):
-        error = ''
-        post = self.request.params
-
-        # Get pack
         pack = self.get_db_object(Pack)
+        post = self.request.params
+        form = PackForm(post, pack)
 
-        if 'btnSubmit' in post:
-            params = opt_dict(name=post.get('txtName'))
-            if 'name' in params:
-                if re.match('^[\w ]+$', params['name']):
-                    try:
-                        for key in params:
-                            if pack[key] != params[key]:
-                                pack[key] = params[key]
-                        pack.save()
-                        return HTTPFound(location=self.request.route_url('viewpack', id=pack.id))
-                    except ValidationError:
-                        error = VERROR
-                else:
-                    error = VERROR
-        return self.return_dict(title="Edit Pack", error=error, v=pack)
+        if 'submit' in post and form.validate():
+            pack.name = form.name.data
+            try:
+                pack.save()
+                return HTTPFound(location=self.request.route_url('viewpack', id=pack.id))
+            except NotUniqueError:
+                form.name.errors.append('Already exists.')
+
+        return self.return_dict(title="Edit Pack", f=form, cancel=self.request.route_url('viewpack', id=pack.id))
 
     @view_config(route_name='packlist', renderer='packlist.mak')
     def packlist(self):
@@ -83,20 +73,21 @@ class MMLServerPack(MMLServerView):
 
         return Response(pack.to_json(), content_type='application/json')
 
-    @view_config(route_name='addpackmod', renderer='addpackmod.mak', permission='user')
+    @view_config(route_name='addpackmod', renderer='genericform.mak', permission='user')
     def addpackmod(self):
-        error = ''
         post = self.request.params
+        form = PackModForm(post)
+
         if self.has_perm(Pack.objects(id=self.request.matchdict['id']).only('owner').first()):
-            if 'btnSubmit' in post:
+            if 'id' in post and form.validate():
                 try:
-                    Pack.objects(id=self.request.matchdict['id']).update_one(add_to_set__mods=Mod.objects.get(id=post['txtModID']))
+                    Pack.objects(id=self.request.matchdict['id']).update_one(add_to_set__mods=Mod.objects.get(id=post['id']))
                     return HTTPFound(self.request.route_url('viewpack', id=self.request.matchdict['id']))
                 except DoesNotExist:
-                    error = 'Mod Does not Exist.'
+                    form.id.errors.append('Mod does not exist.')
         else:
             return HTTPForbidden()
-        return self.return_dict(title="Add Mod to Pack", error=error)
+        return self.return_dict(title="Add Mod to Pack", f=form, cancel=self.request.route_url('viewpack', id=self.request.matchdict['id']))
 
     @view_config(route_name='removepackmod', permission='user')
     def removepackmod(self):

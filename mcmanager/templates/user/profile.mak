@@ -40,6 +40,7 @@
     ${showlist('Packs', packs)}
     ${showlist('Servers', servers)}
 </div>
+
 <%def name="showlist(heading, items)">
     <div class="col-lg-4">
         <div class="panel panel-default">
@@ -48,8 +49,8 @@
             </div>
             % if items:
                 <div class="list-group">
-                    % for mod in mods:
-                        <a href="${request.route_url('viewmod', id=mod.id)}" class="list-group-item">${mod.name}</a>
+                    % for item in items:
+                        <a href="${request.route_url('view' + heading.lower()[:-1], id=item.id)}" class="list-group-item">${item.name}</a>
                     % endfor
                 </div>
             % else:
@@ -60,6 +61,7 @@
         </div>
     </div>
 </%def>
+
 <%block name="style">
     <link href="${request.static_url('mcmanager:static/css/bootstrap-rowlink.min.css')}" rel="stylesheet">
 </%block>

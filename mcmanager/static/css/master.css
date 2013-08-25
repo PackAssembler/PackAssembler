@@ -21,6 +21,7 @@ body {
 .tmargin {margin-top: 10px;}
 .no-decoration {text-decoration: none;}
 .relative-position {position: relative;}
+tr.button-height td {line-height: 38px !important;}
 .force-bottom {
     position: absolute;
     bottom: 0;
@@ -28,9 +29,6 @@ body {
 }
 
 /* Form */
-form.form-horizontal textarea, select, input {
-    width: 60%;
-}
 select.longer {
     width: 100%;
 }

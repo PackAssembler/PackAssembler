@@ -11,10 +11,11 @@ ${listcommon.head()}
     </thead>
     <tbody>
     % for mod in mods:
-        <tr class="${'error' if mod.outdated else ''}"><td><a href="${request.route_url('viewmod', id=mod.id)}">${mod.name}</a></td><td>${mod.author}<td>${mod.owner.username}</td></tr>
+        <tr class="${'danger' if mod.outdated else ''}"><td><a href="${request.route_url('viewmod', id=mod.id)}">${mod.name}</a></td><td>${mod.author}<td>${mod.owner.username}</td></tr>
     % endfor
     </tbody>
 </table>
+<small class="pull-right">${len(mods.filter(outdated=True))} flagged mods.</small>
 <%block name="style">
     <link href="${request.static_url('mcmanager:static/css/bootstrap-rowlink.min.css')}" rel="stylesheet">
 </%block>

@@ -1,6 +1,7 @@
 from pyramid.response import Response, FileIter
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
+from ..form import ModVersionForm
 from ..schema import *
 from .common import *
 import re
@@ -9,47 +10,38 @@ import re
 class MMLServerVersions(MMLServerView):
     @view_config(route_name='addversion', renderer='editmodversion.mak', permission='user')
     def addversion(self):
-        error = ''
-        post = self.request.params
-
-        # Get mod
         mod = self.get_db_object(Mod)
+        post = self.request.params
+        form = ModVersionForm(post)
 
-        if 'btnSubmit' in post:
-            params = get_params(post)
-            if check_params(params):
-                try:
-                    mv = ModVersion(mod=mod, **params).save()
-                    mod.versions.append(mv)
-                    mod.save()
-                    return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
-                except ValidationError:
-                    error = VERROR
-            else:
-                error = VERROR
-        return self.return_dict(title="Add Mod Version", error=error)
+        if 'submit' in post and form.validate():
+            mv = ModVersion(mod=mod)
+            form.populate_obj(mv)
+            mv.mod_file = post['mod_file'].file
+            mv.save()
+
+            mod.versions.append(mv)
+            mod.save()
+            return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
+
+        return self.return_dict(title="Add Mod Version", f=form, cancel=self.request.route_url('viewmod', id=mod.id))
 
     @view_config(route_name='editversion', renderer='editmodversion.mak', permission='user')
     def editversion(self):
-        error = ''
-        post = self.request.params
-
-        # Get modversion
         mv = self.get_db_object(ModVersion)
+        post = self.request.params
+        form = ModVersionForm(post, mv)
 
-        if 'btnSubmit' in post:
-            params = get_params(post)
-            if check_params(params):
-                for key in params:
-                    mv[key] = params[key]
-                try:
-                    mv.save()
-                    return HTTPFound(location=self.request.route_url('viewmod', id=mv.mod.id))
-                except ValidationError:
-                    error = VERROR
-            else:
-                error = VERROR
-        return self.return_dict(title="Edit Mod Version", v=mv, error=error)
+        if 'submit' in post and form.validate():
+            form.populate_obj(mv)
+            try:
+                mv.mod_file = post['mod_file'].file
+            except AttributeError:
+                pass
+            mv.save()
+            return HTTPFound(location=self.request.route_url('viewmod', id=mv.mod.id))
+
+        return self.return_dict(title="Edit Mod Version", f=form, cancel=self.request.route_url('viewmod', id=mv.mod.id))
 
     @view_config(route_name='downloadversion')
     def downloadversion(self):

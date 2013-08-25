@@ -1,67 +1,66 @@
 from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
 from pyramid.view import view_config
+from ..form import ServerForm
 from ..schema import *
 from .common import *
 
 
 class MMLServerServers(MMLServerView):
-    @view_config(route_name='addserver', renderer='editserver.mak', permission='user')
+    @view_config(route_name='addserver', renderer='genericform.mak', permission='user')
     def addserver(self):
         error = ''
         post = self.request.params
+        form = ServerForm(post, port=25565)
 
-        if 'btnSubmit' in post:
-            params = opt_dict(
-                name=post['txtName'],
-                url=post['txtUrl'],
-                host=post['txtHost'],
-                port=post['txtPort'],
-                config=post['txtConfig']
-            )
+        if 'submit' in post and form.validate():
             try:
-                pack = Pack.objects.get(id=post['txtPackID'])
-                pb = PackBuild.objects.get(revision=post['txtRevision'], pack=pack)
-                params['build'] = pb
-                params['owner'] = User.objects.get(username=self.logged_in)
+                pack = Pack.objects.get(id=form.packid.data)
+                pb = PackBuild.objects.get(revision=form.revision.data, pack=pack)
+                params = opt_dict(
+                    name=form.name.data,
+                    url=form.url.data,
+                    host=form.host.data,
+                    port=form.port.data,
+                    config=form.config.data,
+                    build=pb,
+                    owner=User.objects.get(username=self.logged_in)
+                )
                 server = Server(**params).save()
                 return HTTPFound(location=self.request.route_url('viewserver', id=server.id))
             except DoesNotExist:
                 error = 'Pack or Revision Does Not Exist'
-            except ValidationError:
-                error = VERROR
-        return self.return_dict(title='Add Server', error=error)
 
-    @view_config(route_name='editserver', permission='user', renderer='editserver.mak')
+        return self.return_dict(title='Add Server', error=error, f=form, cancel=self.request.route_url('serverlist'))
+
+    @view_config(route_name='editserver', permission='user', renderer='genericform.mak')
     def editserver(self):
         error = ''
-        post = self.request.params
-
-        # Get current data
         server = self.get_db_object(Server)
+        post = self.request.params
+        form = ServerForm(post, server, packid=server.build.pack.id, revision=server.build.revision)
 
-        if 'btnSubmit' in post:
-            params = opt_dict(
-                name=post['txtName'],
-                url=post['txtUrl'],
-                host=post['txtHost'],
-                port=post['txtPort'],
-                config=post['txtConfig']
-            )
+        if 'submit' in post and form.validate():
             try:
-                pack = Pack.objects.get(id=post['txtPackID'])
-                pb = PackBuild.objects.get(revision=post['txtRevision'], pack=pack)
-                params['build'] = pb
-                for key in params:
-                    if server[key] != params[key]:
-                        server[key] = params[key]
+                pack = Pack.objects.get(id=form.packid.data)
+                pb = PackBuild.objects.get(revision=form.revision.data, pack=pack)
+                params = opt_dict(
+                    name=form.name.data,
+                    url=form.url.data,
+                    host=form.host.data,
+                    port=form.port.data,
+                    config=form.config.data,
+                    build=pb,
+                    owner=User.objects.get(username=self.logged_in)
+                )
+                for key, val in params.items():
+                    server[key] = val
                 server.save()
                 return HTTPFound(location=self.request.route_url('viewserver', id=server.id))
             except DoesNotExist:
                 error = 'Pack or Revision Does Not Exist'
-            except ValidationError:
-                error = VERROR
-        return self.return_dict(title='Edit Server', error=error, v=server)
+
+        return self.return_dict(title='Add Server', error=error, f=form, cancel=self.request.route_url('serverlist'))
 
     @view_config(route_name='serverlist', renderer='serverlist.mak')
     def serverlist(self):

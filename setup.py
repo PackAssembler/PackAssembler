@@ -10,6 +10,8 @@ requires = [
     'cffi',
     'bcrypt',
     'mandrill',
+    'wtforms',
+    'htmllaundry'
     ]
 
 setup(name='mcmanager',

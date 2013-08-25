@@ -1,11 +1,11 @@
 <%inherit file="base.mak"/>
 <div class="row">
-    <div class="span8">
+    <div class="col-lg-8">
         <h2>${title}</h2>
         <a href="#" class="btn btn-primary" id='showid'>Copy ID to Clipboard</a>
         <h4><a href="${request.route_url('profile', id=pack.owner.id)}">${pack.owner.username}</a></h4>
     </div>
-    <div class="span4">
+    <div class="col-lg-4">
     % if perm:
         <div class="btn-group pull-right tmargin">
             <a href="${request.route_url('editpack', id=pack.id)}" class="btn btn-info">Edit Pack</a>
@@ -77,7 +77,7 @@
             })
         })
     </script>
-    <script src="//github.com/makeusabrew/bootbox/releases/v3.3.0/1141/bootbox.min.js"></script>
+    <script src="//raw.github.com/makeusabrew/bootbox/master/bootbox.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             $('#delete').click(function(){
