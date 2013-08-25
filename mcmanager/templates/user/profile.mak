@@ -62,11 +62,7 @@
     </div>
 </%def>
 
-<%block name="style">
-    <link href="${request.static_url('mcmanager:static/css/bootstrap-rowlink.min.css')}" rel="stylesheet">
-</%block>
 <%block name="endscripts">
-    <script src="${request.static_url('mcmanager:static/js/bootstrap-rowlink.min.js')}"></script>
     <script src="${request.static_url('mcmanager:static/js/gravatar/md5.js')}"></script>
     <script src="${request.static_url('mcmanager:static/js/gravatar/jquery.gravatar.js')}"></script>
     <script type="text/javascript">
