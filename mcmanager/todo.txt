@@ -1,5 +1,4 @@
 Todo:
-D Change the way forms are handled
 D Change the way groups are handled
 F MCUpdater Support
 F Add administration
