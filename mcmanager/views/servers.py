@@ -60,7 +60,7 @@ class MMLServerServers(MMLServerView):
             except DoesNotExist:
                 error = 'Pack or Revision Does Not Exist'
 
-        return self.return_dict(title='Add Server', error=error, f=form, cancel=self.request.route_url('serverlist'))
+        return self.return_dict(title='Edit Server', error=error, f=form, cancel=self.request.route_url('viewserver', id=server.id))
 
     @view_config(route_name='serverlist', renderer='serverlist.mak')
     def serverlist(self):

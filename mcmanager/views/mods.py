@@ -72,7 +72,7 @@ class MMLServerMod(MMLServerView):
             mod.save()
             return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
 
-        return self.return_dict(title='Add Mod', f=form, cancel=self.request.route_url('modlist'))
+        return self.return_dict(title='Edit Mod', f=form, cancel=self.request.route_url('viewmod', id=mod.id))
 
     @view_config(route_name='deletemod', permission='user')
     def deletemod(self):
