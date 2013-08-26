@@ -92,7 +92,7 @@ class PackBuild(Document):
 
 class Pack(Document):
     # Information
-    name = StringField(required=True, max_length=32, unique=True)
+    name = StringField(required=True, unique=True)
     # Mod List
     mods = ListField(ReferenceField(Mod, reverse_delete_rule=DENY))
     # Builds

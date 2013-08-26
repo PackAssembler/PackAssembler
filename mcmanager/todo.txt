@@ -1,4 +1,5 @@
 Todo:
+C Checkbox System
 D Change the way groups are handled
 F MCUpdater Support
 F Add administration
@@ -9,3 +10,4 @@ A Rename Trusted User to Contributor
 B Better way to check for dependencies? Maybe DENY reverse_delete_rule is enough.
 C Easier way to get the current user object
 D Improve FAQ, Getting Started
+D Pack combining

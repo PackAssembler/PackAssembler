@@ -21,7 +21,7 @@
             <i class="icon-ok"></i>
             Permission Granted
         </h4>
-        When making a Pack or server you will never have to think about whether you have permission to use a mod. This is done prior, when a mod is added to the index. See the about page for more information.
+        When making a Pack or server you will never have to think about whether you have permission to use a mod. This is done prior, when a mod is added to the index. See the FAQ page for more information.
     </div>
     <div class="col-lg-4 info-block">
         <h4>

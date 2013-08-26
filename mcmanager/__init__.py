@@ -61,6 +61,7 @@ def main(global_config, **settings):
     config.add_route('packjson', '/pack/json/{id}')
     ## CRUD
     config.add_route('addpack', '/pack/add')
+    config.add_route('clonepack', 'pack/clone/{id}')
     config.add_route('editpack', '/pack/edit/{id}')
     config.add_route('deletepack', '/pack/delete/{id}')
     config.add_route('viewpack', '/pack/{id}')

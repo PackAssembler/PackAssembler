@@ -44,6 +44,12 @@ class SForm(Form):
         for name, field in self._fields.items():
             if field.data and field.__class__.__name__ != 'FileField':
                 field.populate_obj(obj, name)
+
+# Safer TextAreaField
+class SafeTextAreaField(TextAreaField):
+    def pre_validate(self, form):
+        self.data = htmllaundry.sanitize(self.data, cleaner=htmllaundry.cleaners.CommentCleaner)
+
 # Mods
 class ModForm(SForm):
     name = namefield('Name')
@@ -51,7 +57,7 @@ class ModForm(SForm):
     install = TextField('Install', validators=[validators.required(), isalnum])
     url = urlfield('Homepage', v=[validators.required()])
     target = targetfield('Target')
-    permission = TextAreaField('Permission')
+    permission = SafeTextAreaField('Permission')
 
 class ModVersionForm(SForm):
     version = TextField('Version', validators=[validators.required()])

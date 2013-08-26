@@ -3,6 +3,7 @@
     <div class="col-lg-8">
         <h2>${title}</h2>
         <a href="#" class="btn btn-primary" id='showid'>Copy ID to Clipboard</a>
+        <a href="${request.route_url('clonepack', id=pack.id)}" class='btn btn-default'>Clone</a>
         <h4><a href="${request.route_url('profile', id=pack.owner.id)}">${pack.owner.username}</a></h4>
     </div>
     <div class="col-lg-4">

@@ -23,6 +23,18 @@ class MMLServerPack(MMLServerView):
 
         return self.return_dict(title="Add Pack", f=form, cancel=self.request.route_url('modlist'))
 
+    @view_config(route_name='clonepack', permission='user')
+    def clonepack(self):
+        current_pack = self.get_db_object(Pack, perm=False)
+        try:
+            new_pack = Pack(
+                owner=User.objects.get(username=self.logged_in),
+                name='[{0}] {1}'.format(self.logged_in, current_pack.name),
+                mods=current_pack.mods).save()
+        except NotUniqueError:
+            return HTTPFound(location=self.request.route_url('error', type='already_cloned'))
+        return HTTPFound(location=self.request.route_url('viewpack', id=new_pack.id))
+
     @view_config(route_name='editpack', renderer='genericform.mak', permission='user')
     def editpack(self):
         pack = self.get_db_object(Pack)
