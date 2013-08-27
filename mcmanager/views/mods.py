@@ -16,7 +16,13 @@ class MMLServerMod(MMLServerView):
         else:
             mods = Mod.objects
 
-        return self.return_dict(title='Mod List', mods=mods)
+        if self.logged_in is None:
+            packs = []
+        else:
+            user = User.objects.get(username=self.logged_in)
+            packs = Pack.objects(owner=user)
+
+        return self.return_dict(title='Mod List', mods=mods, packs=packs)
 
     @view_config(route_name='adoptmod', permission='trusted')
     def adopt(self):

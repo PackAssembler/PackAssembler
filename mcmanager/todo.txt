@@ -1,5 +1,4 @@
 Todo:
-C Checkbox System
 D Change the way groups are handled
 F MCUpdater Support
 F Add administration

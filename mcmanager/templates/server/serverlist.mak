@@ -5,7 +5,7 @@ ${listcommon.head()}
 <div class="pull-right bmargin">
     <a href="${request.route_url('addserver')}"><i class="icon-plus no-decoration"></i> Add Server</a>
 </div>
-<table class="table table-hover table-bordered" data-provides="rowlink">
+<table class="table table-hover table-bordered listtable" data-provides="rowlink">
     <thead>
         <tr><th>Server</th><th>Owner</th><th>Pack</th></tr>
     </thead>

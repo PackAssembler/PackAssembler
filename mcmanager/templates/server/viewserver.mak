@@ -18,7 +18,16 @@
 <h3>Server Information</h3>
 <table class="table table-hover table-bordered">
     <tr><td>Added</td><td>${server.id.generation_time.strftime('%e %b %Y %I:%m:%S %p')}</td></tr>
-    <tr><td>Homepage</td><td>${server.url}</td></tr>
+    <tr>
+        <td>Homepage</td>
+        <td>
+            % if server.url:
+                <a target="_blank" rel="nofollow" href="${server.url}">${server.url}</a>
+            % else:
+                None
+            % endif
+        </td>
+    </tr>
     <tr><td>Host</td><td>${server.host}</td></tr>
     <tr><td>Port</td><td>${server.port}</td></tr>
     <tr><td>Pack</td><td><a href="${request.route_url('viewpack', id=server.build.pack.id)}">${server.build.pack.name}</a></td></tr>

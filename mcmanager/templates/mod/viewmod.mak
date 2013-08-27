@@ -2,22 +2,21 @@
 <div class="row">
     <div class="col-lg-8">
         <h2>${title}</h2>
-        <div class="btn-group">
-            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
-                Add to Pack
-                <span class="icon-caret-down"></span></a>
-            <ul class="dropdown-menu">
-                % if packs:
-                    % for pack in packs:
-                    <li><a href="${request.route_url('addpackmod', id=pack.id)}?id=${mod.id}">${pack.name}</a></li>
-                    % endfor
-                % else:
-                    <li><a href="#">You have no packs!</a></li>
-                % endif
-                <li class="divider"></li>
-                <li><a href="${request.route_url('addpack')}">Add Pack</a></li>
-            </ul>
-        </div>
+        <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+            Add to Pack
+            <span class="icon-caret-down"></span>
+        </a>
+        <ul class="dropdown-menu">
+            % if packs:
+                % for pack in packs:
+                <li><a href="${request.route_url('addpackmod', id=pack.id)}?id=${mod.id}">${pack.name}</a></li>
+                % endfor
+            % else:
+                <li><a href="#">You have no packs!</a></li>
+            % endif
+            <li class="divider"></li>
+            <li><a href="${request.route_url('addpack')}">Add Pack</a></li>
+        </ul>
         ## VERY BAD IDEA! Find a better way to do this. Hardcoding username -> not good.
         % if mod.owner.username == 'Orphan':
             % if user is not None and 'group:user' not in user.groups:
@@ -61,10 +60,10 @@
     ${runson(mod)}
     </td></tr>
     <tr><td>Homepage</td><td>
-    % if mod.url == None:
-        None
+    % if mod.url:
+        <a target="_blank" rel="nofollow" href="${mod.url}">${mod.url}</a>
     % else:
-        <a href="${mod.url}">${mod.url}</a>
+        None
     % endif
     </td></tr>
     <%

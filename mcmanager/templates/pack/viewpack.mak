@@ -28,7 +28,7 @@
     </thead>
     <tbody>
     % for build in pack.builds[::-1]:
-        <tr>
+        <tr class="button-height">
             <td>${build.revision}</td>
             <td>${build.id.generation_time.strftime('%e %b %Y %I:%m:%S %p')}</td>
             <td><a href="${build.config}">${build.config}</a></td>

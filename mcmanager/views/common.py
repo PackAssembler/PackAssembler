@@ -73,8 +73,10 @@ class MMLServerView(object):
 def opt_dict(**kwargs):
     d = {}
     for name, value in kwargs.items():
-        if value != '':
+        if value:
             d[name] = value
+        else:
+            d[name] = None
     return d
 
 class NoPermission(Exception):

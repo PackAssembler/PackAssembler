@@ -19,7 +19,10 @@ body {
 /* Common */
 .bmargin {margin-bottom: 10px;}
 .tmargin {margin-top: 10px;}
+
 .no-decoration {text-decoration: none;}
+.center {text-align: center;}
+
 .relative-position {position: relative;}
 tr.button-height td {line-height: 38px !important;}
 .force-bottom {
@@ -50,6 +53,9 @@ div.info-block h4 [class^="icon-"]:before
     vertical-align: -10%;
     width: 1.07143em;
 }
+
+/* List Pages */
+table.listtable > * > tr > * {line-height: 30px !important;}
 
 /* Profile */
 .profilebox{overflow: hidden;}

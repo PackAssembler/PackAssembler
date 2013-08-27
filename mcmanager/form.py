@@ -42,8 +42,10 @@ namefield = textfield_creator([validators.required(), validators.Length(max=32),
 class SForm(Form):
     def populate_obj(self, obj):
         for name, field in self._fields.items():
-            if field.data and field.__class__.__name__ != 'FileField':
+            if field.data:
                 field.populate_obj(obj, name)
+            else:
+                setattr(obj, name, None)
 
 # Safer TextAreaField
 class SafeTextAreaField(TextAreaField):

@@ -93,10 +93,13 @@ class MMLServerPack(MMLServerView):
         if self.has_perm(Pack.objects(id=self.request.matchdict['id']).only('owner').first()):
             if 'id' in post and form.validate():
                 try:
-                    Pack.objects(id=self.request.matchdict['id']).update_one(add_to_set__mods=Mod.objects.get(id=post['id']))
+                    Pack.objects(id=self.request.matchdict['id']).update_one(add_to_set__mods=post['id'])
                     return HTTPFound(self.request.route_url('viewpack', id=self.request.matchdict['id']))
                 except DoesNotExist:
                     form.id.errors.append('Mod does not exist.')
+            elif 'mods' in post:
+                Pack.objects(id=self.request.matchdict['id']).update_one(add_to_set__mods=post.getall('mods'))
+                return HTTPFound(self.request.route_url('viewpack', id=self.request.matchdict['id']))
         else:
             return HTTPForbidden()
         return self.return_dict(title="Add Mod to Pack", f=form, cancel=self.request.route_url('viewpack', id=self.request.matchdict['id']))
@@ -104,7 +107,7 @@ class MMLServerPack(MMLServerView):
     @view_config(route_name='removepackmod', permission='user')
     def removepackmod(self):
         if self.has_perm(Pack.objects(id=self.request.matchdict['packid']).only('owner').first()):
-            Pack.objects(id=self.request.matchdict['packid']).update_one(pull__mods=Mod.objects.get(id=self.request.matchdict['modid']))
+            Pack.objects(id=self.request.matchdict['packid']).update_one(pull__mods=self.request.matchdict['modid'])
         else:
             return HTTPForbidden()
         return HTTPFound(self.request.referer)
