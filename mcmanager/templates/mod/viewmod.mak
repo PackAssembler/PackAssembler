@@ -2,34 +2,36 @@
 <div class="row">
     <div class="col-lg-8">
         <h2>${title}</h2>
-        <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
-            Add to Pack
-            <span class="icon-caret-down"></span>
-        </a>
-        <ul class="dropdown-menu">
-            % if packs:
-                % for pack in packs:
-                <li><a href="${request.route_url('addpackmod', id=pack.id)}?id=${mod.id}">${pack.name}</a></li>
-                % endfor
+        <div class="dropdown">
+            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+                Add to Pack
+                <span class="icon-caret-down"></span>
+            </a>
+            <ul class="dropdown-menu">
+                % if packs:
+                    % for pack in packs:
+                    <li><a href="${request.route_url('addpackmod', id=pack.id)}?id=${mod.id}">${pack.name}</a></li>
+                    % endfor
+                % else:
+                    <li><a href="#">You have no packs!</a></li>
+                % endif
+                <li class="divider"></li>
+                <li><a href="${request.route_url('addpack')}">Add Pack</a></li>
+            </ul>
+            ## VERY BAD IDEA! Find a better way to do this. Hardcoding username -> not good.
+            % if mod.owner.username == 'Orphan':
+                % if user is not None and 'group:user' not in user.groups:
+                    <a href="${request.route_url('adoptmod', id=mod.id)}" class="btn btn-default">Adopt</a>
+                % else:
+                    <%block name="userlink"><h4><a href="${request.route_url('profile', id=mod.owner.id)}">${mod.owner.username}</a></h4></%block>
+                % endif
             % else:
-                <li><a href="#">You have no packs!</a></li>
+                % if perm:
+                    <a href="${request.route_url('disownmod', id=mod.id)}" class="btn btn-default">Disown</a>
+                % endif
+                ${userlink()}
             % endif
-            <li class="divider"></li>
-            <li><a href="${request.route_url('addpack')}">Add Pack</a></li>
-        </ul>
-        ## VERY BAD IDEA! Find a better way to do this. Hardcoding username -> not good.
-        % if mod.owner.username == 'Orphan':
-            % if user is not None and 'group:user' not in user.groups:
-                <a href="${request.route_url('adoptmod', id=mod.id)}" class="btn btn-default">Adopt</a>
-            % else:
-                <%block name="userlink"><h4><a href="${request.route_url('profile', id=mod.owner.id)}">${mod.owner.username}</a></h4></%block>
-            % endif
-        % else:
-            % if perm:
-                <a href="${request.route_url('disownmod', id=mod.id)}" class="btn btn-default">Disown</a>
-            % endif
-            ${userlink()}
-        % endif
+        </div>
     </div>
     <div class="col-lg-4">
     % if perm:

@@ -88,7 +88,6 @@ class MMLServerMod(MMLServerView):
         if self.check_depends(mod):
             for version in mod.versions:
                 version.mod_file.delete()
-                version.delete()
             mod.delete()
             return self.success_url('modlist', mod.name + ' deleted successfully.')
         else:

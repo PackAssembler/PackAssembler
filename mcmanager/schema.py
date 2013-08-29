@@ -48,7 +48,11 @@ class Mod(Document):
         return self.name.lower() < other.name.lower()
 
     def __eq__(self, other):
-        return self.name == other.name
+        try:
+            return self.name == other.name
+        except AttributeError:
+            return False
+
     # Information
     ## Name of mod
     name = StringField(required=True, max_length=32)
@@ -72,6 +76,8 @@ class Mod(Document):
     meta = {
         'ordering': ['name']
     }
+
+Mod.register_delete_rule(ModVersion, 'mod', CASCADE)
 
 
 class PackBuild(Document):
@@ -105,6 +111,8 @@ class Pack(Document):
     meta = {
         'ordering': ['name']
     }
+
+Pack.register_delete_rule(PackBuild, 'pack', CASCADE)
 
 
 class Server(Document):
