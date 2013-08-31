@@ -7,8 +7,8 @@
         ${form.formerror(error)}
         <form method="POST" action="" role="form" class="form-horizontal">
             ${form.showfield(f.username)}
-            ${form.showfield(f.password)}
             ${f.came_from()}
+            ${form.showfield(f.password)}
             ${form.showsubmit(f.came_from.data)}
             <div class="col-lg-offset-2 col-lg-10">
                 <a href="${request.route_url('signup')}">Create a new account</a><br>

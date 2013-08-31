@@ -59,6 +59,11 @@ class MMLServerVersions(MMLServerView):
         mv.delete()
         return HTTPFound(location=self.request.referer)
 
+    @view_config(route_name='versionmd5')
+    def versionmd5(self):
+        mv = self.get_db_object(ModVersion, perm=False)
+
+        return Response(mv.mod_file.md5)
 
 def get_params(post):
     p = opt_dict(

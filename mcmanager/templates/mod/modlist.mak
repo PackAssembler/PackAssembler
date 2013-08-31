@@ -17,7 +17,7 @@ ${listcommon.head()}
                 <li><a href="#">You have no packs!</a></li>
             % endif
             <li class="divider"></li>
-            <li><a href="${request.route_url('addpack')}">Add Pack</a></li>
+            <li><a href="${request.route_url('addpack')}" class="action-add">Add Pack</a></li>
         </ul>
     </div>
     <div class="col-lg-2 force-bottom">

@@ -7,7 +7,7 @@
         <div class="pull-right">
             <form class="form-inline" method="GET" action="${request.url}">
                 <div class="form-group">
-                    <input type="search" name="q" class="form-control" value="${request.params['q'] if 'q' in request.params else ''}">
+                    <input type="search" name="q" class="form-control" value="${request.params['q'] if 'q' in request.params else ''}" x-webkit-speech>
                 </div>
                 <button type="submit" class="btn">Search</button>
             </form>

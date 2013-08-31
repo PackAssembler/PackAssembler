@@ -11,7 +11,7 @@ def find_group(userid, request):
     connect(request.registry.settings.get('mongodb', 'mcmanager'))
     user = User.objects(username=userid).first()
     if user is not None:
-        return user.groups
+        return ['group:' + user.group]
 
 def check_pass(username, password):
     user = User.objects(username=username).first()

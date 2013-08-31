@@ -49,10 +49,11 @@ def main(global_config, **settings):
     config.add_route('viewmod', '/mod/{id}')
 
     # Mod versions
-    config.add_route('addversion', '/mod/addversion/{id}')
-    config.add_route('editversion', '/mod/editversion/{id}')
+    config.add_route('addversion', '/mod/version/add/{id}')
+    config.add_route('editversion', '/mod/version/edit/{id}')
     config.add_route('downloadversion', '/mod/download/{id}')
-    config.add_route('deleteversion', '/mod/deleteversion/{id}')
+    config.add_route('deleteversion', '/mod/version/delete/{id}')
+    config.add_route('versionmd5', '/mod/versionmd5/{id}')
 
     # Packs
     ## Listing
@@ -71,8 +72,8 @@ def main(global_config, **settings):
     config.add_route('removepackmod', '/pack/removemod/{packid}/{modid}')
 
     ## Builds
-    config.add_route('addbuild', '/pack/addbuild/{id}')
-    config.add_route('removebuild', '/pack/removebuild/{id}')
+    config.add_route('addbuild', '/pack/build/add/{id}')
+    config.add_route('removebuild', '/pack/build/remove/{id}')
     config.add_route('downloadbuild', '/pack/download/{id}')
 
     # Servers

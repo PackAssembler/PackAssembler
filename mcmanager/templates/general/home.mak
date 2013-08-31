@@ -2,7 +2,7 @@
 <div class="row">
     <div class="col-lg-12 jumbotron">
         <h1>MC Manager</h1>
-        <p>The main server for MML compatible launchers, run by the creator of MML.</p>
+        <p>Managing Mods, Servers, and Packs easily and efficiently.</p>
         <p>
             <a href="${request.route_url('gettingstarted')}" class="btn btn-primary btn-large">Get Started <i class="icon-double-angle-right"></i></a>
         </p>

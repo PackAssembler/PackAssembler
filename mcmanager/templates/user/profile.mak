@@ -16,7 +16,7 @@
                     </form>
                 % else:
                     <%
-                        g = owner.groups[0].split(':')[1].title()
+                        g = owner.group.title()
                         colors = {'User': '', 'Trusted': 'text-success', 'Moderator': 'text-info', 'Admin': 'text-danger'}
                     %>
                     <h3 class="${colors[g]}">${g}</h3>
@@ -27,8 +27,8 @@
     <div class="col-lg-6">
     % if perm:
         <div class="btn-group pull-right tmargin">
-            <a href="${request.route_url('edituser', id=owner.id)}" class="btn btn-info">Edit Account</a>
-            <a href="${request.route_url('deleteuser', id=owner.id)}" class="btn btn-danger">Delete Account</a>
+            <a href="${request.route_url('edituser', id=owner.id)}" class="btn btn-info action-edit">Edit Account</a>
+            <a href="#" id="delete" class="btn btn-danger action-delete">Delete Account</a>
         </div>
     % endif
     </div>
@@ -65,13 +65,20 @@
 <%block name="endscripts">
     <script src="${request.static_url('mcmanager:static/js/gravatar/md5.js')}"></script>
     <script src="${request.static_url('mcmanager:static/js/gravatar/jquery.gravatar.js')}"></script>
+    <script src="//raw.github.com/makeusabrew/bootbox/master/bootbox.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             $('#gravatar').empty().append($.gravatar('${owner.email}', {rating: 'pg', secure: true, size: 150, image: 'identicon'}));
             $('#gravatar').children(':first').addClass('img-polaroid');
-            $('#group').val('${owner.groups[0].split(':')[1]}');
+            $('#group').val('${owner.group}');
             $('#group').change(function(){
                 $(this).parent().submit();
+            });
+            $('#delete').click(function(){
+                bootbox.confirm("Are you sure you want to delete this account?", function(result){
+                    if (result)
+                        window.location = "${request.route_url('deleteuser', id=owner.id)}";
+                });
             });
         });
     </script>

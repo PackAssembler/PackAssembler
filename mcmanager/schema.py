@@ -16,8 +16,8 @@ class User(Document):
     password = BinaryField(required=True)
     # Email, should be validated on client side first
     email = EmailField(required=True, unique=True)
-    # Groups, used for authorization
-    groups = ListField(StringField(), required=True)
+    # Group, used for authorization
+    group = StringField(required=True)
 
     # Codes
     ## Activation code
@@ -69,7 +69,7 @@ class Mod(Document):
     # Versions of the mod (and compatibility information)
     versions = ListField(ReferenceField(ModVersion, reverse_delete_rule=PULL))
     # Owner: Full permissions
-    owner = ReferenceField(User, required=True, reverse_delete_rule=NULLIFY)
+    owner = ReferenceField(User, required=True, reverse_delete_rule=DENY)
     # Is outdated?
     outdated = BooleanField(required=True, default=False)
 
@@ -106,7 +106,7 @@ class Pack(Document):
     # Latest PackBuild revision
     latest = IntField(required=True, default=0)
     # Owner of Pack
-    owner = ReferenceField(User, required=True, reverse_delete_rule=NULLIFY)
+    owner = ReferenceField(User, required=True, reverse_delete_rule=DENY)
 
     meta = {
         'ordering': ['name']
@@ -124,7 +124,7 @@ class Server(Document):
     # Pack used
     build = ReferenceField('PackBuild', required=True, reverse_delete_rule=DENY)
     # Owner
-    owner = ReferenceField(User, required=True, reverse_delete_rule=NULLIFY)
+    owner = ReferenceField(User, required=True, reverse_delete_rule=DENY)
     # Configuration, should be on external server
     config = URLField()
 

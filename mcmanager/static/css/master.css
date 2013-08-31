@@ -16,6 +16,29 @@ body {
     padding-bottom: 100px;
 }
 
+/* Keyboard Shortcut Modal */
+#keyboard-shortcuts dt {
+    float: left;
+    text-align: right;
+    width: 6em;
+    margin: 0px 0px 0px -2em;
+    padding: 0px;
+}
+
+#keyboard-shortcuts dd {
+    margin: 0px 0px 0px 5em;
+}
+
+#keyboard-shortcuts div.modal-body {
+    overflow-y: auto;
+}
+
+div.keyboard-shortcuts-inner {
+    width: 50%;
+    float: left;
+    margin-bottom: 15px;
+}
+
 /* Common */
 .bmargin {margin-bottom: 10px;}
 .tmargin {margin-top: 10px;}

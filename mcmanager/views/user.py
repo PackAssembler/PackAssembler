@@ -29,7 +29,7 @@ class MMLServerUser(MMLServerView):
 
             if captcha_pass:
                 try:
-                    user = User(username=form.username.data, password=password, email=form.email.data, groups=['group:user'], activate=getrandbits(32)).save()
+                    user = User(username=form.username.data, password=password, email=form.email.data, group='user', activate=getrandbits(32)).save()
                     self.send_confirmation(user)
                     return self.success_url('login', 'Successfully created an account please check your email to activate it.')
                 except NotUniqueError:
@@ -130,7 +130,7 @@ class MMLServerUser(MMLServerView):
             return HTTPFound(location=self.request.route_url('profile', id=user.id))
 
         elif 'group' in post and self.specperm('admin'):
-            user.groups = ['group:' + post['group']]
+            user.group = post['group']
             user.save()
             return HTTPFound(location=self.request.route_url('profile', id=user.id))
 

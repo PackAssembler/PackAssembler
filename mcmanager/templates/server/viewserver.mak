@@ -8,8 +8,8 @@
     <div class="col-lg-4">
     % if perm:
         <div class="btn-group pull-right tmargin">
-            <a href="${request.route_url('editserver', id=server.id)}" class="btn btn-info">Edit Server</a>
-            <a id="delete" class="btn btn-danger">Delete Server</a>
+            <a href="${request.route_url('editserver', id=server.id)}" class="btn btn-info action-edit">Edit Server</a>
+            <a id="delete" class="btn btn-danger action-delete">Delete Server</a>
         </div>
     % endif
     </div>
@@ -35,13 +35,6 @@
     <tr><td>Custom Config</td><td>${server.config}</td></tr>
 </table>
 <%block name="endscripts">
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('#showid').click(function(){
-                window.prompt("Copy to clipboard: Ctrl+C, Enter", "${server.id}");
-            })
-        })
-    </script>
     <script src="//raw.github.com/makeusabrew/bootbox/master/bootbox.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
@@ -50,6 +43,9 @@
                     if (result)
                         window.location = "${request.route_url('deleteserver', id=server.id)}";
                 });
+            });
+            $('#showid').click(function(){
+                window.prompt("Copy to clipboard: Ctrl+C, Enter", "${server.id}");
             });
         });
     </script>

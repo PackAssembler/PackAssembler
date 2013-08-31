@@ -20,7 +20,7 @@
             </ul>
             ## VERY BAD IDEA! Find a better way to do this. Hardcoding username -> not good.
             % if mod.owner.username == 'Orphan':
-                % if user is not None and 'group:user' not in user.groups:
+                % if user is not None and user.group != 'user':
                     <a href="${request.route_url('adoptmod', id=mod.id)}" class="btn btn-default">Adopt</a>
                 % else:
                     <%block name="userlink"><h4><a href="${request.route_url('profile', id=mod.owner.id)}">${mod.owner.username}</a></h4></%block>
@@ -36,8 +36,8 @@
     <div class="col-lg-4">
     % if perm:
         <div class="btn-group pull-right tmargin">
-            <a href="${request.route_url('editmod', id=mod.id)}" class="btn btn-info">Edit Mod</a>
-            <a id="delete" class="btn btn-danger">Delete Mod</a>
+            <a href="${request.route_url('editmod', id=mod.id)}" class="btn btn-info action-edit">Edit Mod</a>
+            <a id="delete" class="btn btn-danger action-delete">Delete Mod</a>
         </div>
     % endif
     </div>
@@ -80,14 +80,14 @@
 <h3>Versions</h3>
 <div class="row bmargin relative-position">
     <div class="col-lg-8">
-        <a href="${request.route_url('flagmod', id=mod.id)}" class="btn${' btn-danger' if not mod.outdated else ' btn-default'}">
+        <a href="${request.route_url('flagmod', id=mod.id)}" class="action-flag btn${' btn-danger' if not mod.outdated else ' btn-default'}">
             <i class="icon-flag"></i> ${'Unf' if mod.outdated else 'F'}lag as Outdated
         </a>
     </div>
     % if perm:
     <div class="col-lg-4 force-bottom">
         <div class="pull-right">
-            <a href="${request.route_url('addversion', id=mod.id)}"><i class="icon-plus no-decoration"></i> Add Version</a>
+            <a href="${request.route_url('addversion', id=mod.id)}" class="action-add"><i class="icon-plus no-decoration"></i> Add Version</a>
         </div>
     </div>
     % endif
