@@ -113,6 +113,8 @@
                                 <h3>Focus</h3>
                                 <dl>
                                     ${shortcut('List Search', 'f s')}
+                                    ${shortcut('First Input', 'f f')}
+                                    ${shortcut('Last Input', 'f l')}
                                 </dl>
                             </div>
                             <div>

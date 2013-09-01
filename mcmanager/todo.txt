@@ -1,9 +1,6 @@
 Todo:
-E Mod Descriptions
-F MCUpdater Support
-F Add administration
-F Reset API keys and don't put them on github :P
-
-Minor:
+C Mod Descriptions
+C MCUpdater Support
 D Improve FAQ, Getting Started (group explanation)
-D Pack combining
+D Reset API keys and don't put them on github :P
+F Add administration
