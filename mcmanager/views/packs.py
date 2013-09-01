@@ -16,7 +16,7 @@ class MMLServerPack(MMLServerView):
 
         if 'submit' in post and form.validate():
             try:
-                pack = Pack(owner=User.objects.get(username=self.logged_in), name=form.name.data).save()
+                pack = Pack(owner=self.current_user, name=form.name.data).save()
                 return HTTPFound(location=self.request.route_url('viewpack', id=pack.id))
             except NotUniqueError:
                 form.name.errors.append('Already exists.')
@@ -28,7 +28,7 @@ class MMLServerPack(MMLServerView):
         current_pack = self.get_db_object(Pack, perm=False)
         try:
             new_pack = Pack(
-                owner=User.objects.get(username=self.logged_in),
+                owner=self.current_user,
                 name='[{0}] {1}'.format(self.logged_in, current_pack.name),
                 mods=current_pack.mods).save()
         except NotUniqueError:

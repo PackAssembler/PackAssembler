@@ -8,7 +8,7 @@ Surely, the goal this site must be similar to other projects but we believe ther
 Try the <a href="${request.route_url('gettingstarted')}">Getting Started</a> page.
 <h3>Mods</h3>
 <h4>Why can't I add any mods?</h4>
-In order to ensure that we don't have duplicates or mods with no permissions defined, we have made a decision to only allow "Trusted Users" to add mods.
+In order to ensure that we don't have duplicates or mods with no permissions defined, we have made a decision to only allow contributors to add mods.
 <h4>How do permissions work?</h4>
 When assesing the legality of having a copyrighted mod on this website, we assume:
 <ol>

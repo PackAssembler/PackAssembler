@@ -1,3 +1,4 @@
+from .security import check_pass
 from .schema import *
 from wtforms import *
 import htmllaundry

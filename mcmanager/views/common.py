@@ -21,11 +21,12 @@ class MMLServerView(object):
         self.request = request
         self.logged_in = authenticated_userid(request)
         connect(request.registry.settings.get('mongodb', 'mcmanager'))
+        self.current_user = User.objects(username=self.logged_in).first()
 
     def return_dict(self, **kwargs):
         rdict = kwargs
         try:
-            rdict['user'] = User.objects.get(username=self.logged_in)
+            rdict['user'] = self.current_user
         except DoesNotExist:
             rdict['user'] = None
         return rdict

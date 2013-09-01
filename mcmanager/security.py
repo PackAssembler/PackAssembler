@@ -27,9 +27,9 @@ def password_hash(password):
 class Root:
     __acl__ = [(Allow, Everyone, 'view'),
                (Allow, 'group:user', 'user'),
-               (Allow, 'group:trusted', ('user', 'trusted')),
-               (Allow, 'group:moderator', ('user', 'trusted', 'moderator')),
-               (Allow, 'group:admin', ('user', 'trusted', 'moderator', 'admin'))
+               (Allow, 'group:contributor', ('user', 'contributor')),
+               (Allow, 'group:moderator', ('user', 'contributor', 'moderator')),
+               (Allow, 'group:admin', ('user', 'contributor', 'moderator', 'admin'))
                ]
 
     def __init__(self, request):

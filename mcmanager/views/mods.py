@@ -19,18 +19,17 @@ class MMLServerMod(MMLServerView):
         if self.logged_in is None:
             packs = []
         else:
-            user = User.objects.get(username=self.logged_in)
-            packs = Pack.objects(owner=user)
+            packs = Pack.objects(owner=self.current_user)
 
         return self.return_dict(title='Mod List', mods=mods, packs=packs)
 
-    @view_config(route_name='adoptmod', permission='trusted')
+    @view_config(route_name='adoptmod', permission='contributor')
     def adopt(self):
         # Get mod
         mod = self.get_db_object(Mod, perm=False)
 
         # Set owner to current user
-        mod.owner = User.objects.get(username=self.logged_in)
+        mod.owner = self.current_user
         mod.save()
 
         return HTTPFound(self.request.route_url('viewmod', id=self.request.matchdict['id']))
@@ -54,13 +53,13 @@ class MMLServerMod(MMLServerView):
 
         return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
 
-    @view_config(route_name='addmod', renderer='genericform.mak', permission='trusted')
+    @view_config(route_name='addmod', renderer='genericform.mak', permission='contributor')
     def addmod(self):
         post = self.request.params
         form = ModForm(post, install='mods')
 
         if 'submit' in post and form.validate():
-            mod = Mod(owner=User.objects.get(username=self.logged_in))
+            mod = Mod(owner=self.current_user)
             form.populate_obj(mod)
             mod.save()
             return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
@@ -100,8 +99,7 @@ class MMLServerMod(MMLServerView):
         if self.logged_in is None:
             packs = []
         else:
-            user = User.objects.get(username=self.logged_in)
-            packs = Pack.objects(owner=user)
+            packs = Pack.objects(owner=self.current_user)
 
         return self.return_dict(title=mod.name, mod=mod, packs=packs, perm=self.has_perm(mod))
 

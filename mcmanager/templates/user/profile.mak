@@ -9,7 +9,7 @@
                     <form method="post" action="${request.route_url('edituser', id=owner.id)}">
                         <select class="longer" id="group" name="group" value="">
                             <option value="user">User</option>
-                            <option value="trusted">Trusted</option>
+                            <option value="contributor">Contributor</option>
                             <option value="moderator">Moderator</option>
                             <option value="admin">Admin</option>
                         </select>
@@ -17,7 +17,7 @@
                 % else:
                     <%
                         g = owner.group.title()
-                        colors = {'User': '', 'Trusted': 'text-success', 'Moderator': 'text-info', 'Admin': 'text-danger'}
+                        colors = {'User': '', 'Contributor': 'text-success', 'Moderator': 'text-info', 'Admin': 'text-danger'}
                     %>
                     <h3 class="${colors[g]}">${g}</h3>
                 % endif

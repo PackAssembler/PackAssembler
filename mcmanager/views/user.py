@@ -68,7 +68,7 @@ class MMLServerUser(MMLServerView):
         if self.logged_in is not None:
             # If this is happening because the user has no permission
             if type(self.request.exception) is HTTPForbidden:
-                return HTTPFound(location=self.request.route_url('error', type='not_trusted'))
+                return HTTPFound(location=self.request.route_url('error', type='not_contributor'))
             return HTTPFound(location=self.request.route_url('home'))
 
         if 'submit' in post and form.validate():

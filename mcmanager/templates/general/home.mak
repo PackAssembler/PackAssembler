@@ -2,7 +2,7 @@
 <div class="row">
     <div class="col-lg-12 jumbotron">
         <h1>MC Manager</h1>
-        <p>Managing Mods, Servers, and Packs easily and efficiently.</p>
+        <p>Managing Mods, Packs, and Servers easily and efficiently.</p>
         <p>
             <a href="${request.route_url('gettingstarted')}" class="btn btn-primary btn-large">Get Started <i class="icon-double-angle-right"></i></a>
         </p>

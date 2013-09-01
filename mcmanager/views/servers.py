@@ -24,7 +24,7 @@ class MMLServerServers(MMLServerView):
                     port=form.port.data,
                     config=form.config.data,
                     build=pb,
-                    owner=User.objects.get(username=self.logged_in)
+                    owner=self.current_user
                 )
                 server = Server(**params).save()
                 return HTTPFound(location=self.request.route_url('viewserver', id=server.id))
@@ -51,7 +51,7 @@ class MMLServerServers(MMLServerView):
                     port=form.port.data,
                     config=form.config.data,
                     build=pb,
-                    owner=User.objects.get(username=self.logged_in)
+                    owner=self.current_user
                 )
                 for key, val in params.items():
                     server[key] = val

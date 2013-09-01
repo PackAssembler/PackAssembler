@@ -28,8 +28,8 @@ class MMLServerViews(MMLServerView):
         if e == 'depends':
             return self.return_dict(title='Unable to Delete', message='Unable to delete the requested object.' + 
                                     ' Something depends on it. If you would not like to maintain it any longer, please disown it.')
-        elif e == 'not_trusted':
-            return self.return_dict(title='Not Trusted User', message='You may not create nor adopt mods unless you are a trusted user.')
+        elif e == 'not_contributor':
+            return self.return_dict(title='Not a Contributor', message='You may not create nor adopt mods unless you are a contributor.')
         elif e == 'already_cloned':
             return self.return_dict(title='Already Cloned', message='It seems that you have already cloned this pack. To make another, change the name of your other clone.')
         else:
