@@ -45,6 +45,16 @@
 <hr>
 <h3>Mod Information</h3>
 <table class="table table-hover table-bordered">
+    <%def name="linejoin(jline)">
+        <%
+            try:
+                p = '<br />'.join(jline.splitlines())
+            except AttributeError:
+                p = 'None'
+        %>
+        ${p | n}
+    </%def>
+    <tr><td>Description</td><td>${linejoin(mod.description)}</td></tr>
     <tr><td>Author</td><td><a href="${request.route_url('modlist')}?q=${mod.author}">${mod.author}</a></td></tr>
     <tr><td>Added</td><td>${mod.id.generation_time.strftime('%e %b %Y %I:%m:%S %p')}</td></tr>
     <tr><td>Mod ID</td><td>${mod.id}</td></tr>
@@ -68,13 +78,7 @@
         None
     % endif
     </td></tr>
-    <%
-        try:
-            p = '<br />'.join(mod.permission.splitlines())
-        except AttributeError:
-            p = 'None'
-    %>
-    <tr><td>Permission</td><td>${p | n}</td></tr>
+    <tr><td>Permission</td><td>${linejoin(mod.permission)}</td></tr>
 </table>
 <br>
 <h3>Versions</h3>

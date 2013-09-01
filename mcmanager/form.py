@@ -51,11 +51,12 @@ class SForm(Form):
 # Safer TextAreaField
 class SafeTextAreaField(TextAreaField):
     def pre_validate(self, form):
-        self.data = htmllaundry.sanitize(self.data, cleaner=htmllaundry.cleaners.CommentCleaner)
+        self.data = htmllaundry.sanitize(self.data, cleaner=htmllaundry.cleaners.CommentCleaner, wrap='div')
 
 # Mods
 class ModForm(SForm):
     name = namefield('Name')
+    description = SafeTextAreaField('Description')
     author = TextField('Author', validators=[validators.Optional(), validators.Length(max=32)])
     install = TextField('Install', validators=[validators.required(), isalnum])
     url = urlfield('Homepage', v=[validators.required()])

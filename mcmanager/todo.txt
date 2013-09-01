@@ -1,5 +1,4 @@
 Todo:
-C Mod Descriptions
 C MCUpdater Support
 D Improve FAQ, Getting Started (group explanation)
 D Reset API keys and don't put them on github :P

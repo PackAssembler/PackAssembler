@@ -56,6 +56,8 @@ class Mod(Document):
     # Information
     ## Name of mod
     name = StringField(required=True, max_length=32)
+    ## Description of mod
+    description = StringField()
     ## Author(s) of the mod
     author = StringField(max_length=32)
     ## Where to download mod
