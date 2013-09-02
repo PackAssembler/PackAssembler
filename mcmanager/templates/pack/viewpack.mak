@@ -2,6 +2,7 @@
 <div class="row">
     <div class="col-lg-8">
         <h2>${title}</h2>
+        <a href="#" class="btn btn-primary" id='showurl'>Copy MCUpdater URL</a>
         <a href="#" class="btn btn-primary" id='showid'>Copy ID to Clipboard</a>
         <a href="${request.route_url('clonepack', id=pack.id)}" class='btn btn-default'>Clone</a>
         <h4><a href="${request.route_url('profile', id=pack.owner.id)}">${pack.owner.username}</a></h4>
@@ -41,6 +42,7 @@
                         <span class="icon-caret-down"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="${request.route_url('downloadbuild', id=build.id)}"><i class="icon-fixed-width icon-download"></i> JSON</a></li>
+                        <li><a href="${request.route_url('mcuxml', id=build.id)}"><i class="icon-fixed-width icon-file-text"></i> MCU XML</a></li>
                         % if perm:
                             <li><a href="${request.route_url('removebuild', id=build.id)}"><i class="icon-fixed-width icon-trash"></i> Delete</a></li>
                         % endif
@@ -82,6 +84,9 @@
             });
             $('#showid').click(function(){
                 window.prompt("Copy to clipboard: Ctrl+C, Enter", "${pack.id}");
+            });
+            $('#showurl').click(function(){
+                window.prompt("Copy to clipboard: Ctrl+C, Enter", "${request.route_url('mcuxmlpack', id=pack.id)}");
             });
         });
     </script>

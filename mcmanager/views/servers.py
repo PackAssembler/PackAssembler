@@ -1,4 +1,5 @@
 from pyramid.httpexceptions import HTTPFound
+from .packbuilds import generate_mcu_xml
 from pyramid.response import Response
 from pyramid.view import view_config
 from ..form import ServerForm
@@ -19,6 +20,7 @@ class MMLServerServers(MMLServerView):
                 pb = PackBuild.objects.get(revision=form.revision.data, pack=pack)
                 params = opt_dict(
                     name=form.name.data,
+                    rid=form.name.data.replace(' ', '_'),
                     url=form.url.data,
                     host=form.host.data,
                     port=form.port.data,
@@ -91,3 +93,9 @@ class MMLServerServers(MMLServerView):
         server = self.get_db_object(Server, perm=False)
 
         return Response(server.to_json(), content_type='application/json')
+
+    @view_config(route_name='mcuxmlserver')
+    def mcuxmlserver(self):
+        server = self.get_db_object(Server, perm=False)
+
+        return Response(generate_mcu_xml(self.request, server.build, server=server), content_type='application/xml')

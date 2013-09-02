@@ -61,6 +61,7 @@ class MMLServerMod(MMLServerView):
         if 'submit' in post and form.validate():
             mod = Mod(owner=self.current_user)
             form.populate_obj(mod)
+            mod.rid = form.name.data.replace(' ', '_')
             mod.save()
             return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
 

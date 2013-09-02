@@ -1,5 +1,4 @@
 Todo:
-C MCUpdater Support
-D Improve FAQ, Getting Started (group explanation)
+D Improve FAQ, Getting Started
 D Reset API keys and don't put them on github :P
 F Add administration

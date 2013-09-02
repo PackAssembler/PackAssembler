@@ -2,6 +2,7 @@
 <div class="row">
     <div class="col-lg-8">
         <h2>${title}</h2>
+        <a href="#" class="btn btn-primary" id='showurl'>Copy MCUpdater URL</a>
         <a href="#" class="btn btn-primary" id='showid'>Copy ID to Clipboard</a>
         <h4><a href="${request.route_url('profile', id=server.owner.id)}">${server.owner.username}</a></h4>
     </div>
@@ -46,6 +47,9 @@
             });
             $('#showid').click(function(){
                 window.prompt("Copy to clipboard: Ctrl+C, Enter", "${server.id}");
+            });
+            $('#showurl').click(function(){
+                window.prompt("Copy to clipboard: Ctrl+C, Enter", "${request.route_url('mcuxmlserver', id=server.id)}");
             });
         });
     </script>

@@ -16,7 +16,7 @@ class MMLServerPack(MMLServerView):
 
         if 'submit' in post and form.validate():
             try:
-                pack = Pack(owner=self.current_user, name=form.name.data).save()
+                pack = Pack(owner=self.current_user, name=form.name.data, rid=form.name.data.replace(' ', '_')).save()
                 return HTTPFound(location=self.request.route_url('viewpack', id=pack.id))
             except NotUniqueError:
                 form.name.errors.append('Already exists.')
@@ -84,6 +84,12 @@ class MMLServerPack(MMLServerView):
         pack = self.get_db_object(Pack, perm=False)
 
         return Response(pack.to_json(), content_type='application/json')
+
+    @view_config(route_name='mcuxmlpack')
+    def mcuxmlpack(self):
+        pack = self.get_db_object(Pack, perm=False)
+
+        return HTTPFound(self.request.route_url('mcuxml', id=pack.builds[-1].id))
 
     @view_config(route_name='addpackmod', renderer='genericform.mak', permission='user')
     def addpackmod(self):

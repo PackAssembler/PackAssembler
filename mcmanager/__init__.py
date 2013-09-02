@@ -59,6 +59,7 @@ def main(global_config, **settings):
     ## Listing
     config.add_route('packlist', '/pack/list')
     ## API
+    config.add_route('mcuxmlpack', '/pack/mcuxml/{id}')
     config.add_route('packjson', '/pack/json/{id}')
     ## CRUD
     config.add_route('addpack', '/pack/add')
@@ -75,11 +76,14 @@ def main(global_config, **settings):
     config.add_route('addbuild', '/pack/build/add/{id}')
     config.add_route('removebuild', '/pack/build/remove/{id}')
     config.add_route('downloadbuild', '/pack/download/{id}')
+    config.add_route('mcubase', '/mcubase')
+    config.add_route('mcuxml', '/pack/build/mcuxml/{id}')
 
     # Servers
     ## Listing
     config.add_route('serverlist', '/server/list')
     ## API
+    config.add_route('mcuxmlserver', '/server/mcuxml/{id}')
     config.add_route('serverjson', '/server/json/{id}')
     ## CRUD
     config.add_route('addserver', '/server/add')

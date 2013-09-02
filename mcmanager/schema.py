@@ -4,7 +4,7 @@ from mongoengine import *
 # Mod targets
 TARGETS = ('server', 'client', 'both')
 # Minecraft versions
-MCVERSIONS = ('1.5.2', '1.5.1', '1.5', '1.4.7')
+MCVERSIONS = ('1.6.2', '1.5.2', '1.5.1', '1.5', '1.4.7')
 # Forge version length
 FV = 16
 
@@ -55,7 +55,9 @@ class Mod(Document):
 
     # Information
     ## Name of mod
-    name = StringField(required=True, max_length=32)
+    name = StringField(required=True, max_length=32, unique=True)
+    ## Readable id
+    rid = StringField()
     ## Description of mod
     description = StringField()
     ## Author(s) of the mod
@@ -88,7 +90,9 @@ class PackBuild(Document):
     # Build itself
     ## JSON File with information about mod versions included in package
     ## Should include all information except number
-    build = StringField(required=True)
+    build = StringField()
+    # Mod versoins
+    mod_versions = ListField(ReferenceField(ModVersion))
     # Configuration, should be on external server
     config = URLField()
     # Version information
@@ -101,6 +105,8 @@ class PackBuild(Document):
 class Pack(Document):
     # Information
     name = StringField(required=True, unique=True)
+    # Readable id
+    rid = StringField(required=True)
     # Mod List
     mods = ListField(ReferenceField(Mod, reverse_delete_rule=DENY))
     # Builds
@@ -123,6 +129,8 @@ class Server(Document):
     url = URLField()
     host = StringField(required=True)
     port = IntField(required=True)
+    # Readable id
+    rid = StringField()
     # Pack used
     build = ReferenceField('PackBuild', required=True, reverse_delete_rule=DENY)
     # Owner
