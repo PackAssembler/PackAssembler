@@ -87,10 +87,6 @@ Mod.register_delete_rule(ModVersion, 'mod', CASCADE)
 class PackBuild(Document):
     # Build number
     revision = IntField(required=True)
-    # Build itself
-    ## JSON File with information about mod versions included in package
-    ## Should include all information except number
-    build = StringField()
     # Mod versoins
     mod_versions = ListField(ReferenceField(ModVersion))
     # Configuration, should be on external server

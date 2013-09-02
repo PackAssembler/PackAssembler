@@ -9,6 +9,9 @@ Surely, the goal this site must be similar to other projects but we believe ther
 <h4>This sounds great, but how exactly do I use this site?</h4>
 Try the <a href="${request.route_url('gettingstarted')}">Getting Started</a> page.
 
+<h4>So, do you support anything below 1.6.2? I see other options but can't make them work.</h4>
+Support for anything under 1.5.2 is deprecated. We will be removing it from the site soon.
+
 
 <h3>Mods</h3>
 <h4>Why can't I add any mods?</h4>
@@ -28,7 +31,7 @@ There are many benefits to using this site rather than manually doing the work, 
 <ol>
 	<li>Easier - no need to download any mods, host your own "modpack", or think about permissions</li>
 	<li>Compatible - when creating a Pack Build, you will be informed of any incompatibilities with your version of Forge or Minecraft</li>
-	<li>Standardized - this website has a standard format for every Pack, ensuring all software build for our platform will be compatible with your Pack</li>
+	<li>Standardized - this website has a standard format for every Pack, ensuring all software built for our platform will be compatible with your Pack</li>
 </ol>
 
 
@@ -36,7 +39,7 @@ There are many benefits to using this site rather than manually doing the work, 
 <h4>How can I change my avatar?</h4>
 Visit <a href="http://gravatar.com/">Gravatar</a>.
 
-<h4>So, what exactly are these user groups that I on profile pages?</h4>
+<h4>So, what exactly are these user groups that I see on profile pages?</h4>
 There are currently four types of users: user, contributor, moderator, and administrator. Each has specific permissions, limiting what they can do. Permissions are comulative.
 <dl class="well">
     <dt>User</dt><dd>Can create and edit their Packs and Servers</dd>
