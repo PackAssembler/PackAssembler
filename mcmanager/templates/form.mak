@@ -48,9 +48,12 @@
 ## Captcha
 <%def name="captcha()">
     <%self:showinput label="Captcha">
-        <script type="text/javascript" src="https://www.google.com/recaptcha/api/challenge?k=6LfMiuUSAAAAAHAzuJ60jYSZYPI8IO5kWBNURpIA"></script>
+        <%
+            pkey = request.registry.settings.get('recaptcha_pub_key')
+        %>
+        <script type="text/javascript" src="https://www.google.com/recaptcha/api/challenge?k=${pkey}"></script>
         <noscript>
-            <iframe src="https://www.google.com/recaptcha/api/noscript?k=6LfMiuUSAAAAAHAzuJ60jYSZYPI8IO5kWBNURpIA"
+            <iframe src="https://www.google.com/recaptcha/api/noscript?k=${pkey}"
                 height="300" width="500" frameborder="0"></iframe><br>
             <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
             <input type="hidden" name="recaptcha_response_field" value="manual_challenge">

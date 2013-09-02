@@ -6,7 +6,6 @@ from ..schema import *
 import requests
 
 CAPTCHA_URL = 'http://www.google.com/recaptcha/api/verify'
-CAPTCHA_KEY = '6LfMiuUSAAAAACSvxehnpk8IvIOwYZiSuJg58oa2'
 CAPTCHA_ERRORS = {
     'invalid-site-private-key': 'Invalid API Key.',
     'invalid-request-cookie': 'The challenge parameter of the verify script was incorrect.',
@@ -85,7 +84,7 @@ class NoPermission(Exception):
 
 def validate_captcha(request):
     payload = {
-        'privatekey': CAPTCHA_KEY,
+        'privatekey': request.registry.settings.get('recaptcha_priv_key'),
         'remoteip': request.remote_addr,
         'challenge': request.params.get('recaptcha_challenge_field', ''),
         'response': request.params.get('recaptcha_response_field', '')

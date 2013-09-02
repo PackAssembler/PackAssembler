@@ -1,4 +1,3 @@
 Todo:
 D Improve FAQ, Getting Started
-D Reset API keys and don't put them on github :P
 F Add administration

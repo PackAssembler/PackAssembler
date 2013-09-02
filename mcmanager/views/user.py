@@ -10,8 +10,6 @@ from random import getrandbits
 from mandrill import Mandrill
 from ..schema import *
 
-MANDRILL_KEY = 'tv_A60S7VKgqFx8IPcENHg'
-
 class MMLServerUser(MMLServerView):
     @view_config(route_name='signup', renderer='signup.mak')
     def signup(self):
@@ -160,7 +158,7 @@ class MMLServerUser(MMLServerView):
                                 perm=self.has_perm(user), admin=self.specperm('admin'))
 
     def send_confirmation(self, user):
-        sender = Mandrill(MANDRILL_KEY)
+        sender = Mandrill(self.request.registry.settings.get('mandrill_key'))
         message = {
             'to': [{'email': user.email, 'name': user.username}],
             'global_merge_vars': [{'content': self.request.route_url('activate', id=user.id, key=user.activate), 'name': 'confirmaddress'}]
@@ -168,7 +166,7 @@ class MMLServerUser(MMLServerView):
         sender.messages.send_template(template_name='confirmmcm', template_content=[], message=message, async=True)
 
     def send_password_reset(self, user):
-        sender = Mandrill(MANDRILL_KEY)
+        sender = Mandrill(self.request.registry.settings.get('mandrill_key'))
         message = {
             'to': [{'email': user.email, 'name': user.username}],
             'global_merge_vars': [{'content': self.request.route_url('reset', id=user.id, key=user.reset), 'name': 'reseturl'}]
