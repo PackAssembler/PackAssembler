@@ -2,9 +2,9 @@
 <div class="row">
     <div class="col-lg-8">
         <h2>${title}</h2>
-        <a href="#" class="btn btn-primary" id='showurl'>Copy MCUpdater URL</a>
-        <a href="#" class="btn btn-primary" id='showid'>Copy ID to Clipboard</a>
-        <a href="${request.route_url('clonepack', id=pack.id)}" class='btn btn-default'>Clone</a>
+        <a href="#" class="btn btn-primary btn-sm" id='showurl'>Copy MCUpdater URL</a>
+        <a href="#" class="btn btn-primary btn-sm" id='showid'>Copy ID to Clipboard</a>
+        <a href="${request.route_url('clonepack', id=pack.id)}" class='btn btn-default btn-sm'>Clone</a>
         <h4><a href="${request.route_url('profile', id=pack.owner.id)}">${pack.owner.username}</a></h4>
     </div>
     <div class="col-lg-4">
@@ -37,8 +37,8 @@
             <td>${build.forge_version}</td>
             <td>
                 <div class="btn-group">
-                    <a class="btn btn-primary" href="#">Action</a>
                     <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+                        Action
                         <span class="icon-caret-down"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="${request.route_url('downloadbuild', id=build.id)}"><i class="icon-fixed-width icon-download"></i> JSON</a></li>

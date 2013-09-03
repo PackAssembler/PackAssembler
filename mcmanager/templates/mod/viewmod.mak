@@ -3,7 +3,7 @@
     <div class="col-lg-8">
         <h2>${title}</h2>
         <div class="dropdown">
-            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+            <a class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" href="#">
                 Add to Pack
                 <span class="icon-caret-down"></span>
             </a>
@@ -21,13 +21,13 @@
             ## VERY BAD IDEA! Find a better way to do this. Hardcoding username -> not good.
             % if mod.owner.username == 'Orphan':
                 % if user is not None and user.group != 'user':
-                    <a href="${request.route_url('adoptmod', id=mod.id)}" class="btn btn-default">Adopt</a>
+                    <a href="${request.route_url('adoptmod', id=mod.id)}" class="btn btn-default btn-sm">Adopt</a>
                 % else:
                     <%block name="userlink"><h4><a href="${request.route_url('profile', id=mod.owner.id)}">${mod.owner.username}</a></h4></%block>
                 % endif
             % else:
                 % if perm:
-                    <a href="${request.route_url('disownmod', id=mod.id)}" class="btn btn-default">Disown</a>
+                    <a href="${request.route_url('disownmod', id=mod.id)}" class="btn btn-default btn-sm">Disown</a>
                 % endif
                 ${userlink()}
             % endif
