@@ -1,4 +1,4 @@
-from ..form import UserForm, LoginForm, SendResetForm, ResetForm, EditUserForm
+from ..form import UserForm, LoginForm, SendResetForm, ResetForm, EditUserPasswordForm, EditUserAvatarForm, EditUserEmailForm
 from .common import MMLServerView, VERROR, validate_captcha, opt_dict
 from pyramid.view import view_config, forbidden_view_config
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
@@ -8,7 +8,10 @@ from pyramid.security import remember, forget
 from pyramid.response import Response
 from random import getrandbits
 from mandrill import Mandrill
+from hashlib import md5
 from ..schema import *
+
+ehash = lambda e: md5(e.strip().encode()).hexdigest()
 
 class MMLServerUser(MMLServerView):
     @view_config(route_name='signup', renderer='signup.mak')
@@ -27,7 +30,11 @@ class MMLServerUser(MMLServerView):
 
             if captcha_pass:
                 try:
-                    user = User(username=form.username.data, password=password, email=form.email.data, group='user', activate=getrandbits(32)).save()
+                    user = User(username=form.username.data,
+                                password=password,
+                                email=form.email.data,
+                                email_hash=ehash(form.email.data),
+                                activate=getrandbits(32)).save()
                     self.send_confirmation(user)
                     return self.success_url('login', 'Successfully created an account please check your email to activate it.')
                 except NotUniqueError:
@@ -119,20 +126,42 @@ class MMLServerUser(MMLServerView):
     def edituser(self):
         user = self.get_db_object(User)
         post = self.request.params
-        form = EditUserForm(post)
-        form.current_user.data = self.logged_in
 
-        if 'submit' in post and form.validate():
-            user.password = password_hash(form.password.data)
+        # Create forms
+        password_form = EditUserPasswordForm(post)
+        email_form = EditUserEmailForm(post)
+        avatar_form = EditUserAvatarForm(post, user)
+
+        password_form.current_user.data = self.logged_in
+        email_form.current_user.data = self.logged_in
+
+        rval = HTTPFound(location=self.request.route_url('profile', id=user.id))
+        if 'password_submit' in post and password_form.validate():
+            user.password = password_hash(password_form.password.data)
             user.save()
-            return HTTPFound(location=self.request.route_url('profile', id=user.id))
+            return rval
+
+        elif 'email_submit' in post and email_form.validate():
+            print('this ran')
+            user.email = email_form.email.data
+            user.email_hash = ehash(email_form.email.data)
+            try:
+                user.save()
+                return rval
+            except NotUniqueError:
+                email_form.email.errors.append('Email not unique.')
+
+        elif 'avatar_submit' in post and avatar_form.validate():
+            avatar_form.populate_obj(user)
+            user.save()
+            return rval
 
         elif 'group' in post and self.specperm('admin'):
             user.group = post['group']
             user.save()
-            return HTTPFound(location=self.request.route_url('profile', id=user.id))
+            return rval
 
-        return self.return_dict(title="Edit Account", f=form, cancel=self.request.route_url('profile', id=user.id))
+        return self.return_dict(title="Edit Account", pf=password_form, ef=email_form, af=avatar_form, cancel=self.request.route_url('profile', id=user.id))
 
     @view_config(route_name='deleteuser', permission='user')
     def deleteuser(self):

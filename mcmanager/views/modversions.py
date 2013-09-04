@@ -17,7 +17,11 @@ class MMLServerVersions(MMLServerView):
         if 'submit' in post and form.validate():
             mv = ModVersion(mod=mod)
             form.populate_obj(mv)
-            mv.mod_file = post['mod_file'].file
+            try:
+                mv.mod_file = post[form.mod_file.name].file
+                mv.mod_file_url = None
+            except AttributeError:
+                pass
             mv.save()
 
             mod.versions.append(mv)
@@ -35,10 +39,12 @@ class MMLServerVersions(MMLServerView):
         if 'submit' in post and form.validate():
             form.populate_obj(mv)
             try:
-                mv.mod_file = post['mod_file'].file
+                mv.mod_file = post[form.mod_file.name].file
+                mv.mod_file_url = None
             except AttributeError:
                 pass
             mv.save()
+
             return HTTPFound(location=self.request.route_url('viewmod', id=mv.mod.id))
 
         return self.return_dict(title="Edit Mod Version", f=form, cancel=self.request.route_url('viewmod', id=mv.mod.id))
@@ -48,14 +54,18 @@ class MMLServerVersions(MMLServerView):
         # Get modversion
         mv = self.get_db_object(ModVersion, perm=False)
 
-        return Response(app_iter=FileIter(mv.mod_file), content_type='application/zip', content_disposition='attachment; filename="{0}-{1}.jar"'.format(mv.mod.name, mv.version))
+        if mv.mod_file:
+            return Response(app_iter=FileIter(mv.mod_file), content_type='application/zip', content_disposition='attachment; filename="{0}-{1}.jar"'.format(mv.mod.name, mv.version))
+        else:
+            return HTTPFound(mv.mod_file_url)
 
     @view_config(route_name='deleteversion', permission='user')
     def deleteversion(self):
         # Get modversion
         mv = self.get_db_object(ModVersion)
 
-        mv.mod_file.delete()
+        if mv.mod_file:
+            mv.mod_file.delete()
         mv.delete()
         return HTTPFound(location=self.request.referer)
 

@@ -29,7 +29,7 @@ def targetfield(name, **kwargs):
 
 def textfield_creator(default_validators):
     def creator(name, v=[], **kwargs):
-        return TextField(name, validators=default_validators+v, **kwargs)
+        return TextField(name, validators=v+default_validators, **kwargs)
     return creator
 
 forgefield = textfield_creator([isforge])
@@ -38,12 +38,28 @@ emailfield = textfield_creator([validators.Email()])
 idfield = textfield_creator([validators.Regexp('^[0-9a-f]{24}$')])
 namefield = textfield_creator([validators.required(), validators.Length(max=32), validators.Regexp('^[\w ]+$')])
 
+# Specific Validators
+def validate_current(form, field):
+    """Validator for operations which require password."""
+    if not check_pass(form.current_user.data, field.data):
+        raise ValidationError('Current password incorrect.')
+
+def either_mod_file(form, field):
+    """Checks to see if file upload or url field is filled."""
+    message = 'Must have either File or File URL filled.'
+    try:
+        file_not_entered = not form.mod_file.data.file
+    except AttributeError:
+        file_not_entered = True
+
+    if file_not_entered and not field.data:
+        raise validators.StopValidation(message)
 
 # Subclassed form
 class SForm(Form):
     def populate_obj(self, obj):
         for name, field in self._fields.items():
-            if field.data:
+            if not field.__class__.__name__ == 'FileField' and field.data:
                 field.populate_obj(obj, name)
             else:
                 setattr(obj, name, None)
@@ -69,6 +85,8 @@ class ModVersionForm(SForm):
     mc_max = mcvfield('Minecraft Max')
     forge_min = forgefield('Forge Min', v=[validators.Optional()])
     forge_max = forgefield('Forge Max', v=[validators.Optional()])
+    mod_file = FileField('File')
+    mod_file_url = urlfield('File URL', v=[either_mod_file, validators.Optional()])
 
 # Packs
 class PackForm(SForm):
@@ -94,6 +112,7 @@ class ServerForm(SForm):
     config = urlfield('Custom Config', v=[validators.Optional()])
 
 # Users
+## Not logged in
 class UserForm(SForm):
     username = TextField('Username', validators=[validators.required(), validators.Length(min=6, max=32), isalnum])
     email = emailfield('Email', v=[validators.required()])
@@ -116,10 +135,15 @@ class ResetForm(SForm):
     password = PasswordField('New Password', validators=[validators.required()])
     confirm = PasswordField('Confirm', validators=[validators.required(), validators.EqualTo('password', 'Field must be same as password.')])
 
-class EditUserForm(ResetForm):
-    current = PasswordField('Current Password', validators=[validators.required()])
+## Logged in
+class EditUserPasswordForm(ResetForm):
+    current = PasswordField('Current Password', validators=[validators.required(), validate_current])
     current_user = HiddenField()
 
-    def validate_current(form, field):
-        if not check_pass(form.current_user.data, field.data):
-            raise ValidationError('Current password incorrect.')
+class EditUserEmailForm(SForm):
+    email = emailfield('Email', v=[validators.required()])
+    current_user = HiddenField()
+    current = PasswordField('Current Password', validators=[validators.required(), validate_current])
+
+class EditUserAvatarForm(SForm):
+    avatar_type = SelectField('Avatar', choices=[('0', 'Gravatar'), ('1', 'Minotar')], validators=[validators.required()])

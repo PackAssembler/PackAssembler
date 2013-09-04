@@ -17,7 +17,10 @@ class User(Document):
     # Email, should be validated on client side first
     email = EmailField(required=True, unique=True)
     # Group, used for authorization
-    group = StringField(required=True)
+    group = StringField(required=True, default='user')
+    # Avatar
+    avatar_type = IntField(default=0)
+    email_hash = StringField(default='')
 
     # Codes
     ## Activation code
@@ -37,7 +40,8 @@ class ModVersion(Document):
     # Mod version and upload datetime
     version = StringField(required=True)
     # The file itself
-    mod_file = FileField(required=True, collection_name='modfs')
+    mod_file = FileField(collection_name='modfs')
+    mod_file_url = URLField()
     # Reference Mod ModVersion belongs to
     mod = ReferenceField('Mod', required=True)
 

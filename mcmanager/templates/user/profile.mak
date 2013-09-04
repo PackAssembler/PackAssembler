@@ -1,8 +1,9 @@
 <%inherit file="base.mak"/>
+<%namespace name="avatar" file="avatar.mak" />   
 <div class="row">
     <div class="col-lg-6">
         <div class="profilebox">
-            <div class="profilebox-avatar" id="gravatar">Loading Gravatar</div>
+            <div class="profilebox-avatar">${avatar.avatar(owner, 150)}</div>
             <div class="profilebox-info">
                 <h2>${title}</h2>
                 % if admin:
@@ -63,13 +64,9 @@
 </%def>
 
 <%block name="endscripts">
-    <script src="${request.static_url('mcmanager:static/js/gravatar/md5.js')}"></script>
-    <script src="${request.static_url('mcmanager:static/js/gravatar/jquery.gravatar.js')}"></script>
     <script src="//raw.github.com/makeusabrew/bootbox/master/bootbox.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
-            $('#gravatar').empty().append($.gravatar('${owner.email}', {rating: 'pg', secure: true, size: 150, image: 'identicon'}));
-            $('#gravatar').children(':first').addClass('img-polaroid');
             $('#group').val('${owner.group}');
             $('#group').change(function(){
                 $(this).parent().submit();

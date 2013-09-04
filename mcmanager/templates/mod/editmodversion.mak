@@ -13,9 +13,10 @@
             ${form.showfield(f.mc_max)}
             ${form.showfield(f.forge_min)}
             ${form.showfield(f.forge_min)}
-            <%form:showinput label="File" name="file">
-                <input id="mod_file" type="file" name="mod_file"></input>
+            <%form:showinput label="${f.mod_file.label.text}" name="${f.mod_file.name}">
+                ${f.mod_file()}
             </%form:showinput>
+            ${form.showfield(f.mod_file_url)}
             ${form.showsubmit(cancel)}
         </form>
     </div>
