@@ -13,3 +13,6 @@
         </form>
     </div>
 </div>
+<%block name="endscripts">
+    <script src="${request.static_url('mcmanager:static/js/wysihtml5-0.3.0.min.js')}"></script>
+</%block>

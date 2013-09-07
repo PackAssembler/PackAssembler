@@ -11,7 +11,7 @@
 <%def name="showsubmit(cancel, name='submit')">
     <div class="form-group">
         <div class="col-lg-offset-2 col-lg-10">
-            <button type="submit" class="btn btn-primary" name="${name}">Submit</button> &nbsp; ${'<a href="${cancel}">Cancel</a>' if cancel else '' | n}
+            <button type="submit" class="btn btn-primary" name="${name}">Submit</button> &nbsp; ${'<a href="{0}">Cancel</a>'.format(cancel) if cancel else '' | n}
         </div>
     </div>
 </%def>

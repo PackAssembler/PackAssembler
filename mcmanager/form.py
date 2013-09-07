@@ -67,7 +67,7 @@ class SForm(Form):
 # Safer TextAreaField
 class SafeTextAreaField(TextAreaField):
     def pre_validate(self, form):
-        self.data = htmllaundry.sanitize(self.data, cleaner=htmllaundry.cleaners.CommentCleaner, wrap='div')
+        self.data = htmllaundry.sanitize(self.data, cleaner=htmllaundry.cleaners.CommentCleaner, wrap=None)
 
 # Mods
 class ModForm(SForm):
