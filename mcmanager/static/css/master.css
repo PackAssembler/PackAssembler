@@ -59,7 +59,6 @@ select.longer {
     width: 100%;
 }
 
-
 /* Individual Pages */
 /* Home */
 div.info-block
@@ -79,6 +78,15 @@ div.info-block h4 [class^="icon-"]:before
 
 /* List Pages */
 table.listtable > * > tr > * {line-height: 30px !important;}
+
+/* View Mod Page */
+/*div.modInfobar
+{
+    background: url("http://i.imgur.com/s7Blryk.png") no-repeat scroll left;
+    background-size: cover;
+    color: white;
+    background-width: 100%;
+}*/
 
 /* Profile */
 .profilebox{overflow: hidden;}

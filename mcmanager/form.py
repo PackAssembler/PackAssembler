@@ -67,7 +67,14 @@ class SForm(Form):
 # Safer TextAreaField
 class SafeTextAreaField(TextAreaField):
     def pre_validate(self, form):
-        self.data = htmllaundry.sanitize(self.data, cleaner=htmllaundry.cleaners.CommentCleaner, wrap=None)
+        c = htmllaundry.cleaners.DocumentCleaner
+        c.allow_tags.append('div')
+        self.data = htmllaundry.sanitize(self.data, cleaner=c, wrap=None)
+
+# TextAreaField, no HTML allowed
+class ParanoidTextAreaField(TextAreaField):
+    def pre_validate(self, form):
+        self.data = htmllaundry.strip_markup(self.data)
 
 # Mods
 class ModForm(SForm):
@@ -77,7 +84,7 @@ class ModForm(SForm):
     install = TextField('Install', validators=[validators.required(), isalnum])
     url = urlfield('Homepage', v=[validators.required()])
     target = targetfield('Target')
-    permission = SafeTextAreaField('Permission')
+    permission = ParanoidTextAreaField('Permission')
 
 class ModVersionForm(SForm):
     version = TextField('Version', validators=[validators.required()])

@@ -4,6 +4,7 @@
     <title>MC Manager &middot; ${title}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/united/bootstrap.min.css" rel="stylesheet">
+    ##<link href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/slate/bootstrap.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
 
     <link href="${request.static_url('mcmanager:static/css/master.css')}" rel="stylesheet">
@@ -69,7 +70,7 @@
             </div>
         </div>
     </div>
-    <div class="container padded-top">
+    <div id="main-content" class="container padded-top">
         ${next.body()}
         <div class="modal fade" id="keyboard-shortcuts">
             <div class="modal-dialog">

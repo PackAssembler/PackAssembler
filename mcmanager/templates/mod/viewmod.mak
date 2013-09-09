@@ -1,5 +1,5 @@
 <%inherit file="base.mak"/>
-<div class="row">
+<div class="row modInfobar">
     <div class="col-lg-8">
         <h2>${title}</h2>
         <div class="dropdown">
@@ -44,6 +44,9 @@
 </div>
 <hr>
 <h3>Mod Information</h3>
+<div id="mod-description">
+    ${mod.description}
+</div>
 <table class="table table-hover table-bordered">
     <%def name="linejoin(jline)">
         <%
@@ -54,7 +57,6 @@
         %>
         ${p | n}
     </%def>
-    <tr><td>Description</td><td>${linejoin(mod.description)}</td></tr>
     <tr><td>Author</td><td><a href="${request.route_url('modlist')}?q=${mod.author}">${mod.author}</a></td></tr>
     <tr><td>Added</td><td>${mod.id.generation_time.strftime('%e %b %Y %I:%m:%S %p')}</td></tr>
     <tr><td>Mod ID</td><td>${mod.id}</td></tr>
@@ -78,7 +80,7 @@
         None
     % endif
     </td></tr>
-    <tr><td>Permission</td><td>${linejoin(mod.permission)}</td></tr>
+    <tr><td>Permission</td><td>${mod.permission | h}</td></tr>
 </table>
 <br>
 <h3>Versions</h3>
