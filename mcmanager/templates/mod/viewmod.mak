@@ -86,8 +86,8 @@
 <h3>Versions</h3>
 <div class="row bmargin relative-position">
     <div class="col-lg-8">
-        <a href="${request.route_url('flagmod', id=mod.id)}" class="action-flag btn${' btn-danger' if not mod.outdated else ' btn-default'}">
-            <i class="icon-flag"></i> ${'Unf' if mod.outdated else 'F'}lag as Outdated
+        <a href="${request.route_url('flagmod', id=mod.id)}" class="action-flag btn ${'btn-danger' if not mod.outdated else 'btn-default'}" id="flag">
+            <i class="icon-flag"></i> <span>${'Unf' if mod.outdated else 'F'}</span>lag as Outdated
         </a>
     </div>
     % if perm:
@@ -137,6 +137,26 @@
                         window.location = "${request.route_url('deletemod', id=mod.id)}";
                 });
             });
+            $('#flag').click(function(e){
+                e.preventDefault();
+                var $flag = $(this)
+
+                $.get($(this).attr('href'), function(data){
+                    if (data['success'] === true) {
+                        $flag.toggleClass('btn-default');
+                        $flag.toggleClass('btn-danger');
+                        if (data['outdated'] === true) {
+                            $flag.children().last().html('Unf');
+                        }
+                        else {
+                            $flag.children().last().html('F');
+                        }
+                    }
+                    else{
+                        window.location = $flag.attr('href');
+                    }
+                }, 'json');
+            })
         });
     </script>
 </%block>

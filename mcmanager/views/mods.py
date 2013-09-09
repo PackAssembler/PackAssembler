@@ -53,6 +53,17 @@ class MMLServerMod(MMLServerView):
 
         return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
 
+    @view_config(route_name='flagmod', permission='user', renderer='json', xhr=True)
+    def flagmod_ajax(self):
+        mod = self.get_db_object(Mod, perm=False)
+
+        js_out = {'success': True, 'outdated': not mod.outdated}
+        mod.outdated = js_out['outdated']
+        mod.save()
+
+        return js_out
+
+
     @view_config(route_name='addmod', renderer='genericform.mak', permission='contributor')
     def addmod(self):
         post = self.request.params

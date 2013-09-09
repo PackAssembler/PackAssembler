@@ -84,6 +84,10 @@ class MMLServerUser(MMLServerView):
 
         return self.return_dict(title='Login', error=error, f=form)
 
+    @forbidden_view_config(renderer='json', xhr=True)
+    def forbidden_json(self):
+        return {'success': False, 'error': 'not_logged_in'}
+
     @view_config(route_name='logout')
     def logout(self):
         return HTTPFound(location=self.request.referer, headers=forget(self.request))
