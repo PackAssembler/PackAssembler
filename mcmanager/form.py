@@ -86,6 +86,9 @@ class ModForm(SForm):
     target = targetfield('Target')
     permission = ParanoidTextAreaField('Permission')
 
+class BannerForm(SForm):
+    banner = urlfield('Image URL', v=[validators.Optional()])
+
 class ModVersionForm(SForm):
     version = TextField('Version', validators=[validators.required()])
     mc_min = mcvfield('Minecraft Min')

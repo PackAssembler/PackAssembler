@@ -80,6 +80,8 @@ class Mod(Document):
     owner = ReferenceField(User, required=True, reverse_delete_rule=DENY)
     # Is outdated?
     outdated = BooleanField(required=True, default=False)
+    # Formatting extras
+    banner = URLField()
 
     meta = {
         'ordering': ['name']

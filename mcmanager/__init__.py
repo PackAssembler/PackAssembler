@@ -42,6 +42,8 @@ def main(global_config, **settings):
     config.add_route('adoptmod', '/mod/adopt/{id}')
     config.add_route('disownmod', '/mod/disown/{id}')
     config.add_route('flagmod', '/mod/flag/{id}')
+    ## Details
+    config.add_route('editbanner', '/mod/banner/edit/{id}')
     ## CRUD
     config.add_route('addmod', '/mod/add')
     config.add_route('editmod', '/mod/edit/{id}')

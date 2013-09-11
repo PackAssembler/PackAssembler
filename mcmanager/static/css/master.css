@@ -42,6 +42,8 @@ div.keyboard-shortcuts-inner {
 /* Common */
 .bmargin {margin-bottom: 10px;}
 .tmargin {margin-top: 10px;}
+.bpadding {padding-bottom: 10px;}
+.tpadding {padding-top: 10px;}
 
 .no-decoration {text-decoration: none;}
 .center {text-align: center;}
@@ -80,13 +82,13 @@ div.info-block h4 [class^="icon-"]:before
 table.listtable > * > tr > * {line-height: 30px !important;}
 
 /* View Mod Page */
-/*div.modInfobar
+/* div.modInfobar: see the viewmod.mak file */
 {
     background: url("http://i.imgur.com/s7Blryk.png") no-repeat scroll left;
     background-size: cover;
     color: white;
     background-width: 100%;
-}*/
+}
 
 /* Profile */
 .profilebox{overflow: hidden;}

@@ -1,5 +1,5 @@
 <%inherit file="base.mak"/>
-<div class="row modInfobar">
+<div class="row bpadding" id="modInfobar">
     <div class="col-lg-8">
         <h2>${title}</h2>
         <div class="dropdown">
@@ -42,6 +42,11 @@
     % endif
     </div>
 </div>
+% if perm:
+    <div class="row pull-right">
+        <a href="${request.route_url('editbanner', id=mod.id)}" id="changeBanner">Change Banner</a>
+    </div>
+% endif
 <hr>
 <h3>Mod Information</h3>
 <div id="mod-description">
@@ -127,6 +132,19 @@
     % endfor
     </tbody>
 </table>
+<%block name="style">
+    <style type="text/css">
+    % if mod.banner:
+        div#modInfobar
+        {
+            background: url("${mod.banner}") no-repeat scroll left;
+            background-size: cover;
+            color: white;
+            background-width: 100%;
+        }
+    % endif
+    </style>
+</%block>
 <%block name="endscripts">
     <script src="//raw.github.com/makeusabrew/bootbox/master/bootbox.js"></script>
     <script type="text/javascript">
@@ -135,6 +153,27 @@
                 bootbox.confirm("Are you sure you want to delete this mod?", function(result){
                     if (result)
                         window.location = "${request.route_url('deletemod', id=mod.id)}";
+                });
+            });
+            $('#changeBanner').click(function(e){
+                e.preventDefault();
+                var $cb = $(this);
+
+                bootbox.prompt("Enter the Image URL", function(result) {
+                    if (result !== null) {
+                        $.post($cb.attr('href'), { banner: result }, function(data){
+                            if (data['success'] === true){
+                                var $infobar = $('#modInfobar');
+                                $infobar.css('background', 'url("' + result + '") no-repeat scroll left');
+                                $infobar.css('background-size', 'cover');
+                                $infobar.css('color', 'white');
+                                $infobar.css('background-width', '100%');
+                            }
+                            else if (data['error'] === 'bad_input') {
+                                alert('Bad input.');
+                            }
+                        }, 'json');
+                    }
                 });
             });
             $('#flag').click(function(e){
@@ -156,7 +195,7 @@
                         window.location = $flag.attr('href');
                     }
                 }, 'json');
-            })
+            });
         });
     </script>
 </%block>

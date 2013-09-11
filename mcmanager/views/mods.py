@@ -1,6 +1,6 @@
 from pyramid.httpexceptions import HTTPFound
+from ..form import ModForm, BannerForm
 from pyramid.view import view_config
-from ..form import ModForm
 from ..schema import *
 from .common import *
 import re
@@ -63,6 +63,35 @@ class MMLServerMod(MMLServerView):
 
         return js_out
 
+    @view_config(route_name='editbanner', permission='user', renderer='genericform.mak')
+    def editbanner(self):
+        post = self.request.params
+        mod = self.get_db_object(Mod, perm=False)
+        form = BannerForm(post, mod)
+
+        if 'submit' in post and form.validate():
+            form.populate_obj(mod)
+            mod.save()
+
+            return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
+
+        return self.return_dict(title='Edit Banner', f=form, cancel=self.request.route_url('viewmod', id=mod.id))
+
+    @view_config(route_name='editbanner', permission='user', renderer='json', xhr=True)
+    def editbanner_ajax(self):
+        post = self.request.params
+        mod = self.get_db_object(Mod, perm=False)
+        form = BannerForm(post, mod)
+
+        if form.validate():
+            form.populate_obj(mod)
+            try:
+                mod.save()
+                return {'success': True}
+            except ValidationError:
+                pass
+
+        return {'success': False, 'error': 'bad_input'}
 
     @view_config(route_name='addmod', renderer='genericform.mak', permission='contributor')
     def addmod(self):
@@ -114,18 +143,3 @@ class MMLServerMod(MMLServerView):
             packs = Pack.objects(owner=self.current_user)
 
         return self.return_dict(title=mod.name, mod=mod, packs=packs, perm=self.has_perm(mod))
-
-
-def get_params(post):
-    return opt_dict(
-        name=post.get('txtName'),
-        author=post.get('txtAuthor'),
-        install=post.get('txtInstall'),
-        url=post.get('txtUrl'),
-        target=post.get('selTarget'),
-        permission=post.get('parPermission')
-    )
-
-
-def check_params(params):
-    return re.match('^[\w ]+$', params['name']) and params['install'].isalnum()
