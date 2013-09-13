@@ -67,31 +67,24 @@ class MMLServerMod(MMLServerView):
     def editbanner(self):
         post = self.request.params
         mod = self.get_db_object(Mod, perm=False)
-        form = BannerForm(post, mod)
+        banner = mod.banner or Banner()
+        form = BannerForm(post, banner)
 
         if 'submit' in post and form.validate():
-            form.populate_obj(mod)
+            form.populate_obj(banner)
+
+            # Don't save the banner if there is none to show
+            if banner.image is None:
+                mod.banner = None
+            else:
+                mod.banner = banner
+
+            # Save the mod
             mod.save()
 
             return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
 
         return self.return_dict(title='Edit Banner', f=form, cancel=self.request.route_url('viewmod', id=mod.id))
-
-    @view_config(route_name='editbanner', permission='user', renderer='json', xhr=True)
-    def editbanner_ajax(self):
-        post = self.request.params
-        mod = self.get_db_object(Mod, perm=False)
-        form = BannerForm(post, mod)
-
-        if form.validate():
-            form.populate_obj(mod)
-            try:
-                mod.save()
-                return {'success': True}
-            except ValidationError:
-                pass
-
-        return {'success': False, 'error': 'bad_input'}
 
     @view_config(route_name='addmod', renderer='genericform.mak', permission='contributor')
     def addmod(self):

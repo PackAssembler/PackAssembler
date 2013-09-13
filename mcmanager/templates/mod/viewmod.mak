@@ -18,8 +18,7 @@
                 <li class="divider"></li>
                 <li><a href="${request.route_url('addpack')}">Add Pack</a></li>
             </ul>
-            ## VERY BAD IDEA! Find a better way to do this. Hardcoding username -> not good.
-            % if mod.owner.username == 'Orphan':
+            % if mod.owner.group == 'orphan':
                 % if user is not None and user.group != 'user':
                     <a href="${request.route_url('adoptmod', id=mod.id)}" class="btn btn-default btn-sm">Adopt</a>
                 % else:
@@ -137,9 +136,9 @@
     % if mod.banner:
         div#modInfobar
         {
-            background: url("${mod.banner}") no-repeat scroll left;
+            background: url("${mod.banner.image}") no-repeat scroll left;
             background-size: cover;
-            color: white;
+            color: ${mod.banner.text_color};
             background-width: 100%;
         }
     % endif

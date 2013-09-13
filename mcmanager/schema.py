@@ -46,6 +46,12 @@ class ModVersion(Document):
     mod = ReferenceField('Mod', required=True)
 
 
+class Banner(EmbeddedDocument):
+    # Actual Image
+    image = URLField(required=True)
+    # Color of text on banner (title, etc)
+    text_color = StringField(min_length=4, max_length=7, default='#FFFFFF')
+
 @total_ordering
 class Mod(Document):
     def __lt__(self, other):
@@ -81,7 +87,7 @@ class Mod(Document):
     # Is outdated?
     outdated = BooleanField(required=True, default=False)
     # Formatting extras
-    banner = URLField()
+    banner = EmbeddedDocumentField(Banner)
 
     meta = {
         'ordering': ['name']

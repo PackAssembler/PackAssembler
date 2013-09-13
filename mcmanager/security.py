@@ -14,9 +14,12 @@ def find_group(userid, request):
         return ['group:' + user.group]
 
 def check_pass(username, password):
-    user = User.objects(username=username).first()
+    if '@' in username:
+        user = User.objects(email=username).first()
+    else:
+        user = User.objects(username=username).first()
     if user is not None and bcrypt.hashpw(hpass(password), user.password) == user.password and user.activate is None:
-        return True
+        return user.username
     else:
         return False
 

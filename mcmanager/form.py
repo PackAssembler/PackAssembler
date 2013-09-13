@@ -17,6 +17,19 @@ def isforge(form, field):
     if not re.match('^([0-9]{1,2}\.){3}[0-9]{3}$', field.data):
         raise ValidationError('Not a valid forge version.')
 
+def iscolor(form, field):
+    if not re.match('^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$', field.data):
+        raise ValidationError('Not a valid hex color code.')
+
+# Form widgets
+class ColorInput(widgets.core.Input):
+    """ Renders an input with type "color". """
+    input_type = 'color'
+
+# Form fields
+class ColorField(fields.core.StringField):
+    """ Represents an ``<input type="color">``. """
+    widget = ColorInput()
 
 # Common field creators
 # Additional validators can be given with the v kwarg
@@ -87,7 +100,8 @@ class ModForm(SForm):
     permission = ParanoidTextAreaField('Permission')
 
 class BannerForm(SForm):
-    banner = urlfield('Image URL', v=[validators.Optional()])
+    image = urlfield('Image URL', v=[validators.Optional()])
+    text_color = ColorField('Text Color', validators=[validators.Optional(), iscolor])
 
 class ModVersionForm(SForm):
     version = TextField('Version', validators=[validators.required()])
