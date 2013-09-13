@@ -155,27 +155,6 @@
                         window.location = "${request.route_url('deletemod', id=mod.id)}";
                 });
             });
-            $('#changeBanner').click(function(e){
-                e.preventDefault();
-                var $cb = $(this);
-
-                bootbox.prompt("Enter the Image URL", function(result) {
-                    if (result !== null) {
-                        $.post($cb.attr('href'), { banner: result }, function(data){
-                            if (data['success'] === true){
-                                var $infobar = $('#modInfobar');
-                                $infobar.css('background', 'url("' + result + '") no-repeat scroll left');
-                                $infobar.css('background-size', 'cover');
-                                $infobar.css('color', 'white');
-                                $infobar.css('background-width', '100%');
-                            }
-                            else if (data['error'] === 'bad_input') {
-                                alert('Bad input.');
-                            }
-                        }, 'json');
-                    }
-                });
-            });
             $('#flag').click(function(e){
                 e.preventDefault();
                 var $flag = $(this)
