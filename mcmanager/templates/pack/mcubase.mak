@@ -10,6 +10,7 @@
             <Required>true</Required>
             <ModType order="1"
                 launchArgs="--tweakClass cpw.mods.fml.common.launcher.FMLTweaker">Library</ModType>
+            <MD5></MD5>
             <Submodule id="launchwrapper" name="Mojang (LaunchWrapper)">
                 <URL>https://s3.amazonaws.com/Minecraft.Download/libraries/net/minecraft/launchwrapper/1.5/launchwrapper-1.5.jar</URL>
                 <Required>true</Required>

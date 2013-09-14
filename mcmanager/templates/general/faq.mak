@@ -36,6 +36,8 @@ There are many benefits to using this site rather than manually doing the work, 
 	<li>Compatible - when creating a Pack Build, you will be informed of any incompatibilities with your version of Forge or Minecraft</li>
 	<li>Standardized - this website has a standard format for every Pack, ensuring all software built for our platform will be compatible with your Pack</li>
 </ol>
+<h4>Why do my pack builds have development versions?</h4>
+Either you checked the 'Use Development Versions' checkbox on your Pack's settings or there is no other version available.
 
 
 <h3>Other</h3>
