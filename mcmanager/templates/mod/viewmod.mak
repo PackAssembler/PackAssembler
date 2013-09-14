@@ -1,4 +1,19 @@
 <%inherit file="base.mak"/>
+<%!
+    import re
+    def linejoin(text):
+        try:
+            return '<br />'.join(text.splitlines())
+        except AttributeError:
+            return 'None'
+
+    def autolink(text):
+        urlre = re.compile("(\(?https?://[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|])(\">|</a>)?")
+        try:
+            return urlre.sub(r'<a href="\1" target="_blank" rel="nofollow">\1</a>', text)
+        except TypeError:
+            return 'None'
+%>
 <div class="row bpadding" id="modInfobar">
     <div class="col-lg-8">
         <h2>${title}</h2>
@@ -47,45 +62,53 @@
     </div>
 % endif
 <hr>
-<h3>Mod Information</h3>
-<div id="mod-description">
-    ${mod.description}
+<div class="row">
+    <div class="col-lg-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">Details</div>
+            <table class="table">
+                <tr><td>Author</td><td><a href="${request.route_url('modlist')}?q=${mod.author}">${mod.author}</a></td></tr>
+                <tr><td>Homepage</td><td>
+                % if mod.url:
+                    <a target="_blank" rel="nofollow" href="${mod.url}">${mod.url}</a>
+                % else:
+                    None
+                % endif
+                </td></tr>
+                <tr><td>Date Added</td><td>${mod.id.generation_time.strftime('%e %b %Y %I:%m:%S %p')}</td></tr>
+                <tr><td>Installs to</td><td>${mod.install}</td></tr>
+                <tr><td>Runs on</td><td>
+                <%def name="runson(mod)">
+                    % if mod.target == "both":
+                        Server and Client
+                    % elif mod.target == "server":
+                        Server
+                    % elif mod.target == "client":
+                        Client
+                    % endif
+                </%def>
+                ${runson(mod)}
+                </td></tr>
+            </table>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">Description</div>
+            <div class="panel-body">${mod.description | autolink,linejoin,n}</div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">Mods by ${mod.author}</div>
+            <div class="list-group">
+            % for m in by_author:
+                <a href="${request.route_url('viewmod', id=m.id)}" class="list-group-item">${m.name}</a>
+            % endfor
+            </div>
+        </div>
+    </div>
 </div>
-<table class="table table-hover table-bordered">
-    <%def name="linejoin(jline)">
-        <%
-            try:
-                p = '<br />'.join(jline.splitlines())
-            except AttributeError:
-                p = 'None'
-        %>
-        ${p | n}
-    </%def>
-    <tr><td>Author</td><td><a href="${request.route_url('modlist')}?q=${mod.author}">${mod.author}</a></td></tr>
-    <tr><td>Added</td><td>${mod.id.generation_time.strftime('%e %b %Y %I:%m:%S %p')}</td></tr>
-    <tr><td>Mod ID</td><td>${mod.id}</td></tr>
-    <tr><td>Installs to</td><td>${mod.install}</td></tr>
-    <tr><td>Runs on</td><td>
-    <%def name="runson(mod)">
-        % if mod.target == "both":
-            Server and Client
-        % elif mod.target == "server":
-            Server
-        % elif mod.target == "client":
-            Client
-        % endif
-    </%def>
-    ${runson(mod)}
-    </td></tr>
-    <tr><td>Homepage</td><td>
-    % if mod.url:
-        <a target="_blank" rel="nofollow" href="${mod.url}">${mod.url}</a>
-    % else:
-        None
-    % endif
-    </td></tr>
-    <tr><td>Permission</td><td>${mod.permission | h}</td></tr>
-</table>
 <br>
 <h3>Versions</h3>
 <div class="row bmargin relative-position">
@@ -102,35 +125,40 @@
     </div>
     % endif
 </div>
-<table class="table table-hover table-bordered">
-    <thead>
-        <tr><th>Version</th><th>MC Min</th><th>MC Max</th><th>Uploaded</th><th>Action</th></tr>
-    </thead>
-    <tbody>
-    % for version in mod.versions[::-1]:
-        <tr class="button-height">
-            <td>${version.version}</td>
-            <td>${version.mc_min}</td>
-            <td>${version.mc_max}</td>
-            <td>${version.id.generation_time.strftime('%e %b %Y %I:%m:%S %p')}</td>
-            <td>
-                <div class="btn-group">
-                    <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
-                        Action
-                        <span class="icon-caret-down"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="${request.route_url('downloadversion', id=version.id)}"><i class="icon-fixed-width icon-download"></i> Download</a></li>
-                        % if perm:
-                            <li><a href="${request.route_url('deleteversion', id=version.id)}"><i class="icon-fixed-width icon-trash"></i> Delete</a></li>
-                            <li><a href="${request.route_url('editversion', id=version.id)}"><i class="icon-fixed-width icon-pencil"></i> Edit</a></li>
-                        % endif
-                    </ul>
-                </div>
-            </td>
-        </tr>
-    % endfor
-    </tbody>
-</table>
+<div class="table-responsive">
+    <table class="table table-hover table-bordered">
+        <thead>
+            <tr><th>Version</th><th>MC Min</th><th>MC Max</th><th>Uploaded</th><th>MD5</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+        % for version in mod.versions[::-1]:
+            <tr class="button-height">
+                <td>${version.version}</td>
+                <td>${version.mc_min}</td>
+                <td>${version.mc_max}</td>
+                <td>${version.id.generation_time.strftime('%e %b %Y %I:%m:%S %p')}</td>
+                <td>${version.mod_file.md5 if version.mod_file else version.mod_file_url_md5}</td>
+                ##<td>&nbsp;</td>
+                <td>
+                    <div class="btn-group">
+                        <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+                            Action
+                            <span class="icon-caret-down"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="${request.route_url('downloadversion', id=version.id)}"><i class="icon-fixed-width icon-download"></i> Download</a></li>
+                            % if perm:
+                                <li><a href="${request.route_url('deleteversion', id=version.id)}"><i class="icon-fixed-width icon-trash"></i> Delete</a></li>
+                                <li><a href="${request.route_url('editversion', id=version.id)}"><i class="icon-fixed-width icon-pencil"></i> Edit</a></li>
+                            % endif
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        % endfor
+        </tbody>
+    </table>
+</div>
+<small>Permission: ${mod.permission | autolink,linejoin,n}</small>
 <%block name="style">
     <style type="text/css">
     % if mod.banner:

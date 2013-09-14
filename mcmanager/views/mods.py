@@ -135,4 +135,4 @@ class MMLServerMod(MMLServerView):
         else:
             packs = Pack.objects(owner=self.current_user)
 
-        return self.return_dict(title=mod.name, mod=mod, packs=packs, perm=self.has_perm(mod))
+        return self.return_dict(title=mod.name, mod=mod, packs=packs, perm=self.has_perm(mod), by_author=Mod.objects(author__icontains=mod.author))

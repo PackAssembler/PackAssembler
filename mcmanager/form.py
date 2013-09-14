@@ -93,7 +93,7 @@ class ParanoidTextAreaField(TextAreaField):
 class ModForm(SForm):
     name = namefield('Name')
     description = SafeTextAreaField('Description')
-    author = TextField('Author', validators=[validators.Optional(), validators.Length(max=32)])
+    author = TextField('Author', validators=[validators.required(), validators.Length(max=32)])
     install = TextField('Install', validators=[validators.required(), isalnum])
     url = urlfield('Homepage', v=[validators.required()])
     target = targetfield('Target')

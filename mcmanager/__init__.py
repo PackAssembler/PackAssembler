@@ -55,7 +55,6 @@ def main(global_config, **settings):
     config.add_route('editversion', '/mod/version/edit/{id}')
     config.add_route('downloadversion', '/mod/download/{id}')
     config.add_route('deleteversion', '/mod/version/delete/{id}')
-    config.add_route('versionmd5', '/mod/versionmd5/{id}')
 
     # Packs
     ## Listing

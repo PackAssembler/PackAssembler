@@ -1,13 +1,11 @@
+from .common import MMLServerView, VERROR, url_md5
 from pyramid.httpexceptions import HTTPFound
-from .common import MMLServerView, VERROR
 from pyramid.response import Response
 from lxml.builder import ElementMaker
 from pyramid.view import view_config
-from urllib.request import urlopen
 from ..form import PackBuildForm
 from lxml.etree import tostring
 from bson import json_util
-from hashlib import md5
 from json import dumps
 from ..schema import *
 
@@ -151,7 +149,7 @@ def generate_mcu_xml(request, pb, server=None):
             E.URL(request.route_url('downloadversion', id=mv.id)),
             E.Required('true'),
             E.ModType('Regular'),
-            E.MD5(mv.mod_file.md5),
+            E.MD5(mv.mod_file.md5 if mv.mod_file else mv.mod_file_url_md5),
             {
                 'id': mv.mod.rid,
                 'name': mv.mod.name + ' ({0})'.format(mv.version),
@@ -173,7 +171,11 @@ def generate_mcu_xml(request, pb, server=None):
             E.URL(config_url),
             E.Required('true'),
             E.ModType('Extract', {'inRoot': 'true'}),
-            E.MD5(md5(urlopen(config_url).read()).hexdigest())
+            E.MD5(url_md5(config_url)),
+            {
+                'id': 'Config',
+                'name': 'Config'
+            }
         ))
 
     return tostring(xml)

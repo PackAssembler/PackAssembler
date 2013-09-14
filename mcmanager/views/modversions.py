@@ -21,7 +21,7 @@ class MMLServerVersions(MMLServerView):
                 mv.mod_file = post[form.mod_file.name].file
                 mv.mod_file_url = None
             except AttributeError:
-                pass
+                mv.mod_file_url_md5 = url_md5(form.mod_file_url.data)
             mv.save()
 
             mod.versions.append(mv)
@@ -42,7 +42,7 @@ class MMLServerVersions(MMLServerView):
                 mv.mod_file = post[form.mod_file.name].file
                 mv.mod_file_url = None
             except AttributeError:
-                pass
+                mv.mod_file_url_md5 = url_md5(form.mod_file_url.data)
             mv.save()
 
             return HTTPFound(location=self.request.route_url('viewmod', id=mv.mod.id))
@@ -68,12 +68,6 @@ class MMLServerVersions(MMLServerView):
             mv.mod_file.delete()
         mv.delete()
         return HTTPFound(location=self.request.referer)
-
-    @view_config(route_name='versionmd5')
-    def versionmd5(self):
-        mv = self.get_db_object(ModVersion, perm=False)
-
-        return Response(mv.mod_file.md5)
 
 def get_params(post):
     p = opt_dict(

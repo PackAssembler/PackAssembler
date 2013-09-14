@@ -16,25 +16,40 @@
     </div>
 </div>
 <hr>
-<h3>Server Information</h3>
-<table class="table table-hover table-bordered">
-    <tr><td>Added</td><td>${server.id.generation_time.strftime('%e %b %Y %I:%m:%S %p')}</td></tr>
-    <tr>
-        <td>Homepage</td>
-        <td>
-            % if server.url:
-                <a target="_blank" rel="nofollow" href="${server.url}">${server.url}</a>
-            % else:
-                None
-            % endif
-        </td>
-    </tr>
-    <tr><td>Host</td><td>${server.host}</td></tr>
-    <tr><td>Port</td><td>${server.port}</td></tr>
-    <tr><td>Pack</td><td><a href="${request.route_url('viewpack', id=server.build.pack.id)}">${server.build.pack.name}</a></td></tr>
-    <tr><td>Pack Revision</td><td>${server.build.revision}</td></tr>
-    <tr><td>Custom Config</td><td>${server.config}</td></tr>
-</table>
+<div class="row">
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">Details</div>
+            <table class="table">
+                <tr>
+                    <td>Homepage</td>
+                    <td>
+                        % if server.url:
+                            <a target="_blank" rel="nofollow" href="${server.url}">${server.url}</a>
+                        % else:
+                            None
+                        % endif
+                    </td>
+                </tr>
+                <tr><td>Date Added</td><td>${server.id.generation_time.strftime('%e %b %Y %I:%m:%S %p')}</td></tr>
+                <tr><td>Host</td><td>${server.host}</td></tr>
+                <tr><td>Port</td><td>${server.port}</td></tr>
+                <tr><td>Custom Config</td><td>${server.config}</td></tr>
+            </table>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">Pack Build</div>
+            <table class="table">
+                <tr><td>Pack</td><td><a href="${request.route_url('viewpack', id=server.build.pack.id)}">${server.build.pack.name}</a></td></tr>
+                <tr><td>Pack Revision</td><td>${server.build.revision}</td></tr>
+                <tr><td>Minecraft Version</td><td>${server.build.mc_version}</td></tr>
+                <tr><td>Forge Version</td><td>${server.build.forge_version}</td></tr>
+            </table>
+        </div>
+    </div>
+</div>
 <%block name="endscripts">
     <script src="//raw.github.com/makeusabrew/bootbox/master/bootbox.js"></script>
     <script type="text/javascript">

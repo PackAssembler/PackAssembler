@@ -81,6 +81,9 @@ div.info-block h4 [class^="icon-"]:before
 /* List Pages */
 table.listtable > * > tr > * {line-height: 30px !important;}
 
+/* View Pages */
+div.panel-heading {font-size: 17px;}
+
 /* View Mod Page */
 /* div.modInfobar: see the viewmod.mak file */
 {

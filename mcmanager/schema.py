@@ -42,6 +42,7 @@ class ModVersion(Document):
     # The file itself
     mod_file = FileField(collection_name='modfs')
     mod_file_url = URLField()
+    mod_file_url_md5 = StringField(max_length=32)
     # Reference Mod ModVersion belongs to
     mod = ReferenceField('Mod', required=True)
 
@@ -71,7 +72,7 @@ class Mod(Document):
     ## Description of mod
     description = StringField()
     ## Author(s) of the mod
-    author = StringField(max_length=32)
+    author = StringField(required=True, max_length=32)
     ## Where to download mod
     install = StringField(required=True, default="mods")
     ## Where to run mod (server, client, or both?)

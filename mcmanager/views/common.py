@@ -1,7 +1,9 @@
 from pyramid.security import authenticated_userid, has_permission
 from pyramid.httpexceptions import HTTPFound
+from urllib.request import urlopen
 from urllib.parse import urlencode
 from ..security import Root
+from hashlib import md5
 from ..schema import *
 import requests
 
@@ -94,3 +96,12 @@ def validate_captcha(request):
         return t[0][0] == 't', CAPTCHA_MESSAGE + CAPTCHA_ERRORS[t[1]]
     except KeyError:
         return t[0][0] == 't', CAPTCHA_MESSAGE + t[1]
+
+def url_md5(url, BLOCKSIZE=16*1024):
+    hasher = md5()
+    req = urlopen(url)
+    buf = req.read(BLOCKSIZE)
+    while len(buf) > 0:
+        hasher.update(buf)
+        buf = req.read(BLOCKSIZE)
+    return hasher.hexdigest()
