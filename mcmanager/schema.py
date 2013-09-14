@@ -45,6 +45,8 @@ class ModVersion(Document):
     mod_file_url_md5 = StringField(max_length=32)
     # Reference Mod ModVersion belongs to
     mod = ReferenceField('Mod', required=True)
+    # Is a development version
+    devel = BooleanField(default=False)
 
 
 class Banner(EmbeddedDocument):
@@ -114,6 +116,8 @@ class PackBuild(Document):
 class Pack(Document):
     # Information
     name = StringField(required=True, unique=True)
+    # Use devel?
+    devel = BooleanField(default=False)
     # Readable id
     rid = StringField(required=True)
     # Mod List

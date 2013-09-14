@@ -42,7 +42,11 @@ class MMLServerPackBuild(MMLServerView):
                         if forge_min <= splitf and forge_max >= splitf:
                             forge_compat.append(version)
                     if forge_compat:
-                        selected = max(forge_compat, key=lambda v: v.version.split('.'))
+                        dcompat = [version for version in forge_compat if version.devel is False or pack.devel is True]
+                        if dcompat:
+                            selected = max(dcompat, key=lambda v: v.version.split('.'))
+                        else:
+                            selected = max(forge_compat, key=lambda v: v.version.split('.'))
                         mod_versions.append(selected)
                     else:
                         elist.append(self.linkerror(mod, 'is incompatible with Forge ' + form.forge_version.data))

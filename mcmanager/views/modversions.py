@@ -1,7 +1,7 @@
+from ..form import ModVersionForm, EditModVersionForm
 from pyramid.response import Response, FileIter
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
-from ..form import ModVersionForm
 from ..schema import *
 from .common import *
 import re
@@ -34,15 +34,17 @@ class MMLServerVersions(MMLServerView):
     def editversion(self):
         mv = self.get_db_object(ModVersion)
         post = self.request.params
-        form = ModVersionForm(post, mv)
+        form = EditModVersionForm(post, mv)
 
         if 'submit' in post and form.validate():
             form.populate_obj(mv)
+            print(mv.mod_file)
             try:
                 mv.mod_file = post[form.mod_file.name].file
                 mv.mod_file_url = None
             except AttributeError:
-                mv.mod_file_url_md5 = url_md5(form.mod_file_url.data)
+                if not mv.mod_file:
+                    mv.mod_file_url_md5 = url_md5(form.mod_file_url.data)
             mv.save()
 
             return HTTPFound(location=self.request.route_url('viewmod', id=mv.mod.id))

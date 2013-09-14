@@ -18,11 +18,14 @@ Support for anything under 1.5.2 is deprecated. We will be removing it from the 
 In order to ensure that we don't have duplicates or mods with no permissions defined, we have made a decision to only allow contributors to add mods.
 
 <h4>How do permissions work?</h4>
-When assesing the legality of having a copyrighted mod on this website, we assume:
+When assesing the legality of having a copyrighted mod on our servers, we assume:
 <ol>
     <li>If no permission is specified for this unique situation, one must follow restrictions given for 'modpacks'.</li>
     <li>No license given (or none which applies) by the creator means all rights reserved.</li>
 </ol>
+If the mod author does not allow uploading directly to the site according to the policy above, there is a second option: One may add a mod version by url. \
+However, this is not allowed if the mod author specifically disallows the practice. In that case, the mod doesn't deserve to be used.
+<strong>If a mod is found without a satisfactory permission description all mod versions will be deleted.</strong>
 
 
 <h3>Packs</h3>

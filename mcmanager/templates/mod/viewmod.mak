@@ -128,12 +128,13 @@
 <div class="table-responsive">
     <table class="table table-hover table-bordered">
         <thead>
-            <tr><th>Version</th><th>MC Min</th><th>MC Max</th><th>Uploaded</th><th>MD5</th><th>Action</th></tr>
+            <tr><th>Version</th><th>Devel</th><th>MC Min</th><th>MC Max</th><th>Uploaded</th><th>MD5</th><th>Action</th></tr>
         </thead>
         <tbody>
         % for version in mod.versions[::-1]:
             <tr class="button-height">
                 <td>${version.version}</td>
+                <td>${version.devel}</td>
                 <td>${version.mc_min}</td>
                 <td>${version.mc_max}</td>
                 <td>${version.id.generation_time.strftime('%e %b %Y %I:%m:%S %p')}</td>

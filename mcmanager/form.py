@@ -72,10 +72,11 @@ def either_mod_file(form, field):
 class SForm(Form):
     def populate_obj(self, obj):
         for name, field in self._fields.items():
-            if not field.__class__.__name__ == 'FileField' and field.data:
-                field.populate_obj(obj, name)
-            else:
-                setattr(obj, name, None)
+            if not field.__class__.__name__ == 'FileField':
+                if field.data:
+                    field.populate_obj(obj, name)
+                else:
+                    setattr(obj, name, None)
 
 # Safer TextAreaField
 class SafeTextAreaField(TextAreaField):
@@ -109,12 +110,17 @@ class ModVersionForm(SForm):
     mc_max = mcvfield('Minecraft Max')
     forge_min = forgefield('Forge Min', v=[validators.Optional()])
     forge_max = forgefield('Forge Max', v=[validators.Optional()])
+    devel = BooleanField('Development Version')
     mod_file = FileField('File')
     mod_file_url = urlfield('File URL', v=[either_mod_file, validators.Optional()])
+
+class EditModVersionForm(ModVersionForm):
+    mod_file_url = urlfield('File URL', v=[validators.Optional()])
 
 # Packs
 class PackForm(SForm):
     name = namefield('Name')
+    devel = BooleanField('Use Development Versions')
 
 class PackModForm(SForm):
     id = idfield('Mod ID', v=[validators.required()])

@@ -13,6 +13,7 @@
             ${form.showfield(f.mc_max)}
             ${form.showfield(f.forge_min)}
             ${form.showfield(f.forge_min)}
+            ${form.showfield(f.devel)}
             <%form:showinput label="${f.mod_file.label.text}" name="${f.mod_file.name}">
                 ${f.mod_file()}
             </%form:showinput>

@@ -16,7 +16,7 @@ class MMLServerPack(MMLServerView):
 
         if 'submit' in post and form.validate():
             try:
-                pack = Pack(owner=self.current_user, name=form.name.data, rid=form.name.data.replace(' ', '_')).save()
+                pack = Pack(owner=self.current_user, name=form.name.data, devel=form.devel.data, rid=form.name.data.replace(' ', '_')).save()
                 return HTTPFound(location=self.request.route_url('viewpack', id=pack.id))
             except NotUniqueError:
                 form.name.errors.append('Already exists.')
@@ -30,6 +30,7 @@ class MMLServerPack(MMLServerView):
             new_pack = Pack(
                 owner=self.current_user,
                 name='[{0}] {1}'.format(self.logged_in, current_pack.name),
+                devel=current_pack.devel,
                 mods=current_pack.mods).save()
         except NotUniqueError:
             return HTTPFound(location=self.request.route_url('error', type='already_cloned'))
@@ -43,6 +44,7 @@ class MMLServerPack(MMLServerView):
 
         if 'submit' in post and form.validate():
             pack.name = form.name.data
+            pack.devel = form.devel.data
             try:
                 pack.save()
                 return HTTPFound(location=self.request.route_url('viewpack', id=pack.id))
