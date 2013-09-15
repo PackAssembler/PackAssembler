@@ -4,6 +4,7 @@ from .common import MMLServerView
 
 class MMLServerViews(MMLServerView):
     # General
+
     @view_config(route_name='home', renderer='home.mak')
     def home(self):
         return self.return_dict(title='Home')
@@ -26,7 +27,7 @@ class MMLServerViews(MMLServerView):
     def error(self):
         e = self.request.matchdict['type']
         if e == 'depends':
-            return self.return_dict(title='Unable to Delete', message='Unable to delete the requested object.' + 
+            return self.return_dict(title='Unable to Delete', message='Unable to delete the requested object.' +
                                     ' Something depends on it. If you would not like to maintain it any longer, please disown it.')
         elif e == 'not_contributor':
             return self.return_dict(title='Not a Contributor', message='You may not create nor adopt mods unless you are a contributor.')

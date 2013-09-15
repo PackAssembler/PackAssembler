@@ -10,14 +10,17 @@ import requests
 CAPTCHA_URL = 'http://www.google.com/recaptcha/api/verify'
 CAPTCHA_ERRORS = {
     'invalid-site-private-key': 'Invalid API Key.',
-    'invalid-request-cookie': 'The challenge parameter of the verify script was incorrect.',
+    'invalid-request-cookie': 'The challenge parameter of the verify script ' +
+                              'was incorrect.',
     'incorrect-captcha-sol': 'The CAPTCHA solution was incorrect.',
     'captcha-timeout': 'The solution was received after the CAPTCHA timed out.'
 }
 CAPTCHA_MESSAGE = 'Something went wrong when verifying the Captcha. '
 VERROR = 'Your Data is not Valid. Enable Javascript for More Information.'
 
+
 class MMLServerView(object):
+
     def __init__(self, request):
         self.request = request
         self.logged_in = authenticated_userid(request)
@@ -61,7 +64,7 @@ class MMLServerView(object):
         return data
 
     def check_depends(self, data):
-        dtype =  data.__class__.__name__
+        dtype = data.__class__.__name__
         if dtype == 'Mod':
             return Pack.objects(mods=data).first() is None
         elif dtype == 'Pack':
@@ -81,8 +84,10 @@ def opt_dict(**kwargs):
             d[name] = None
     return d
 
+
 class NoPermission(Exception):
     pass
+
 
 def validate_captcha(request):
     payload = {
@@ -97,7 +102,8 @@ def validate_captcha(request):
     except KeyError:
         return t[0][0] == 't', CAPTCHA_MESSAGE + t[1]
 
-def url_md5(url, BLOCKSIZE=16*1024):
+
+def url_md5(url, BLOCKSIZE=16 * 1024):
     hasher = md5()
     req = urlopen(url)
     buf = req.read(BLOCKSIZE)

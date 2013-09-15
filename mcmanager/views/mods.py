@@ -3,16 +3,17 @@ from ..form import ModForm, BannerForm
 from pyramid.view import view_config
 from ..schema import *
 from .common import *
-import re
 
 
 class MMLServerMod(MMLServerView):
+
     @view_config(route_name='modlist', renderer='modlist.mak')
     def modlist(self):
         post = self.request.params
 
         if 'q' in post:
-            mods = Mod.objects(Q(name__icontains=post['q']) | Q(author__icontains=post['q']))
+            mods = Mod.objects(
+                Q(name__icontains=post['q']) | Q(author__icontains=post['q']))
         else:
             mods = Mod.objects
 
@@ -135,4 +136,11 @@ class MMLServerMod(MMLServerView):
         else:
             packs = Pack.objects(owner=self.current_user)
 
-        return self.return_dict(title=mod.name, mod=mod, packs=packs, perm=self.has_perm(mod), by_author=Mod.objects(author__icontains=mod.author))
+        return self.return_dict(title=mod.name,
+                                mod=mod,
+                                packs=packs,
+                                perm=self.has_perm(mod),
+                                by_author=Mod.objects(
+                                    author__icontains=mod.author),
+                                with_mod=Pack.objects(mods=mod)
+                                )

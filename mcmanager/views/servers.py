@@ -8,6 +8,7 @@ from .common import *
 
 
 class MMLServerServers(MMLServerView):
+
     @view_config(route_name='addserver', renderer='genericform.mak', permission='user')
     def addserver(self):
         error = ''
@@ -17,7 +18,9 @@ class MMLServerServers(MMLServerView):
         if 'submit' in post and form.validate():
             try:
                 pack = Pack.objects.get(id=form.packid.data)
-                pb = PackBuild.objects.get(revision=form.revision.data, pack=pack)
+                pb = PackBuild.objects.get(
+                    revision=form.revision.data,
+                    pack=pack)
                 params = opt_dict(
                     name=form.name.data,
                     rid=form.name.data.replace(' ', '_'),
@@ -40,12 +43,18 @@ class MMLServerServers(MMLServerView):
         error = ''
         server = self.get_db_object(Server)
         post = self.request.params
-        form = ServerForm(post, server, packid=server.build.pack.id, revision=server.build.revision)
+        form = ServerForm(
+            post,
+            server,
+            packid=server.build.pack.id,
+            revision=server.build.revision)
 
         if 'submit' in post and form.validate():
             try:
                 pack = Pack.objects.get(id=form.packid.data)
-                pb = PackBuild.objects.get(revision=form.revision.data, pack=pack)
+                pb = PackBuild.objects.get(
+                    revision=form.revision.data,
+                    pack=pack)
                 params = opt_dict(
                     name=form.name.data,
                     url=form.url.data,

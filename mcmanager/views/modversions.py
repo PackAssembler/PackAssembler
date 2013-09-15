@@ -8,6 +8,7 @@ import re
 
 
 class MMLServerVersions(MMLServerView):
+
     @view_config(route_name='addversion', renderer='editmodversion.mak', permission='user')
     def addversion(self):
         mod = self.get_db_object(Mod)
@@ -71,6 +72,7 @@ class MMLServerVersions(MMLServerView):
         mv.delete()
         return HTTPFound(location=self.request.referer)
 
+
 def get_params(post):
     p = opt_dict(
         mc_min=post.get('selMCMin'),
@@ -87,5 +89,7 @@ def get_params(post):
 
 
 def check_params(params):
-    check_forge = lambda x: re.match('^([0-9]\.){3}[0-9]{3}$', params[x]) is not None if x in params else True
+    check_forge = lambda x: re.match(
+        '^([0-9]\.){3}[0-9]{3}$',
+        params[x]) is not None if x in params else True
     return check_forge('forge_min') and check_forge('forge_max')

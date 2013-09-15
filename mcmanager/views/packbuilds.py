@@ -1,4 +1,4 @@
-from .common import MMLServerView, VERROR, url_md5
+from .common import MMLServerView, url_md5
 from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
 from lxml.builder import ElementMaker
@@ -11,6 +11,7 @@ from ..schema import *
 
 
 class MMLServerPackBuild(MMLServerView):
+
     def linkerror(self, mod, message):
         return '<a href="' + self.request.route_url('viewmod', id=mod.id) + '">' + mod.name + '</a>' + ' ' + message
 
@@ -37,29 +38,37 @@ class MMLServerPackBuild(MMLServerView):
                     forge_compat = []
                     for version in mc_compat:
                         dversion = version.to_mongo()
-                        forge_min = dversion.get('forge_min', '0.0.0.000').split('.')
-                        forge_max = dversion.get('forge_max', '9.9.9.999').split('.')
+                        forge_min = dversion.get(
+                            'forge_min', '0.0.0.000').split('.')
+                        forge_max = dversion.get(
+                            'forge_max', '9.9.9.999').split('.')
                         if forge_min <= splitf and forge_max >= splitf:
                             forge_compat.append(version)
                     if forge_compat:
-                        dcompat = [version for version in forge_compat if version.devel is False or pack.devel is True]
+                        dcompat = [
+                            version for version in forge_compat if version.devel is False or pack.devel is True]
                         if dcompat:
-                            selected = max(dcompat, key=lambda v: v.version.split('.'))
+                            selected = max(
+                                dcompat, key=lambda v: v.version.split('.'))
                         else:
-                            selected = max(forge_compat, key=lambda v: v.version.split('.'))
+                            selected = max(
+                                forge_compat, key=lambda v: v.version.split('.'))
                         mod_versions.append(selected)
                     else:
-                        elist.append(self.linkerror(mod, 'is incompatible with Forge ' + form.forge_version.data))
+                        elist.append(self.linkerror(mod, 'is incompatible with Forge ' +
+                                     form.forge_version.data))
                 else:
-                    elist.append(self.linkerror(mod, 'is incompatible with Minecraft ' + form.mc_version.data))
+                    elist.append(self.linkerror(mod, 'is incompatible with Minecraft ' +
+                                 form.mc_version.data))
             if elist:
                 error = '<ul>'
                 for e in elist:
                     error += '<li>' + e + '</li>'
                 error += '</ul>'
             else:
-                pb = PackBuild(mod_versions=mod_versions, mc_version=form.mc_version.data,
-                               forge_version=form.forge_version.data, pack=pack, revision=pack.latest+1)
+                pb = PackBuild(
+                    mod_versions=mod_versions, mc_version=form.mc_version.data,
+                    forge_version=form.forge_version.data, pack=pack, revision=pack.latest + 1)
                 if form.config.data:
                     pb.config = form.config.data
                 pb.save()
@@ -112,6 +121,7 @@ class MMLServerPackBuild(MMLServerView):
 
         return Response(generate_mcu_xml(self.request, pb), content_type='application/xml')
 
+
 def generate_mcu_xml(request, pb, server=None):
     E = ElementMaker(nsmap={
         'noNamespaceSchemaLocation': 'http://www.mcupdater.com/ServerPack',
@@ -128,8 +138,10 @@ def generate_mcu_xml(request, pb, server=None):
     if server:
         server_info['id'] = 'server-' + server.rid
         server_info['name'] = server.name
-        server_info['newsUrl'] = server.url or request.route_url('viewpack', id=pb.pack.id)
-        server_info['serverAddress'] = '{0}:{1}'.format(server.host, str(server.port))
+        server_info['newsUrl'] = server.url or request.route_url(
+            'viewpack', id=pb.pack.id)
+        server_info['serverAddress'] = '{0}:{1}'.format(
+            server.host, str(server.port))
     # If it's not, use the pack information
     else:
         server_info['id'] = pb.pack.rid
@@ -141,7 +153,8 @@ def generate_mcu_xml(request, pb, server=None):
     # Create the base xml
     xml = E.ServerPack(
         E.Server(
-            E.Import('mcubase', {'url': request.route_url('mcubase') + '?mc={0}&amp;forge={1}'.format(pb.mc_version, pb.forge_version)}),
+            E.Import(
+                'mcubase', {'url': request.route_url('mcubase') + '?mc={0}&amp;forge={1}'.format(pb.mc_version, pb.forge_version)}),
             server_info
         ),
         {'version': '3.0'}
@@ -160,7 +173,8 @@ def generate_mcu_xml(request, pb, server=None):
             }
         ))
 
-    # Get the config url, if there is none in either server or pack, leave it blank
+    # Get the config url, if there is none in either server or pack, leave it
+    # blank
     config_url = ''
     if server:
         if server.config:

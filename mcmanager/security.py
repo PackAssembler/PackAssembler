@@ -7,11 +7,13 @@ import hmac
 
 hpass = lambda password: hmac.new(password.encode()).digest()
 
+
 def find_group(userid, request):
     connect(request.registry.settings.get('mongodb', 'mcmanager'))
     user = User.objects(username=userid).first()
     if user is not None:
         return ['group:' + user.group]
+
 
 def check_pass(username, password):
     if '@' in username:
@@ -23,11 +25,12 @@ def check_pass(username, password):
     else:
         return False
 
+
 def password_hash(password):
     return bcrypt.hashpw(hpass(password), bcrypt.gensalt())
 
 
-class Root:
+class Root(object):
     __acl__ = [(Allow, Everyone, 'view'),
                (Allow, 'group:user', 'user'),
                (Allow, 'group:contributor', ('user', 'contributor')),

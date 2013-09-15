@@ -1,8 +1,7 @@
 from ..form import UserForm, LoginForm, SendResetForm, ResetForm, EditUserPasswordForm, EditUserAvatarForm, EditUserEmailForm
-from .common import MMLServerView, VERROR, validate_captcha, opt_dict
+from .common import MMLServerView, validate_captcha
 from pyramid.view import view_config, forbidden_view_config
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
-from wtforms import ValidationError as WTValidationError
 from ..security import check_pass, password_hash
 from pyramid.security import remember, forget
 from pyramid.response import Response
@@ -13,7 +12,9 @@ from ..schema import *
 
 ehash = lambda e: md5(e.strip().encode()).hexdigest()
 
+
 class MMLServerUser(MMLServerView):
+
     @view_config(route_name='signup', renderer='signup.mak')
     def signup(self):
         error = ''
@@ -72,7 +73,7 @@ class MMLServerUser(MMLServerView):
         # Make sure no one is logged in
         if self.logged_in is not None:
             # If this is happening because the user has no permission
-            if type(self.request.exception) is HTTPForbidden:
+            if isinstance(self.request.exception, HTTPForbidden):
                 return HTTPFound(location=self.request.route_url('error', type='not_contributor'))
             return HTTPFound(location=self.request.route_url('home'))
 
@@ -126,7 +127,6 @@ class MMLServerUser(MMLServerView):
 
         return self.return_dict(title='Reset Password', f=form, cancel=self.request.route_url('login'))
 
-
     @view_config(route_name='edituser', renderer='edituser.mak', permission='user')
     def edituser(self):
         user = self.get_db_object(User)
@@ -140,7 +140,10 @@ class MMLServerUser(MMLServerView):
         password_form.current_user.data = self.logged_in
         email_form.current_user.data = self.logged_in
 
-        rval = HTTPFound(location=self.request.route_url('profile', id=user.id))
+        rval = HTTPFound(
+            location=self.request.route_url(
+                'profile',
+                id=user.id))
         if 'password_submit' in post and password_form.validate():
             user.password = password_hash(password_form.password.data)
             user.save()
@@ -187,22 +190,41 @@ class MMLServerUser(MMLServerView):
         # Get user
         user = self.get_db_object(User, perm=False)
 
-        return self.return_dict(title=user.username, owner=user, mods=Mod.objects(owner=user),
-                                packs=Pack.objects(owner=user), servers=Server.objects(owner=user),
-                                perm=self.has_perm(user), admin=self.specperm('admin'))
+        return self.return_dict(
+            title=user.username, owner=user, mods=Mod.objects(owner=user),
+            packs=Pack.objects(owner=user), servers=Server.objects(owner=user),
+            perm=self.has_perm(user), admin=self.specperm('admin'))
 
     def send_confirmation(self, user):
         sender = Mandrill(self.request.registry.settings.get('mandrill_key'))
         message = {
             'to': [{'email': user.email, 'name': user.username}],
-            'global_merge_vars': [{'content': self.request.route_url('activate', id=user.id, key=user.activate), 'name': 'confirmaddress'}]
+            'global_merge_vars':
+            [{'content': self.request.route_url(
+              'activate',
+              id=user.id,
+              key=user.activate),
+              'name': 'confirmaddress'}]
         }
-        sender.messages.send_template(template_name='confirmmcm', template_content=[], message=message, async=True)
+        sender.messages.send_template(
+            template_name='confirmmcm',
+            template_content=[],
+            message=message,
+            async=True)
 
     def send_password_reset(self, user):
         sender = Mandrill(self.request.registry.settings.get('mandrill_key'))
         message = {
             'to': [{'email': user.email, 'name': user.username}],
-            'global_merge_vars': [{'content': self.request.route_url('reset', id=user.id, key=user.reset), 'name': 'reseturl'}]
+            'global_merge_vars':
+            [{'content': self.request.route_url(
+              'reset',
+              id=user.id,
+              key=user.reset),
+              'name': 'reseturl'}]
         }
-        sender.messages.send_template(template_name='resetmcm', template_content=[], message=message, async=True)
+        sender.messages.send_template(
+            template_name='resetmcm',
+            template_content=[],
+            message=message,
+            async=True)

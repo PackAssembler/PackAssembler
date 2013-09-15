@@ -7,10 +7,14 @@
         except AttributeError:
             return 'None'
 
+    def externallink(text):
+        trun = text[:35] + (text[35:] and '...')
+        return '<a href="{0}" target="_blank" rel="nofollow">{1}</a>'.format(text, trun)
+
     def autolink(text):
         urlre = re.compile("(\(?https?://[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|])(\">|</a>)?")
         try:
-            return urlre.sub(r'<a href="\1" target="_blank" rel="nofollow">\1</a>', text)
+            return urlre.sub(lambda m: externallink(m.group(0)), text)
         except TypeError:
             return 'None'
 %>
@@ -70,7 +74,7 @@
                 <tr><td>Author</td><td><a href="${request.route_url('modlist')}?q=${mod.author}">${mod.author}</a></td></tr>
                 <tr><td>Homepage</td><td>
                 % if mod.url:
-                    <a target="_blank" rel="nofollow" href="${mod.url}">${mod.url}</a>
+                    ${mod.url | externallink}
                 % else:
                     None
                 % endif
@@ -99,12 +103,22 @@
         </div>
     </div>
     <div class="col-lg-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">Mods by ${mod.author}</div>
-            <div class="list-group">
-            % for m in by_author:
-                <a href="${request.route_url('viewmod', id=m.id)}" class="list-group-item">${m.name}</a>
-            % endfor
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-heading">Mods by ${mod.author}</div>
+                <div class="list-group">
+                % for m in by_author:
+                    <a href="${request.route_url('viewmod', id=m.id)}" class="list-group-item">${m.name}</a>
+                % endfor
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">Packs with ${mod.name}</div>
+                <div class="list-group">
+                % for p in with_mod:
+                    <a href="${request.route_url('viewpack', id=p.id)}" class="list-group-item">${p.name}</a>
+                % endfor
+                </div>
             </div>
         </div>
     </div>
