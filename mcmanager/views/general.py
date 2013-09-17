@@ -1,8 +1,8 @@
 from pyramid.view import view_config
-from .common import MMLServerView
+from .common import ViewBase
 
 
-class MMLServerViews(MMLServerView):
+class GeneralViews(ViewBase):
     # General
 
     @view_config(route_name='home', renderer='home.mak')

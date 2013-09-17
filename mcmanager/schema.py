@@ -55,6 +55,7 @@ class Banner(EmbeddedDocument):
     # Color of text on banner (title, etc)
     text_color = StringField(min_length=4, max_length=7, default='#FFFFFF')
 
+
 @total_ordering
 class Mod(Document):
     def __lt__(self, other):
@@ -76,7 +77,7 @@ class Mod(Document):
     ## Author(s) of the mod
     author = StringField(required=True, max_length=32)
     ## Where to download mod
-    install = StringField(required=True, default="mods")
+    install = StringField(default="mods")
     ## Where to run mod (server, client, or both?)
     target = StringField(required=True, choices=TARGETS, default='both')
     ## Mod homepage

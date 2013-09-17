@@ -7,8 +7,7 @@ from ..schema import *
 from .common import *
 
 
-class MMLServerServers(MMLServerView):
-
+class ServerViews(ViewBase):
     @view_config(route_name='addserver', renderer='genericform.mak', permission='user')
     def addserver(self):
         error = ''

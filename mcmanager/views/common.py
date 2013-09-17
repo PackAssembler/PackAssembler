@@ -19,7 +19,7 @@ CAPTCHA_MESSAGE = 'Something went wrong when verifying the Captcha. '
 VERROR = 'Your Data is not Valid. Enable Javascript for More Information.'
 
 
-class MMLServerView(object):
+class ViewBase(object):
 
     def __init__(self, request):
         self.request = request

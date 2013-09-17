@@ -7,7 +7,7 @@ from .common import *
 import re
 
 
-class MMLServerVersions(MMLServerView):
+class VersionViews(ViewBase):
 
     @view_config(route_name='addversion', renderer='editmodversion.mak', permission='user')
     def addversion(self):

@@ -5,7 +5,7 @@ from ..schema import *
 from .common import *
 
 
-class MMLServerMod(MMLServerView):
+class ModViews(ViewBase):
 
     @view_config(route_name='modlist', renderer='modlist.mak')
     def modlist(self):

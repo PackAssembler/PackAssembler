@@ -6,8 +6,7 @@ from ..schema import *
 from .common import *
 
 
-class MMLServerPack(MMLServerView):
-
+class PackViews(ViewBase):
     @view_config(route_name='addpack', renderer='genericform.mak', permission='user')
     def addpack(self):
         error = ''
@@ -38,7 +37,8 @@ class MMLServerPack(MMLServerView):
                 owner=self.current_user,
                 name='[{0}] {1}'.format(self.logged_in, current_pack.name),
                 devel=current_pack.devel,
-                mods=current_pack.mods).save()
+                mods=current_pack.mods,
+                rid=self.logged_in+'-'+current_pack.rid).save()
         except NotUniqueError:
             return HTTPFound(location=self.request.route_url('error', type='already_cloned'))
         return HTTPFound(location=self.request.route_url('viewpack', id=new_pack.id))
@@ -98,7 +98,10 @@ class MMLServerPack(MMLServerView):
     def mcuxmlpack(self):
         pack = self.get_db_object(Pack, perm=False)
 
-        return HTTPFound(self.request.route_url('mcuxml', id=pack.builds[-1].id))
+        if pack.builds:
+            return HTTPFound(self.request.route_url('mcuxml', id=pack.builds[-1].id))
+        else:
+            return Response('No builds available.')
 
     @view_config(route_name='addpackmod', renderer='genericform.mak', permission='user')
     def addpackmod(self):

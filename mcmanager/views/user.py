@@ -1,5 +1,5 @@
 from ..form import UserForm, LoginForm, SendResetForm, ResetForm, EditUserPasswordForm, EditUserAvatarForm, EditUserEmailForm
-from .common import MMLServerView, validate_captcha
+from .common import ViewBase, validate_captcha
 from pyramid.view import view_config, forbidden_view_config
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from ..security import check_pass, password_hash
@@ -13,8 +13,7 @@ from ..schema import *
 ehash = lambda e: md5(e.strip().encode()).hexdigest()
 
 
-class MMLServerUser(MMLServerView):
-
+class UserViews(ViewBase):
     @view_config(route_name='signup', renderer='signup.mak')
     def signup(self):
         error = ''

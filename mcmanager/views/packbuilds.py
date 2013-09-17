@@ -1,4 +1,4 @@
-from .common import MMLServerView, url_md5
+from .common import ViewBase, url_md5
 from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
 from lxml.builder import ElementMaker
@@ -10,7 +10,7 @@ from json import dumps
 from ..schema import *
 
 
-class MMLServerPackBuild(MMLServerView):
+class PackBuildViews(ViewBase):
 
     def linkerror(self, mod, message):
         return '<a href="' + self.request.route_url('viewmod', id=mod.id) + '">' + mod.name + '</a>' + ' ' + message
