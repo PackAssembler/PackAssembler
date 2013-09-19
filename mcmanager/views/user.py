@@ -14,6 +14,7 @@ ehash = lambda e: md5(e.strip().encode()).hexdigest()
 
 
 class UserViews(ViewBase):
+
     @view_config(route_name='signup', renderer='signup.mak')
     def signup(self):
         error = ''

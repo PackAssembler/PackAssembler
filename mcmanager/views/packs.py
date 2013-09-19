@@ -7,6 +7,7 @@ from .common import *
 
 
 class PackViews(ViewBase):
+
     @view_config(route_name='addpack', renderer='genericform.mak', permission='user')
     def addpack(self):
         error = ''
@@ -38,7 +39,7 @@ class PackViews(ViewBase):
                 name='[{0}] {1}'.format(self.logged_in, current_pack.name),
                 devel=current_pack.devel,
                 mods=current_pack.mods,
-                rid=self.logged_in+'-'+current_pack.rid).save()
+                rid=self.logged_in + '-' + current_pack.rid).save()
         except NotUniqueError:
             return HTTPFound(location=self.request.route_url('error', type='already_cloned'))
         return HTTPFound(location=self.request.route_url('viewpack', id=new_pack.id))

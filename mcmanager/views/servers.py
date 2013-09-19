@@ -8,6 +8,7 @@ from .common import *
 
 
 class ServerViews(ViewBase):
+
     @view_config(route_name='addserver', renderer='genericform.mak', permission='user')
     def addserver(self):
         error = ''

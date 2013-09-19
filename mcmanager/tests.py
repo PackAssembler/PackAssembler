@@ -1,21 +1,25 @@
 import unittest
 
-from mongoengine import connect
 from pyramid import testing
+from pyramid import httpexceptions
+
+from webob.multidict import MultiDict
+
 from .schema import *
 
 
-# Settings
-testdb = 'tests'
-
-# Global init
-db = connect(testdb)
+# Helper functions
+def matchrequest(params=None, **kwargs):
+    return testing.DummyRequest(matchdict=kwargs, params=params)
 
 
 class GeneralViewTests(unittest.TestCase):
+
     """ Tests for more static views, don't contact db. """
+
     def setUp(self):
         self.config = testing.setUp()
+        self.config.include('mcmanager.main')
 
     def tearDown(self):
         testing.tearDown()
@@ -38,7 +42,7 @@ class GeneralViewTests(unittest.TestCase):
 
     def test_error_view(self):
         """ Error view should return correct message for an error type. """
-        request = testing.DummyRequest(matchdict={'type': 'already_cloned'})
+        request = matchrequest(type='already_cloned')
         result = self.makeOne(request).error()
         self.assertIn('already cloned this pack', result['message'])
 
@@ -49,19 +53,21 @@ def create_user(group):
                 email='test@example.com', group=group).save()
 
 
-def create_mod(owner, name='TestMod'):
+def create_mod(owner, name='TestMod', author='SomeAuthor', url='http://someurl.com/'):
     return Mod(
         name=name,
         rid=name.replace(' ', '_'),
-        author='SomeAuthor',
-        url='http://someurl.com/',
+        author=author,
+        url=url,
         owner=owner
-        )
+    )
 
 
 class DBTests(unittest.TestCase):
+
     def setUp(self):
         self.config = testing.setUp()
+        self.config.add_route('modlist', '/mod/list')
 
     def tearDown(self):
         testing.tearDown()
@@ -69,10 +75,6 @@ class DBTests(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.contributor = create_user('contributor')
-
-    @classmethod
-    def tearDownClass(self):
-        db.drop_database(testdb)
 
     def makeOne(self, request):
         """ Returns an object. Should be overwritten. """
@@ -85,6 +87,7 @@ class DBTests(unittest.TestCase):
 
 
 class ModViewTests(DBTests):
+
     def tearDown(self):
         super().tearDown()
         Mod.drop_collection()
@@ -120,7 +123,33 @@ class ModViewTests(DBTests):
         create_mod(self.contributor, name='aMod').save()
         mod = create_mod(self.contributor, name='bMod').save()
         # Get result
-        result = self.makeOne(testing.DummyRequest(params={'q': 'b'})).modlist()
+        result = self.makeOne(
+            testing.DummyRequest(params={'q': 'b'})).modlist()
         # Make sure there is only one mod
         self.assertTrue(len(result['mods']) == 1)
         self.assertEqual(result['mods'][0].name, mod.name)
+
+    def test_mod_view_object(self):
+        """ Ensure the mod view returns the correct mod object. """
+        # Create dummy mod
+        mod = create_mod(self.contributor).save()
+        # Get result
+        result = self.makeOne(matchrequest(id=mod.id)).viewmod()
+        # Make sure there is information which matches with the mod in the page
+        self.assertEqual(mod.name, result['mod'].name)
+        self.assertEqual(mod.author, result['mod'].author)
+        self.assertEqual(mod.url, result['mod'].url)
+
+    def test_add_mod_view_with_bad_input(self):
+        """ Ensure the add mod page is validated by inputting bad info. """
+        # Create request
+        request = testing.DummyRequest(params=MultiDict({
+            'author': r'\%%HGWwws&@',
+            'homepage': 'somehomepage'
+            }))
+        # Get result and make sure it's not HTTPFound
+        try:
+            #result = self.makeOne(request).addmod()
+            self.makeOne(request).addmod()
+        except httpexceptions.HTTPFound:
+            self.fail('Bad input was accepted.')
