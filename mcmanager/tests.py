@@ -2,6 +2,7 @@ import unittest
 
 from pyramid import testing
 from pyramid import httpexceptions
+from pyramid.decorator import reify
 
 from webob.multidict import MultiDict
 
@@ -12,6 +13,10 @@ from .schema import *
 # Helper functions
 def matchrequest(params=None, **kwargs):
     return testing.DummyRequest(matchdict=kwargs, params=params)
+
+# Globals
+URL = 'https://raw.github.com/MCManager/MCManager-Server/master/setup.py'
+#URL = 'https://github.com/MCManager/MCManager-Server/archive/master.zip'
 
 
 class GeneralViewTests(unittest.TestCase):
@@ -64,6 +69,24 @@ def create_mod(owner, name='TestMod',
     )
 
 
+def mock_version_data(mc_min=MCVERSIONS[0], mc_max=MCVERSIONS[0], forge_min='',
+                      forge_max='', mod_file=None, mod_file_url=''):
+    """ Create mock data for a mod version. """
+    data = {
+        'version': '1.0.0',
+        'mc_min': mc_min,
+        'mc_max': mc_max,
+        'forge_min': forge_min,
+        'forge_max': forge_max,
+        'devel': True,
+        'mod_file': mod_file,
+        'mod_file_url': mod_file_url,
+        'submit': ''
+    }
+
+    return data
+
+
 class DBTests(unittest.TestCase):
 
     def setUp(self):
@@ -76,9 +99,9 @@ class DBTests(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    @classmethod
-    def setUpClass(self):
-        self.contributor = create_user('contributor')
+    @reify
+    def contributor(self):
+        return create_user('contributor')
 
     def makeOne(self, request):
         """ Returns an object. Should be overwritten. """
@@ -195,8 +218,7 @@ class ModViewTests(DBTests):
         # Run deletemod()
         self.makeOne(matchrequest(id=mod.id)).deletemod()
         # Make sure the mod no longer exists
-        if Mod.objects(id=mod.id).first():
-            fail('Mod still exists.')
+        self.assertIsNone(Mod.objects(id=mod.id).first())
 
 
 class VersionViewTests(DBTests):
@@ -212,31 +234,87 @@ class VersionViewTests(DBTests):
 
         return VersionViews(request)
 
-    def test_add_mod_version_view_with_mod_file(self):
-        """ Ensure add version works with a file upload. """
+    def create_mock_file(self, data):
+        """ Create a mock file upload using tempfile. """
         from tempfile import TemporaryFile
-        # Create a mock file upload using tempfile
 
         class FileUpload(object):
             pass
         upload = FileUpload()
         upload.file = TemporaryFile()
-        upload.file.write(b'Fancy File')
+        upload.file.write(data)
         upload.file.seek(0)
+
+        return upload
+
+    @reify
+    def mock_file(self):
+        """ Default mock file. """
+        from urllib.request import urlopen
+
+        return self.create_mock_file(urlopen(URL).read())
+
+    def check_general(self, v, data):
+        """ Checks general information about the version object. """
+        self.assertEqual(v.version, data['version'])
+        self.assertEqual(v.mc_min, data['mc_min'])
+        self.assertEqual(v.mc_max, data['mc_max'])
+
+    def check_mod_file(self, v, data):
+        # Check if content of file is the same
+        data['mod_file'].file.seek(0)
+        self.assertEqual(
+            self.download_version(v).body, data['mod_file'].file.read())
+        # Make sure mod_file_url and mod_file_url_md5 are not filled out
+        self.assertIsNone(v.mod_file_url)
+        self.assertIsNone(v.mod_file_url_md5)
+        # Check if the attributes of the version are the same
+        self.check_general(v, data)
+        # Close the test file
+        data['mod_file'].file.close()
+
+    def check_mod_file_url(self, v, data):
+        from urllib.request import urlopen
+        # Check if the url is correct
+        self.assertEqual(v.mod_file_url, data['mod_file_url'])
+        # Check for an md5
+        self.assertEqual(len(v.mod_file_url_md5), 32)
+        # Check if the actual file is the same
+        self.assertEqual(
+            urlopen(URL).read(),
+            urlopen(self.download_version(v).location).read())
+        # Make sure mod_file is not filled out
+        self.assertFalse(v.mod_file)
+        # Check if the attributes of the version are the same
+        self.check_general(v, data)
+
+    def download_version(self, version):
+        """ Downloads mod version using downloadversion. """
+        request = matchrequest(id=version.id)
+        return self.makeOne(request).downloadversion()
+
+    def test_add_mod_version_view_with_mod_file(self):
+        """ Ensure add version works with a file upload. """
         # Create a dummy mod
         mod = create_mod(self.contributor).save()
         # Create request
-        data = {
-            'version': '1.0.0',
-            'mc_min': MCVERSIONS[0],
-            'mc_max': MCVERSIONS[0],
-            'forge_min': '0.00.0.000',
-            'forge_max': '0.00.0.000',
-            'devel': True,
-            'mod_file': upload,
-            'mod_file_url': '',
-            'submit': ''
-        }
+        data = mock_version_data(mod_file=self.mock_file)
+        request = matchrequest(params=MultiDict(data), id=mod.id)
+        # Run
+        self.makeOne(request).addversion()
+        # Reload the mod
+        mod.reload()
+        # Assign an easy-to-use variable to the version
+        v = mod.versions[0]
+        # Run tests
+        self.check_mod_file(v, data)
+
+    def test_add_mod_version_with_valid_url(self):
+        """ Ensure add version works with a valid mod file url. """
+        # Create a dummy mod.
+        mod = create_mod(self.contributor).save()
+        # Create request
+        data = mock_version_data(mod_file_url=URL)
         request = matchrequest(params=MultiDict(data), id=mod.id)
         # Run
         self.makeOne(request).addversion()
@@ -244,13 +322,149 @@ class VersionViewTests(DBTests):
         mod.reload()
         # Check if the mod has a new version
         self.assertTrue(mod.versions)
+        # Assign an easy-to-user variable to the version
+        v = mod.versions[0]
+        # Run tests
+        self.check_mod_file_url(v, data)
+
+    def test_add_mod_version_with_url_and_mod_file(self):
+        """
+        Ensure add version only uses the mod file when both mod_file and
+        mod_file_url are provided.
+        """
+        # Create a dummy mod
+        mod = create_mod(self.contributor).save()
+        # Create request
+        data = mock_version_data(mod_file=self.mock_file, mod_file_url=URL)
+        request = matchrequest(params=MultiDict(data), id=mod.id)
+        # Run
+        self.makeOne(request).addversion()
+        # Reload the mod
+        mod.reload()
         # Assign an easy-to-use variable to the version
         v = mod.versions[0]
-        # Check if content of file is the same
-        upload.file.seek(0)
-        self.assertEqual(v.mod_file.read(), upload.file.read())
-        # Check if the attributes of the version are the same
-        self.assertEqual(v.version, data['version'])
-        self.assertEqual(v.mc_max, data['mc_max'])
-        # Close the test file
-        upload.file.close()
+        # Run tests
+        self.check_mod_file(v, data)
+
+    def test_edit_mod_version_with_new_mod_file(self):
+        """
+        Ensure edit version actually changes the mod file if a new one
+        is added.
+        """
+        # Create a dummy mod
+        mod = create_mod(self.contributor).save()
+        # Create a modversion
+        self.makeOne(matchrequest(
+            params=MultiDict(mock_version_data(mod_file=self.mock_file)),
+            id=mod.id)).addversion()
+        # Reload the mod
+        mod.reload()
+        # Get the new modversion
+        v = mod.versions[0]
+        # Create request
+        data = mock_version_data(mod_file=self.create_mock_file(b'Testdata'))
+        request = matchrequest(params=MultiDict(data), id=v.id)
+        # Run
+        self.makeOne(request).editversion()
+        # Reload the version
+        v.reload()
+        # Run tests
+        self.check_mod_file(v, data)
+
+    def test_edit_mod_version_switching_to_mod_file_url(self):
+        """
+        Ensure edit version actually deletes the mod_file if we
+        switch to mod_file_url.
+        """
+        # Create a dummy mod
+        mod = create_mod(self.contributor).save()
+        # Create a modversion
+        self.makeOne(matchrequest(
+            params=MultiDict(mock_version_data(mod_file=self.mock_file)),
+            id=mod.id)).addversion()
+        # Reload the mod
+        mod.reload()
+        # Get the new modversion
+        v = mod.versions[0]
+        # Create request
+        data = mock_version_data(mod_file_url=URL)
+        request = matchrequest(params=MultiDict(data), id=v.id)
+        # Run
+        self.makeOne(request).editversion()
+        # Reload the version
+        v.reload()
+        # Run tests
+        self.check_mod_file_url(v, data)
+
+    def test_edit_mod_version_switching_to_mod_file(self):
+        """
+        Ensure edit version actually switches to mod_file if we
+        want to change from mod_file_url.
+        """
+        # Create a dummy mod
+        mod = create_mod(self.contributor).save()
+        # Create a modversion
+        self.makeOne(matchrequest(
+            params=MultiDict(mock_version_data(mod_file_url=URL)),
+            id=mod.id)).addversion()
+        # Reload the mod
+        mod.reload()
+        # Get the new modversion
+        v = mod.versions[0]
+        # Create request
+        data = mock_version_data(mod_file=self.mock_file, mod_file_url=URL)
+        request = matchrequest(params=MultiDict(data), id=v.id)
+        # Run
+        self.makeOne(request).editversion()
+        # Reload the version
+        v.reload()
+        # Run tests
+        self.check_mod_file(v, data)
+
+    def test_delete_version_with_mod_file(self):
+        """ Ensure delete version actually deletes the mod_file. """
+        from gridfs import GridFS
+        from mongoengine.connection import get_db
+        # Create a dummy mod
+        mod = create_mod(self.contributor).save()
+        # Create a modversion
+        self.makeOne(matchrequest(
+            params=MultiDict(mock_version_data(mod_file=self.mock_file)),
+            id=mod.id)).addversion()
+        # Reload the mod
+        mod.reload()
+        # Get the new modversion
+        v = mod.versions[0]
+        # Create a variable for the mod_file
+        mf_id = v.mod_file.grid_id
+        # Create request to delete the new modversion
+        request = matchrequest(id=v.id)
+        # Run
+        self.makeOne(request).deleteversion()
+        # Reload the mod again
+        mod.reload()
+        # Check if the version's gone
+        self.assertFalse(mod.versions)
+        # Check if the mod file has been deleted
+        self.assertFalse(GridFS(get_db(), collection='modfs').exists(mf_id))
+
+    def test_delete_version_with_mod_file_url(self):
+        """ Ensure delete version works with no mod_file. """
+        # Create a dummy mod
+        mod = create_mod(self.contributor).save()
+        # Create a modversion
+        self.makeOne(matchrequest(
+            params=MultiDict(mock_version_data(mod_file_url=URL)),
+            id=mod.id)).addversion()
+        # Reload the mod
+        mod.reload()
+        # Get the new modversion
+        v = mod.versions[0]
+        # Create request to delete the new modversion
+        request = matchrequest(id=v.id)
+        # Run
+        self.makeOne(request).deleteversion()
+        # Reload the mod again
+        mod.reload()
+        # Check if the version's gone
+        self.assertFalse(mod.versions)

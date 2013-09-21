@@ -20,6 +20,7 @@ class VersionViews(ViewBase):
             try:
                 mv.mod_file = post[form.mod_file.name].file
                 mv.mod_file_url = None
+                mv.mod_file_url_md5 = None
             except AttributeError:
                 mv.mod_file_url_md5 = url_md5(form.mod_file_url.data)
             mv.save()
@@ -38,13 +39,13 @@ class VersionViews(ViewBase):
 
         if 'submit' in post and form.validate():
             form.populate_obj(mv)
-            print(mv.mod_file)
             try:
                 mv.mod_file = post[form.mod_file.name].file
                 mv.mod_file_url = None
+                mv.mod_file_url_md5 = None
             except AttributeError:
-                if not mv.mod_file:
-                    mv.mod_file_url_md5 = url_md5(form.mod_file_url.data)
+                mv.mod_file = None
+                mv.mod_file_url_md5 = url_md5(form.mod_file_url.data)
             mv.save()
 
             return HTTPFound(location=self.request.route_url('viewmod', id=mv.mod.id))
@@ -69,7 +70,7 @@ class VersionViews(ViewBase):
         if mv.mod_file:
             mv.mod_file.delete()
         mv.delete()
-        return HTTPFound(location=self.request.referer)
+        return HTTPFound(location=(self.request.referer if 'referer' in self.request else self.request.application_url))
 
 
 def get_params(post):
