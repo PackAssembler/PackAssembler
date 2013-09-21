@@ -4,7 +4,6 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 from ..schema import *
 from .common import *
-import re
 
 
 class VersionViews(ViewBase):
@@ -86,10 +85,3 @@ def get_params(post):
     except AttributeError:
         pass
     return p
-
-
-def check_params(params):
-    check_forge = lambda x: re.match(
-        '^([0-9]\.){3}[0-9]{3}$',
-        params[x]) is not None if x in params else True
-    return check_forge('forge_min') and check_forge('forge_max')

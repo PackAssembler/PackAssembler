@@ -4,8 +4,8 @@ from wtforms import *
 import htmllaundry
 import re
 
-# Form validators
 
+# Form validators
 
 def isalpha(form, field):
     if not field.data.isalpha():
@@ -27,25 +27,25 @@ def iscolor(form, field):
     if not re.match('^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$', field.data):
         raise ValidationError('Not a valid hex color code.')
 
-# Form widgets
 
+# Form widgets
 
 class ColorInput(widgets.core.Input):
 
     """ Renders an input with type "color". """
     input_type = 'color'
 
-# Form fields
 
+# Form fields
 
 class ColorField(fields.core.StringField):
 
     """ Represents an ``<input type="color">``. """
     widget = ColorInput()
 
+
 # Common field creators
 # Additional validators can be given with the v kwarg
-
 
 def mcvfield(name, **kwargs):
     return SelectField(name, choices=[(v, v) for v in MCVERSIONS], **kwargs)
@@ -67,8 +67,8 @@ idfield = textfield_creator([validators.Regexp('^[0-9a-f]{24}$')])
 namefield = textfield_creator(
     [validators.required(), validators.Length(max=32), validators.Regexp('^[\w ]+$')])
 
-# Specific Validators
 
+# Specific Validators
 
 def validate_current(form, field):
     """Validator for operations which require password."""
@@ -87,8 +87,8 @@ def either_mod_file(form, field):
     if file_not_entered and not field.data:
         raise validators.StopValidation(message)
 
-# Subclassed form
 
+# Subclassed form
 
 class SForm(Form):
 
@@ -100,8 +100,8 @@ class SForm(Form):
                 else:
                     setattr(obj, name, None)
 
-# Safer TextAreaField
 
+# Safer TextAreaField
 
 class SafeTextAreaField(TextAreaField):
 
@@ -110,16 +110,16 @@ class SafeTextAreaField(TextAreaField):
         c.allow_tags.append('div')
         self.data = htmllaundry.sanitize(self.data, cleaner=c, wrap=None)
 
-# TextAreaField, no HTML allowed
 
+# TextAreaField, no HTML allowed
 
 class ParanoidTextAreaField(TextAreaField):
 
     def pre_validate(self, form):
         self.data = htmllaundry.strip_markup(self.data)
 
-# Mods
 
+# Mods
 
 class ModForm(SForm):
     name = namefield('Name')
@@ -153,8 +153,8 @@ class ModVersionForm(SForm):
 class EditModVersionForm(ModVersionForm):
     mod_file_url = urlfield('File URL', v=[validators.Optional()])
 
-# Packs
 
+# Packs
 
 class PackForm(SForm):
     name = namefield('Name')
@@ -164,16 +164,16 @@ class PackForm(SForm):
 class PackModForm(SForm):
     id = idfield('Mod ID', v=[validators.required()])
 
-# Pack Builds
 
+# Pack Builds
 
 class PackBuildForm(SForm):
     mc_version = mcvfield('Minecraft Version')
     forge_version = forgefield('Forge Version', v=[validators.required()])
     config = urlfield('Config', v=[validators.Optional()])
 
-# Servers
 
+# Servers
 
 class ServerForm(SForm):
     name = namefield('Name')
@@ -186,9 +186,9 @@ class ServerForm(SForm):
         'Pack Revision', validators=[validators.required()])
     config = urlfield('Custom Config', v=[validators.Optional()])
 
+
 # Users
 # Not logged in
-
 
 class UserForm(SForm):
     username = TextField('Username', validators=[
@@ -219,8 +219,8 @@ class ResetForm(SForm):
     confirm = PasswordField('Confirm', validators=[
                             validators.required(), validators.EqualTo('password', 'Field must be same as password.')])
 
-# Logged in
 
+# Logged in
 
 class EditUserPasswordForm(ResetForm):
     current = PasswordField(

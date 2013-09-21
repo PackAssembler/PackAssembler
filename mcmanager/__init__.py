@@ -5,14 +5,18 @@ from pyramid.authorization import ACLAuthorizationPolicy
 from .security import find_group
 
 
-def main(global_config, **settings):
-    config = Configurator(settings=settings, root_factory='mcmanager.security.Root')
+def setup_auth(config):
     authn_policy = AuthTktAuthenticationPolicy('authtktpolicysek', callback=find_group, hashalg='sha512')
     authz_policy = ACLAuthorizationPolicy()
-    config.set_authentication_policy(authn_policy)
     config.set_authorization_policy(authz_policy)
+    config.set_authentication_policy(authn_policy)
+
+
+def setup_tweens(config):
     config.add_tween('mcmanager.tweens.exception_tween_factory')
 
+
+def setup_routes(config):
     # General
     config.add_route('home', '/')
     config.add_route('faq', '/faq')
@@ -94,4 +98,12 @@ def main(global_config, **settings):
 
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.scan()
+
+
+def main(global_config, **settings):
+    config = Configurator(settings=settings, root_factory='mcmanager.security.Root')
+    setup_auth(config)
+    setup_tweens(config)
+    setup_routes(config)
+
     return config.make_wsgi_app()

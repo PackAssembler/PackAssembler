@@ -11,7 +11,9 @@ requires = [
     'bcrypt',
     'mandrill',
     'wtforms',
-    'htmllaundry'
+    'htmllaundry',
+    'nose',
+    'nose-mongoengine'
     ]
 
 setup(name='mcmanager',

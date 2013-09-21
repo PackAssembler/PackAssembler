@@ -4,7 +4,7 @@ from mongoengine import *
 # Mod targets
 TARGETS = ('server', 'client', 'both')
 # Minecraft versions
-MCVERSIONS = ('1.6.2', '1.5.2', '1.5.1', '1.5', '1.4.7')
+MCVERSIONS = ('1.6.3', '1.6.2', '1.5.2', '1.5.1', '1.5', '1.4.7')
 # Forge version length
 FV = 16
 
