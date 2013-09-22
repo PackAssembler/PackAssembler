@@ -28,7 +28,7 @@
             <i class="icon-user"></i>
             Track Your Content
         </h4>
-        We store all the Mods, Packs, and Servers you maintain and ensure you can easily find them all easily, allowing you to update any maintain them quickly so you can get on with actually playing the game or managing your server.
+        We store all the Mods, Packs, and Servers you maintain and ensure you can easily find them all easily, allowing you to update any maintain them quickly so you can get on with what is important to you: actually playing the game or managing your server.
     </div>
 </div>
 <div class="row">
