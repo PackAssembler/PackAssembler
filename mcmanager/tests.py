@@ -53,20 +53,34 @@ class GeneralViewTests(unittest.TestCase):
 
 
 # DB helper functions
-def create_user(group):
-    return User(username='testuser', password=b'0',
-                email='test@example.com', group=group).save()
+def create_user(group, username='testuser', email='test@example.com'):
+    return User(username=username, password=b'0',
+                email=email, group=group).save()
 
 
-def create_mod(owner, name='TestMod',
+def create_mod(owner, name='TestMod', outdated=False,
                author='SomeAuthor', url='http://someurl.com/'):
     return Mod(
         name=name,
+        outdated=outdated,
         rid=name.replace(' ', '_'),
         author=author,
         url=url,
         owner=owner
     )
+
+
+def mock_mod_data(name='SomeMod'):
+    data = {
+        'author': 'SAuthor',
+        'url': 'http://somevalidurl.com/',
+        'target': 'both',
+        'install': 'mods',
+        'name': name,
+        'submit': ''
+    }
+
+    return data
 
 
 def mock_version_data(mc_min=MCVERSIONS[0], mc_max=MCVERSIONS[0], forge_min='',
@@ -115,6 +129,10 @@ class DBTests(unittest.TestCase):
 
 class ModViewTests(DBTests):
 
+    @classmethod
+    def setUpClass(self):
+        self.orphan = create_user('orphan', username='Orphan', email='orphan@example.com')
+
     def tearDown(self):
         super().tearDown()
         Mod.drop_collection()
@@ -124,6 +142,11 @@ class ModViewTests(DBTests):
         from .views.mods import ModViews
 
         return ModViews(request)
+
+    def check_mod(self, mod, data):
+        self.assertEqual(mod.name, data['name'])
+        self.assertEqual(mod.author, data['author'])
+        self.assertEqual(mod.url, data['url'])
 
     def test_mod_list_view_with_no_mods(self):
         """ Ensure the modlist returns no mods. """
@@ -193,23 +216,28 @@ class ModViewTests(DBTests):
         """ Ensure the add mod page is functional. """
         from urllib.parse import urlparse
         # Create request
-        data = {
-            'author': 'SAuthor',
-            'url': 'http://somevalidurl.com/',
-            'target': 'both',
-            'install': 'mods',
-            'name': 'SomeMod',
-            'submit': ''
-        }
+        data = mock_mod_data()
         request = testing.DummyRequest(params=MultiDict(data))
         # Get redirect url
         url = self.makeOne(request).addmod().location
         # Get new Mod object
         mod = Mod.objects.get(id=urlparse(url)[2].split('/')[-1])
         # Check if information is correct
-        self.assertEqual(mod.name, data['name'])
-        self.assertEqual(mod.author, data['author'])
-        self.assertEqual(mod.url, data['url'])
+        self.check_mod(mod, data)
+
+    def test_edit_mod_view(self):
+        """ Ensure the edit mod view is functional. """
+        # Create dummy mod.
+        mod = create_mod(self.contributor).save()
+        # Create request
+        data = mock_mod_data(name='SomeOtherMod')
+        request = matchrequest(id=mod.id, params=MultiDict(data))
+        # Run it
+        self.makeOne(request).editmod()
+        # Reload the mod object
+        mod.reload()
+        # Check if the information is correct
+        self.check_mod(mod, data)
 
     def test_delete_mod_view(self):
         """ Ensure the delete mod function actually deletes a mod. """
@@ -219,6 +247,47 @@ class ModViewTests(DBTests):
         self.makeOne(matchrequest(id=mod.id)).deletemod()
         # Make sure the mod no longer exists
         self.assertIsNone(Mod.objects(id=mod.id).first())
+
+    def test_flag_mod_view(self):
+        """ Ensure the flag mod view changes the outdated boolean. """
+        # Create a dummy mod.
+        mod = create_mod(self.contributor, outdated=False).save()
+
+        # Create checking function
+        def flagcheck(ajax):
+            old = mod.outdated
+            viewclass = self.makeOne(matchrequest(id=mod.id))
+            if ajax:
+                viewclass.flagmod_ajax()
+            else:
+                viewclass.flagmod()
+            mod.reload()
+            self.assertNotEqual(mod.outdated, old)
+        # Run it
+        flagcheck(False)
+        flagcheck(True)
+
+    def test_disown_mod_view(self):
+        """ Ensure the disown view works. """
+        # Create a dummy mod.
+        mod = create_mod(self.contributor).save()
+
+        # Run disown()
+        self.makeOne(matchrequest(id=mod.id)).disown()
+        # Check if it's no longer owned by contributor
+        mod.reload()
+        self.assertNotEqual(mod.owner, self.contributor)
+
+    def test_adopt_mod_view(self):
+        """ Ensure the adopt view works. """
+        # Create a dummy mod.
+        mod = create_mod(self.orphan).save()
+
+        # Run adopt()
+        self.makeOne(matchrequest(id=mod.id)).adopt()
+        # Check if contributor is the new owner
+        mod.reload()
+        self.assertEqual(mod.owner.username, self.contributor.username)
 
 
 class VersionViewTests(DBTests):

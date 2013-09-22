@@ -4,3 +4,5 @@ uwsgi.pid
 mcmanager.egg-info
 *.sublime-*
 production.ini
+mcmanager/.coverage
+mcmanager/cover/

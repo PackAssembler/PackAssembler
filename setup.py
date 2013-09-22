@@ -13,7 +13,8 @@ requires = [
     'wtforms',
     'htmllaundry',
     'nose',
-    'nose-mongoengine'
+    'nose-mongoengine',
+    'coverage'
     ]
 
 setup(name='mcmanager',

@@ -71,18 +71,3 @@ class VersionViews(ViewBase):
             mv.mod_file.delete()
         mv.delete()
         return HTTPFound(location=(self.request.referer if 'referer' in self.request else self.request.application_url))
-
-
-def get_params(post):
-    p = opt_dict(
-        mc_min=post.get('selMCMin'),
-        mc_max=post.get('selMCMax'),
-        forge_min=post.get('txtForgeMin'),
-        forge_max=post.get('txtForgeMax'),
-        version=post.get('txtVersion')
-    )
-    try:
-        p['mod_file'] = post.get('uplModFile').file
-    except AttributeError:
-        pass
-    return p

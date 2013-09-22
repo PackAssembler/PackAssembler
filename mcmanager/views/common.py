@@ -39,7 +39,7 @@ class ViewBase(object):
         return HTTPFound(location=self.request.route_url('success') + '?' + urlencode({'redirect': redirect, 'message': message}))
 
     def get_orphan_user(self):
-        return User.objects.get(username="Orphan")
+        return User.objects(group="orphan").first()
 
     def has_perm(self, data):
         dtype = data.__class__.__name__
