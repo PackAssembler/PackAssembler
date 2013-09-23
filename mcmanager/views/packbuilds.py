@@ -102,7 +102,6 @@ class PackBuildViews(ViewBase):
         }
         for mv in pb.mod_versions:
             jdict['mods'][str(mv.mod.id)] = {
-                'install': mv.mod.install,
                 'target': mv.mod.target,
                 'version': mv.id
             }

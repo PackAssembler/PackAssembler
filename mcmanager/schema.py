@@ -4,7 +4,7 @@ from mongoengine import *
 # Mod targets
 TARGETS = ('server', 'client', 'both')
 # Minecraft versions
-MCVERSIONS = ('1.6.3', '1.6.2', '1.5.2', '1.5.1', '1.5', '1.4.7')
+MCVERSIONS = ('1.6.4', '1.6.2')
 # Forge version length
 FV = 16
 
@@ -76,8 +76,6 @@ class Mod(Document):
     description = StringField()
     ## Author(s) of the mod
     author = StringField(required=True, max_length=32)
-    ## Where to download mod
-    install = StringField(default="mods")
     ## Where to run mod (server, client, or both?)
     target = StringField(required=True, choices=TARGETS, default='both')
     ## Mod homepage

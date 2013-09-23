@@ -55,23 +55,33 @@
 </table>
 <h3>Mods</h3>
 % if pack.mods:
-    <ul>
+    <table class="table table-white table-bordered">
     % for mod in sorted(pack.mods):
-        <li><a href="${request.route_url('viewmod', id=mod.id)}">${mod.name}</a> 
+        <tr>
         % if perm:
-            <a href="${request.route_url('removepackmod', modid=mod.id, packid=pack.id)}"><i class="icon-remove text-error"></i></a>
+            <td data-href="${request.route_url('removepackmod', modid=mod.id, packid=pack.id)}" class="link-cell middle center cursor-pointer">
+                <i class="icon-remove icon-2x"></i>
+            </td>
         % endif
-        </li>
+            <td data-href="${request.route_url('viewmod', id=mod.id)}" class="link-cell link-cell-hover">
+                <h4>
+                    ${mod.name}
+                </h4>
+                <p>
+                    ${mod.description[:300] + (mod.description[300:] and '...') if mod.description else 'No Description'}
+                </p>
+            </td>
+        </tr>
     % endfor
-    </ul>
+    </div>
 % else:
     No Mods Yet!
 % endif
-% if perm:
+<%doc>% if perm:
     <div class="tmargin">
         <a href="${request.route_url('addpackmod', id=pack.id)}"><i class="icon-plus no-decoration"></i> Add Mod to Pack</a>
     </div>
-% endif
+% endif</%doc>
 <%block name="endscripts">
     <script src="//raw.github.com/makeusabrew/bootbox/master/bootbox.js"></script>
     <script type="text/javascript">
@@ -87,6 +97,11 @@
             });
             $('#showurl').click(function(){
                 window.prompt("Copy to clipboard: Ctrl+C, Enter", "${request.route_url('mcuxmlpack', id=pack.id)}");
+            });
+            $('.link-cell').click(function(){
+                //window.location = $(this).data('href');
+                var win = window.open($(this).data('href'), '_blank');
+                win.focus();
             });
         });
     </script>

@@ -12,8 +12,10 @@ class ModViews(ViewBase):
         post = self.request.params
 
         if 'q' in post:
+            versions = ModVersion.objects(Q(mc_min=post['q']) | Q(mc_max=post['q']))
             mods = Mod.objects(
-                Q(name__icontains=post['q']) | Q(author__icontains=post['q']))
+                Q(name__icontains=post['q']) | Q(author__icontains=post['q']) |
+                Q(versions__in=versions))
         else:
             mods = Mod.objects
 
@@ -74,6 +76,8 @@ class ModViews(ViewBase):
         if 'submit' in post and form.validate():
             form.populate_obj(banner)
 
+            banner.text_color = banner.text_color.upper()
+
             # Don't save the banner if there is none to show
             if banner.image is None:
                 mod.banner = None
@@ -90,7 +94,7 @@ class ModViews(ViewBase):
     @view_config(route_name='addmod', renderer='genericform.mak', permission='contributor')
     def addmod(self):
         post = self.request.params
-        form = ModForm(post, install='mods')
+        form = ModForm(post)
 
         if 'submit' in post and form.validate():
             mod = Mod(owner=self.current_user)

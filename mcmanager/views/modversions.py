@@ -44,8 +44,9 @@ class VersionViews(ViewBase):
                 mv.mod_file_url = None
                 mv.mod_file_url_md5 = None
             except AttributeError:
-                mv.mod_file = None
-                mv.mod_file_url_md5 = url_md5(form.mod_file_url.data)
+                if mv.mod_file_url:
+                    mv.mod_file = None
+                    mv.mod_file_url_md5 = url_md5(form.mod_file_url.data)
             mv.save()
 
             return HTTPFound(location=self.request.route_url('viewmod', id=mv.mod.id))
@@ -70,4 +71,4 @@ class VersionViews(ViewBase):
         if mv.mod_file:
             mv.mod_file.delete()
         mv.delete()
-        return HTTPFound(location=(self.request.referer if 'referer' in self.request else self.request.application_url))
+        return HTTPFound(location=self.request.route_url('viewmod', id=mv.mod.id))

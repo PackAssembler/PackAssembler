@@ -21,7 +21,7 @@
 <div class="row bpadding" id="modInfobar">
     <div class="col-lg-8">
         <h2>${title}</h2>
-        <div class="dropdown">
+        <div class="dropdown inline">
             <a class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" href="#">
                 Add to Pack
                 <span class="icon-caret-down"></span>
@@ -37,19 +37,19 @@
                 <li class="divider"></li>
                 <li><a href="${request.route_url('addpack')}">Add Pack</a></li>
             </ul>
-            % if mod.owner.group == 'orphan':
-                % if user is not None and user.group != 'user':
-                    <a href="${request.route_url('adoptmod', id=mod.id)}" class="btn btn-default btn-sm">Adopt</a>
-                % else:
-                    <%block name="userlink"><h4><a href="${request.route_url('profile', id=mod.owner.id)}">${mod.owner.username}</a></h4></%block>
-                % endif
-            % else:
-                % if perm:
-                    <a href="${request.route_url('disownmod', id=mod.id)}" class="btn btn-default btn-sm">Disown</a>
-                % endif
-                ${userlink()}
-            % endif
         </div>
+        % if mod.owner.group == 'orphan':
+            % if user is not None and user.group != 'user':
+                <a href="${request.route_url('adoptmod', id=mod.id)}" class="btn btn-default btn-sm">Adopt</a>
+            % else:
+                <%block name="userlink"><h4><a href="${request.route_url('profile', id=mod.owner.id)}">${mod.owner.username}</a></h4></%block>
+            % endif
+        % else:
+            % if perm:
+                <a href="${request.route_url('disownmod', id=mod.id)}" class="btn btn-default btn-sm">Disown</a>
+            % endif
+            ${userlink()}
+        % endif
     </div>
     <div class="col-lg-4">
     % if perm:
@@ -80,7 +80,6 @@
                 % endif
                 </td></tr>
                 <tr><td>Date Added</td><td>${mod.id.generation_time.strftime('%e %b %Y %I:%m:%S %p')}</td></tr>
-                <tr><td>Installs to</td><td>${mod.install}</td></tr>
                 <tr><td>Runs on</td><td>
                 <%def name="runson(mod)">
                     % if mod.target == "both":

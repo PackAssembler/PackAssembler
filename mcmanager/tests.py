@@ -15,8 +15,10 @@ def matchrequest(params=None, **kwargs):
     return testing.DummyRequest(matchdict=kwargs, params=params)
 
 # Globals
-URL = 'https://raw.github.com/MCManager/MCManager-Server/master/setup.py'
-#URL = 'https://github.com/MCManager/MCManager-Server/archive/master.zip'
+#URL = 'http://localhost/index.html'
+#URL = 'https://raw.github.com/MCManager/MCManager-Server/master/setup.py'
+URL = 'http://mml.stephenmac.com/static/archives/config.zip'
+IMG = 'http://placekitten.com/g/2000/600'
 
 
 class GeneralViewTests(unittest.TestCase):
@@ -75,7 +77,6 @@ def mock_mod_data(name='SomeMod'):
         'author': 'SAuthor',
         'url': 'http://somevalidurl.com/',
         'target': 'both',
-        'install': 'mods',
         'name': name,
         'submit': ''
     }
@@ -207,7 +208,6 @@ class ModViewTests(DBTests):
 
         # Check if the correct errors are returned
         self.assertDictEqual(result['f'].errors, {
-            'install': ['This field is required.'],
             'name': ['This field is required.'],
             'url': ['Invalid URL.']
         })
@@ -254,18 +254,23 @@ class ModViewTests(DBTests):
         mod = create_mod(self.contributor, outdated=False).save()
 
         # Create checking function
-        def flagcheck(ajax):
-            old = mod.outdated
+        def runflag(ajax):
             viewclass = self.makeOne(matchrequest(id=mod.id))
             if ajax:
                 viewclass.flagmod_ajax()
             else:
                 viewclass.flagmod()
             mod.reload()
-            self.assertNotEqual(mod.outdated, old)
-        # Run it
-        flagcheck(False)
-        flagcheck(True)
+        # Run it (no ajax)
+        runflag(False)
+        self.assertEqual(mod.outdated, True)
+        runflag(False)
+        self.assertEqual(mod.outdated, False)
+        # Run it (with ajax)
+        runflag(True)
+        self.assertEqual(mod.outdated, True)
+        runflag(False)
+        self.assertEqual(mod.outdated, False)
 
     def test_disown_mod_view(self):
         """ Ensure the disown view works. """
@@ -288,6 +293,39 @@ class ModViewTests(DBTests):
         # Check if contributor is the new owner
         mod.reload()
         self.assertEqual(mod.owner.username, self.contributor.username)
+
+    def test_edit_banner_view_with_an_image(self):
+        """ Ensure edit banner actually saves an image in banner.image. """
+        # Create a dummy mod.
+        mod = create_mod(self.contributor).save()
+
+        # Create request
+        request = matchrequest(
+            params=MultiDict({'image': IMG, 'submit': ''}), id=mod.id)
+        # Run
+        self.makeOne(request).editbanner()
+        # Check if the image has changed
+        mod.reload()
+        self.assertEqual(mod.banner.image, IMG)
+
+    def test_edit_banner_with_with_no_image(self):
+        """ Ensure the banner object is gone when there is no image. """
+        # Create a dummy mod.
+        mod = create_mod(self.contributor).save()
+        # Add a banner
+        mod.banner = Banner()
+        mod.banner.image = IMG
+        mod.save()
+
+        # Create request
+        request = matchrequest(
+            params=MultiDict({'text_color': '#000000', 'submit': ''}),
+            id=mod.id)
+        # Run
+        self.makeOne(request).editbanner()
+        # Check if no banner exists
+        mod.reload()
+        self.assertIsNone(mod.banner)
 
 
 class VersionViewTests(DBTests):

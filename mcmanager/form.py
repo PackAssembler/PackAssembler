@@ -126,7 +126,6 @@ class ModForm(SForm):
     description = SafeTextAreaField('Description')
     author = TextField('Author', validators=[
                        validators.required(), validators.Length(max=32)])
-    install = TextField('Install', validators=[validators.required(), isalnum])
     url = urlfield('Homepage', v=[validators.required()])
     target = targetfield('Target')
     permission = ParanoidTextAreaField('Permission')
