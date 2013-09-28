@@ -80,7 +80,6 @@ def setup_routes(config):
     config.add_route('addbuild', '/pack/build/add/{id}')
     config.add_route('removebuild', '/pack/build/remove/{id}')
     config.add_route('downloadbuild', '/pack/download/{id}')
-    config.add_route('mcubase', '/mcubase')
     config.add_route('mcuxml', '/pack/build/mcuxml/{id}')
 
     # Servers

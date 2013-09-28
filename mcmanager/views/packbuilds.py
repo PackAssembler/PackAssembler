@@ -108,12 +108,6 @@ class PackBuildViews(ViewBase):
 
         return Response(dumps(jdict, default=json_util.default), content_type='application/json')
 
-    @view_config(route_name='mcubase', renderer='mcubase.mak')
-    def mcubase(self):
-        post = self.request.params
-        self.request.response.content_type = 'application/xml'
-        return {'mc_version': post.get('mc', '1.6.2'), 'forge_version': post.get('forge', '9.10.0.845')}
-
     @view_config(route_name='mcuxml')
     def mcuxml(self):
         pb = self.get_db_object(PackBuild, perm=False)
@@ -153,7 +147,7 @@ def generate_mcu_xml(request, pb, server=None):
     xml = E.ServerPack(
         E.Server(
             E.Import(
-                'mcubase', {'url': request.route_url('mcubase') + '?mc={0}&amp;forge={1}'.format(pb.mc_version, pb.forge_version)}),
+                'forge', {'url': 'http://files.mcupdater.com/example/forge.php?mc={0}&forge={1}'.format(pb.mc_version, pb.forge_version)}),
             server_info
         ),
         {'version': '3.0'}
