@@ -160,10 +160,6 @@ class PackForm(SForm):
     devel = BooleanField('Use Development Versions')
 
 
-class PackModForm(SForm):
-    id = idfield('Mod ID', v=[validators.required()])
-
-
 # Pack Builds
 
 class PackBuildForm(SForm):

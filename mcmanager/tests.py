@@ -55,6 +55,9 @@ class GeneralViewTests(unittest.TestCase):
 
 
 # DB helper functions
+create_rid = lambda name: name.replace(' ', '_')
+
+
 def create_user(group, username='testuser', email='test@example.com'):
     return User(username=username, password=b'0',
                 email=email, group=group).save()
@@ -65,11 +68,17 @@ def create_mod(owner, name='TestMod', outdated=False,
     return Mod(
         name=name,
         outdated=outdated,
-        rid=name.replace(' ', '_'),
+        rid=create_rid(name),
         author=author,
         url=url,
         owner=owner
     )
+
+
+def create_pack(owner, name='TestPack', devel=False, **kwargs):
+    return Pack(
+        name=name, rid=create_rid(name), devel=devel,
+        owner=owner, **kwargs)
 
 
 def mock_mod_data(name='SomeMod'):
@@ -98,6 +107,18 @@ def mock_version_data(mc_min=MCVERSIONS[0], mc_max=MCVERSIONS[0], forge_min='',
         'mod_file_url': mod_file_url,
         'submit': ''
     }
+
+    return data
+
+
+def mock_pack_data(name='SomePack', devel=False):
+    """ Creates mock data to create a pack. """
+    data = {
+        'name': name,
+        'submit': ''
+    }
+    if devel:
+        data['devel'] = True
 
     return data
 
@@ -214,14 +235,13 @@ class ModViewTests(DBTests):
 
     def test_add_mod_view(self):
         """ Ensure the add mod page is functional. """
-        from urllib.parse import urlparse
         # Create request
         data = mock_mod_data()
         request = testing.DummyRequest(params=MultiDict(data))
-        # Get redirect url
-        url = self.makeOne(request).addmod().location
+        # Run
+        self.makeOne(request).addmod()
         # Get new Mod object
-        mod = Mod.objects.get(id=urlparse(url)[2].split('/')[-1])
+        mod = Mod.objects().first()
         # Check if information is correct
         self.check_mod(mod, data)
 
@@ -368,6 +388,7 @@ class VersionViewTests(DBTests):
         self.assertEqual(v.mc_max, data['mc_max'])
 
     def check_mod_file(self, v, data):
+        self.assertIsNotNone(v.mod_file)
         # Check if content of file is the same
         data['mod_file'].file.seek(0)
         self.assertEqual(
@@ -528,6 +549,31 @@ class VersionViewTests(DBTests):
         # Run tests
         self.check_mod_file(v, data)
 
+    def test_edit_mod_version_with_no_file_input(self):
+        """
+        Ensure edit version preserves previous files on edit.
+        """
+        # Create a dummy mod
+        mod = create_mod(self.contributor).save()
+        # Create a modversion
+        self.makeOne(matchrequest(
+            params=MultiDict(mock_version_data(mod_file=self.mock_file)),
+            id=mod.id)).addversion()
+        # Reload the mod
+        mod.reload()
+        # Get the new modversion
+        v = mod.versions[0]
+        # Create request
+        data = mock_version_data()
+        request = matchrequest(params=MultiDict(data), id=v.id)
+        data['mod_file'] = self.mock_file
+        # Run
+        self.makeOne(request).editversion()
+        # Reload the version
+        v.reload()
+        # Run tests
+        self.check_mod_file(v, data)
+
     def test_delete_version_with_mod_file(self):
         """ Ensure delete version actually deletes the mod_file. """
         from gridfs import GridFS
@@ -575,3 +621,156 @@ class VersionViewTests(DBTests):
         mod.reload()
         # Check if the version's gone
         self.assertFalse(mod.versions)
+
+
+class PackViewTests(DBTests):
+
+    def tearDown(self):
+        super().tearDown()
+        Pack.drop_collection()
+
+    def makeOne(self, request):
+        """ Create a Views instance using the request. """
+        from .views.packs import PackViews
+
+        return PackViews(request)
+
+    def check_pack(self, pack, data):
+        self.assertEqual(pack.name, data['name'])
+        if 'devel' in data:
+            self.assertEqual(pack.devel, data['devel'])
+
+    def test_pack_list_view_with_no_packs(self):
+        """ Ensure the packlist returns no packs. """
+        result = self.dummy.packlist()
+        self.assertFalse(result['packs'])
+
+    def test_pack_list_view_with_packs(self):
+        """ Ensure the packlist returns packs when they exist. """
+        # Create dummy packs
+        pack = create_pack(self.contributor, name='aPack').save()
+        pack2 = create_pack(self.contributor, name='bPack').save()
+        # Get result
+        result = self.dummy.packlist()
+        # Check the packs
+        self.check_pack(result['packs'][0], pack)
+        self.check_pack(result['packs'][1], pack2)
+
+    def test_pack_list_view_with_packs_and_search(self):
+        """
+        Ensure the packlist only returns matching packs when a query
+        is given.
+        """
+        # Create dummy packs
+        create_pack(self.contributor, name='aPack').save()
+        pack2 = create_pack(self.contributor, name='bPack').save()
+        # Get result
+        result = self.makeOne(
+            testing.DummyRequest(params={'q': 'b'})).packlist()
+        # Check the listing
+        self.assertTrue(len(result['packs']) == 1)
+        self.check_pack(result['packs'][0], pack2)
+
+    def test_add_mod_view(self):
+        """ Ensure the add pack page is functional. """
+        # Create request
+        data = mock_pack_data()
+        request = testing.DummyRequest(params=MultiDict(data))
+        # Run
+        self.makeOne(request).addpack()
+        # Get new Pack object
+        pack = Pack.objects().first()
+        # Check if information is correct
+        self.check_pack(pack, data)
+
+    def test_edit_pack_view(self):
+        """ Ensure the edit pack page is functional. """
+        # Create dummy pack
+        pack = create_pack(self.contributor).save()
+        # Create request
+        data = mock_pack_data(name='NewName', devel=True)
+        request = matchrequest(id=pack.id, params=MultiDict(data))
+        # Run
+        self.makeOne(request).editpack()
+        # Check if information is correct
+        pack.reload()
+        self.check_pack(pack, data)
+
+    def test_clone_pack_view(self):
+        """ Ensure the clone pack view is functional. """
+        # Create dummy pack
+        pack = create_pack(self.contributor).save()
+        # Create request
+        request = matchrequest(id=pack.id)
+        # Run
+        runner = self.makeOne(request)
+        runner.clonepack()
+        # Check if the pack has been cloned
+        cpack = Pack.objects.get(name__contains=self.contributor.username)
+        # Check if it's in fact cloned
+        self.assertEqual(cpack.devel, pack.devel)
+        self.assertIn(pack.name, cpack.name)
+        # Try again, should return an error page
+        response = runner.clonepack()
+        self.assertIn('error', response.location)
+
+    def test_delete_pack_view(self):
+        """ Ensure the delete pack view is functional. """
+        # Create dummy pack
+        pack = create_pack(self.contributor).save()
+        # Create request
+        request = matchrequest(id=pack.id)
+        # Run
+        self.makeOne(request).deletepack()
+        # Make sure it's gone
+        self.assertIsNone(Pack.objects(id=pack.id).first())
+
+    @unittest.skip
+    def test_delete_pack_view_where_a_server_depends_on_the_pack(self):
+        """ Ensure a pack is not deleted if a server requires the pack. """
+        # Create dummy pack
+        #pack = create_pack(self.contributor).save()
+
+    def test_view_pack_object(self):
+        """ Ensure the view page returns the correct object. """
+        # Create a dummy pack
+        pack = create_pack(self.contributor).save()
+        # Create request
+        request = matchrequest(id=pack.id)
+        # Run
+        response = self.makeOne(request).viewpack()
+        # Check it
+        self.check_pack(response['pack'], pack)
+
+    def test_addpackmod_view(self):
+        """ Ensure the add pack mod view works. """
+        # Create dummy mods
+        mod = create_mod(self.contributor, name='aMod').save()
+        mod2 = create_mod(self.contributor, name='bMod').save()
+        # Create dummy pack
+        pack = create_pack(self.contributor).save()
+        # Create request
+        data = MultiDict()
+        data.add('mods', mod.id)
+        data.add('mods', mod2.id)
+        request = matchrequest(id=pack.id, params=data)
+        # Run
+        self.makeOne(request).addpackmod()
+        # Check it
+        pack.reload()
+        self.assertIn(mod, pack['mods'])
+        self.assertIn(mod2, pack['mods'])
+
+    def test_removepackmod_view(self):
+        """ Ensure the remove pack mod view works. """
+        # Create dummy mod
+        mod = create_mod(self.contributor).save()
+        # Create dummy pack
+        pack = create_pack(self.contributor, mods=[mod]).save()
+        # Create request
+        request = matchrequest(packid=pack.id, modid=mod.id)
+        # Run
+        self.makeOne(request).removepackmod()
+        # Check it
+        pack.reload()
+        self.assertFalse(pack.mods)

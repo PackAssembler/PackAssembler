@@ -168,7 +168,7 @@ def generate_mcu_xml(request, pb, server=None):
             E.MD5(mv.mod_file.md5 if mv.mod_file else mv.mod_file_url_md5),
             {
                 'id': mv.mod.rid,
-                'name': mv.mod.name + ' ({0})'.format(mv.version),
+                'name': '{0} ({1})'.format(mv.mod.name, mv.version),
             }
         ))
 

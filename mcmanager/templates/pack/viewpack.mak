@@ -60,16 +60,11 @@
         <tr>
         % if perm:
             <td data-href="${request.route_url('removepackmod', modid=mod.id, packid=pack.id)}" class="link-cell middle center cursor-pointer">
-                <i class="icon-remove icon-2x"></i>
+                <i class="icon-remove text-danger"></i>
             </td>
         % endif
-            <td data-href="${request.route_url('viewmod', id=mod.id)}" class="link-cell link-cell-hover">
-                <h4>
-                    ${mod.name}
-                </h4>
-                <p>
-                    ${mod.description[:300] + (mod.description[300:] and '...') if mod.description else 'No Description'}
-                </p>
+            <td data-href="${request.route_url('viewmod', id=mod.id)}" class="link-cell link-cell-hover giant">
+                ${mod.name}
             </td>
         </tr>
     % endfor

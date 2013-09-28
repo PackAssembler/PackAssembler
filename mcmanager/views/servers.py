@@ -97,8 +97,8 @@ class ServerViews(ViewBase):
 
         return self.return_dict(title=server.name, server=server, perm=self.has_perm(server))
 
-    @view_config(route_name='serverjson')
-    def serverjson(self):
+    @view_config(route_name='viewserver', request_method='GET', accept='application/json', xhr=True)
+    def viewserver_json(self):
         server = self.get_db_object(Server, perm=False)
 
         return Response(server.to_json(), content_type='application/json')

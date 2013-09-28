@@ -29,7 +29,7 @@
             <ul class="dropdown-menu">
                 % if packs:
                     % for pack in packs:
-                    <li><a href="${request.route_url('addpackmod', id=pack.id)}?id=${mod.id}">${pack.name}</a></li>
+                    <li><a href="${request.route_url('addpackmod', id=pack.id)}?mods=${mod.id}">${pack.name}</a></li>
                     % endfor
                 % else:
                     <li><a href="#">You have no packs!</a></li>

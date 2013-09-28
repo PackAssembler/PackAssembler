@@ -1,7 +1,7 @@
 from pyramid.httpexceptions import HTTPFound
-from ..form import PackForm, PackModForm
 from pyramid.response import Response
 from pyramid.view import view_config
+from ..form import PackForm
 from ..schema import *
 from .common import *
 
@@ -10,7 +10,6 @@ class PackViews(ViewBase):
 
     @view_config(route_name='addpack', renderer='genericform.mak', permission='user')
     def addpack(self):
-        error = ''
         post = self.request.params
         form = PackForm(post)
 
@@ -89,8 +88,9 @@ class PackViews(ViewBase):
 
         return self.return_dict(title=pack.name, pack=pack, perm=self.has_perm(pack))
 
-    @view_config(route_name='packjson')
-    def packjson(self):
+    @view_config(route_name='viewpack', request_method='GET', accept='application/json', xhr=True)
+    def viewpack_json(self):
+        print(self.request.accept)
         pack = self.get_db_object(Pack, perm=False)
 
         return Response(pack.to_json(), content_type='application/json')
@@ -107,23 +107,13 @@ class PackViews(ViewBase):
     @view_config(route_name='addpackmod', renderer='genericform.mak', permission='user')
     def addpackmod(self):
         post = self.request.params
-        form = PackModForm(post)
 
         if self.has_perm(Pack.objects(id=self.request.matchdict['id']).only('owner').first()):
-            if 'id' in post and form.validate():
-                try:
-                    Pack.objects(id=self.request.matchdict['id']).update_one(
-                        add_to_set__mods=post['id'])
-                    return HTTPFound(self.request.route_url('viewpack', id=self.request.matchdict['id']))
-                except DoesNotExist:
-                    form.id.errors.append('Mod does not exist.')
-            elif 'mods' in post:
-                Pack.objects(id=self.request.matchdict['id']).update_one(
-                    add_to_set__mods=post.getall('mods'))
-                return HTTPFound(self.request.route_url('viewpack', id=self.request.matchdict['id']))
+            Pack.objects(id=self.request.matchdict['id']).update_one(
+                add_to_set__mods=post.getall('mods'))
+            return HTTPFound(self.request.route_url('viewpack', id=self.request.matchdict['id']))
         else:
             return HTTPForbidden()
-        return self.return_dict(title="Add Mod to Pack", f=form, cancel=self.request.route_url('viewpack', id=self.request.matchdict['id']))
 
     @view_config(route_name='removepackmod', permission='user')
     def removepackmod(self):
@@ -132,4 +122,3 @@ class PackViews(ViewBase):
                 pull__mods=self.request.matchdict['modid'])
         else:
             return HTTPForbidden()
-        return HTTPFound(self.request.referer)

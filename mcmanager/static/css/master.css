@@ -89,6 +89,7 @@ div.panel-heading {font-size: 17px;}
 table.table-white {background-color: white;}
 td.middle {vertical-align: middle !important;}
 td:hover.link-cell-hover {background-color: rgb(245, 245, 245); cursor: pointer;}
+td.giant {width: 100%;}
 
 /* View Mod Page */
 /* div.modInfobar: see the viewmod.mak file */
