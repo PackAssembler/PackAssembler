@@ -1,4 +1,2 @@
-MCManager-Server
+PackAssembler
 ================
-
-Server of MC Manager
