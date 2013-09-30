@@ -57,7 +57,8 @@ tr.button-height td {line-height: 38px !important;}
     right: 0;
 }
 
-.cursor-pointer {cursor: pointer;}
+.linked {cursor: pointer;}
+.nolink {cursor: auto;}
 
 /* Form */
 select.longer {
