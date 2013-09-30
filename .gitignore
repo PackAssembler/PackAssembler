@@ -1,8 +1,8 @@
 *pycache*
 logs.log
 uwsgi.pid
-mcmanager.egg-info
 *.sublime-*
 production.ini
-mcmanager/.coverage
-mcmanager/cover/
+packassembler/.coverage
+packassembler/cover/
+packassembler.egg-info/

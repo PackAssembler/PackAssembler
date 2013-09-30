@@ -18,9 +18,9 @@ requires = [
 ]
 
 setup(
-    name='mcmanager',
+    name='packassembler',
     version='0.1',
-    description='MC Manager Server',
+    description='Pack Assembler',
     classifiers=[
         "Programming Language :: Python",
         "Framework :: Pyramid",
@@ -36,9 +36,9 @@ setup(
     zip_safe=False,
     install_requires=requires,
     tests_require=requires,
-    test_suite="mcmanager",
+    test_suite='packassembler',
     entry_points="""\
     [paste.app_factory]
-    main = mcmanager:main
+    main = packassembler:main
     """,
 )

@@ -24,7 +24,7 @@ class ViewBase(object):
     def __init__(self, request):
         self.request = request
         self.logged_in = authenticated_userid(request)
-        connect(request.registry.settings.get('mongodb', 'mcmanager'))
+        connect(request.registry.settings.get('mongodb', 'packassembler'))
         self.current_user = User.objects(username=self.logged_in).first()
 
     def return_dict(self, **kwargs):

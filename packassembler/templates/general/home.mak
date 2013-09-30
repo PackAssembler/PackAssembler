@@ -1,7 +1,7 @@
 <%inherit file="base.mak"/>
 <div class="row">
     <div class="col-lg-12 jumbotron">
-        <h1>MC Manager</h1>
+        <h1>Pack Assembler</h1>
         <p>Managing Mods, Packs, and Servers easily and efficiently.</p>
         <p>
             <a href="${request.route_url('gettingstarted')}" class="btn btn-primary btn-large">Get Started <i class="icon-double-angle-right"></i></a>

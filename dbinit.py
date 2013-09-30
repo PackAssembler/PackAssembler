@@ -1,8 +1,8 @@
 """
 Creates the orphan user.
 """
-from mcmanager.security import password_hash
-from mcmanager.schema import User, connect
+from packassembler.security import password_hash
+from packassembler.schema import User, connect
 from sys import argv
 
 

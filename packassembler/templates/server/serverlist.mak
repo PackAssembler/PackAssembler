@@ -16,5 +16,5 @@ ${listcommon.head()}
     </tbody>
 </table>
 <%block name="endscripts">
-    <script src="${request.static_url('mcmanager:static/js/rowlink.js')}"></script>
+    <script src="${request.static_url('packassembler:static/js/rowlink.js')}"></script>
 </%block>

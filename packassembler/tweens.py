@@ -1,5 +1,5 @@
 from pyramid.httpexceptions import HTTPForbidden, HTTPNotFound
-from mcmanager.views.common import NoPermission
+from packassembler.views.common import NoPermission
 from .schema import DoesNotExist
 
 

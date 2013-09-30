@@ -9,7 +9,7 @@ hpass = lambda password: hmac.new(password.encode()).digest()
 
 
 def find_group(userid, request):
-    connect(request.registry.settings.get('mongodb', 'mcmanager'))
+    connect(request.registry.settings.get('mongodb', 'packassembler'))
     user = User.objects(username=userid).first()
     if user is not None:
         return ['group:' + user.group]

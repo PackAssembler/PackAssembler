@@ -6,7 +6,7 @@ from pyramid.decorator import reify
 
 from webob.multidict import MultiDict
 
-from mcmanager import setup_auth, setup_tweens, setup_routes
+from packassembler import setup_auth, setup_tweens, setup_routes
 from .schema import *
 
 

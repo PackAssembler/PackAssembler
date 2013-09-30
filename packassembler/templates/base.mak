@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>MC Manager &middot; ${title}</title>
+    <title>Pack Assembler &middot; ${title}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     ##<link href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/united/bootstrap.min.css" rel="stylesheet">
     ##<link href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/slate/bootstrap.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/cyborg/bootstrap.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
 
-    <link href="${request.static_url('mcmanager:static/css/master.css')}" rel="stylesheet">
-    <link href="${request.static_url('mcmanager:static/css/keys.min.css')}" rel="stylesheet">
-    <link href="${request.static_url('mcmanager:static/img/favicon.ico')}" rel="icon">
+    <link href="${request.static_url('packassembler:static/css/master.css')}" rel="stylesheet">
+    <link href="${request.static_url('packassembler:static/css/keys.min.css')}" rel="stylesheet">
+    <link href="${request.static_url('packassembler:static/img/favicon.ico')}" rel="icon">
     <%block name="style">
     </%block>
 </head>
@@ -23,7 +23,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="${request.route_url('home')}">MC Manager</a>
+                <a class="navbar-brand" href="${request.route_url('home')}">Pack Assembler</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -134,8 +134,8 @@
             </div>
         </div>
     </div>
-    <script src="${request.static_url('mcmanager:static/js/jquery-latest.js')}"></script>
-    <script src="${request.static_url('mcmanager:static/js/mousetrap.min.js')}"></script>
+    <script src="${request.static_url('packassembler:static/js/jquery-latest.js')}"></script>
+    <script src="${request.static_url('packassembler:static/js/mousetrap.min.js')}"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <script type="text/javascript">
         // Go to

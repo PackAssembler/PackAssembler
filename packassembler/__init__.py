@@ -13,7 +13,7 @@ def setup_auth(config):
 
 
 def setup_tweens(config):
-    config.add_tween('mcmanager.tweens.exception_tween_factory')
+    config.add_tween('packassembler.tweens.exception_tween_factory')
 
 
 def setup_routes(config):
@@ -98,7 +98,7 @@ def setup_routes(config):
 
 
 def main(global_config, **settings):
-    config = Configurator(settings=settings, root_factory='mcmanager.security.Root')
+    config = Configurator(settings=settings, root_factory='packassembler.security.Root')
     setup_auth(config)
     setup_tweens(config)
     setup_routes(config)
