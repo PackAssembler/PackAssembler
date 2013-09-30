@@ -153,3 +153,8 @@ class Server(Document):
     meta = {
         'ordering': ['name']
     }
+
+
+class Setting(DynamicDocument):
+    # Key
+    key = StringField(required=True, max_length=16, unique=True)

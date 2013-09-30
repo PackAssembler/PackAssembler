@@ -10,12 +10,15 @@ from json import dumps
 from ..schema import *
 
 
+VERSION_KEY = 'forgeversions'
+
+
 class PackBuildViews(ViewBase):
 
     def linkerror(self, mod, message):
         return '<a href="' + self.request.route_url('viewmod', id=mod.id) + '">' + mod.name + '</a>' + ' ' + message
 
-    @view_config(route_name='addbuild', renderer='genericform.mak', permission='user')
+    @view_config(route_name='addbuild', renderer='addbuild.mak', permission='user')
     def addbuild(self):
         error = ''
         pack = self.get_db_object(Pack)
@@ -113,6 +116,13 @@ class PackBuildViews(ViewBase):
         pb = self.get_db_object(PackBuild, perm=False)
 
         return Response(generate_mcu_xml(self.request, pb), content_type='application/xml')
+
+    @view_config(route_name='forgeversions', renderer='json')
+    def forgeversions(self):
+        build_data = Setting.objects.get(key=VERSION_KEY).build_data
+        mc_version = self.request.GET['mc_version'].replace('.', '_')
+
+        return build_data[mc_version]
 
 
 def generate_mcu_xml(request, pb, server=None):
