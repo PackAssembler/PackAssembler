@@ -111,7 +111,8 @@ class PackViews(ViewBase):
         if self.has_perm(Pack.objects(id=self.request.matchdict['id']).only('owner').first()):
             Pack.objects(id=self.request.matchdict['id']).update_one(
                 add_to_set__mods=post.getall('mods'))
-            return HTTPFound(self.request.route_url('viewpack', id=self.request.matchdict['id']))
+            #return HTTPFound(self.request.route_url('viewpack', id=self.request.matchdict['id']))
+            return HTTPFound(self.request.referer)
         else:
             return HTTPForbidden()
 
@@ -120,5 +121,6 @@ class PackViews(ViewBase):
         if self.has_perm(Pack.objects(id=self.request.matchdict['packid']).only('owner').first()):
             Pack.objects(id=self.request.matchdict['packid']).update_one(
                 pull__mods=self.request.matchdict['modid'])
+            return HTTPFound(self.request.route_url('viewpack', id=self.request.matchdict['packid']))
         else:
             return HTTPForbidden()

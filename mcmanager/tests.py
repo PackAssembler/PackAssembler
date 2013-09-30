@@ -15,8 +15,6 @@ def matchrequest(params=None, **kwargs):
     return testing.DummyRequest(matchdict=kwargs, params=params)
 
 # Globals
-#URL = 'http://localhost/index.html'
-#URL = 'https://raw.github.com/MCManager/MCManager-Server/master/setup.py'
 URL = 'http://mml.stephenmac.com/static/archives/config.zip'
 IMG = 'http://placekitten.com/g/2000/600'
 

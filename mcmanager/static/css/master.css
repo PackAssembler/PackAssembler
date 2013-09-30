@@ -1,7 +1,7 @@
 /* Base */
 body {
     padding-top: 60px;
-    background: url("../img/cream_pixels.png") repeat scroll 0% 0% transparent;
+    /*background: url("../img/cream_pixels.png") repeat scroll 0% 0% transparent;*/
 }
 
 @media (max-width: 980px) {
@@ -85,20 +85,11 @@ div.info-block h4 [class^="icon-"]:before
 table.listtable > * > tr > * {line-height: 30px !important;}
 
 /* View Pages */
-div.panel-heading {font-size: 17px;}
-table.table-white {background-color: white;}
+div.panel-heading {font-size: 17px; color: white !important;}
+/*table.table-white {background-color: white;}*/
 td.middle {vertical-align: middle !important;}
-td:hover.link-cell-hover {background-color: rgb(245, 245, 245); cursor: pointer;}
+td:hover.link-hover {background-color: rgb(40, 40, 40); cursor: pointer;}
 td.giant {width: 100%;}
-
-/* View Mod Page */
-/* div.modInfobar: see the viewmod.mak file */
-{
-    background: url("http://i.imgur.com/s7Blryk.png") no-repeat scroll left;
-    background-size: cover;
-    color: white;
-    background-width: 100%;
-}
 
 /* Profile */
 .profilebox{overflow: hidden;}

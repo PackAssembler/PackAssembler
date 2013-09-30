@@ -27,19 +27,27 @@ ${listcommon.head()}
     </div>
 </div>
 <form method="POST" action="" role="form">
-    <table class="table table-hover table-bordered listtable" data-provides="rowlink">
+    <table class="table table-hover table-bordered listtable">
         <thead>
-            <tr><th class="center"><input type="checkbox" id="topcheck"></th><th>Name</th><th>Author</th><th>Owner</th></tr>
+            <tr><th class="center"><input type="checkbox" id="topcheck"></th><th>Name</th><th>Author</th><th>Latest Version</th><th>Latest Supported</th><th>Maintainer</th></tr>
         </thead>
         <tbody>
         % for mod in mods:
-            <tr class="${'danger' if mod.outdated else ''}">
+            <tr class="${'danger' if mod.outdated else ''} linked" data-href="${request.route_url('viewmod', id=mod.id)}">
                 <td class="nolink center">
-                    <a href="${request.route_url('viewmod', id=mod.id)}">
+                    <%doc><a href="${request.route_url('viewmod', id=mod.id)}"></%doc>
                     <input type="checkbox" name="mods" value="${mod.id}">
                 </td>
                 <td>${mod.name}</a></td>
                 <td>${mod.author}</td>
+                <%
+                    if mod.versions:
+                        v = max(mod.versions, key=lambda v: v.version.split('.'))
+                    else:
+                        v = None
+                %>
+                <td>${v.version if v else None}</td>
+                <td>${v.mc_max if v else None}</td>
                 <td>${mod.owner.username}</td>
             </tr>
         % endfor
@@ -47,11 +55,8 @@ ${listcommon.head()}
     </table>
 </form>
 <small class="pull-right">${len(mods.filter(outdated=True))} flagged mods.</small>
-<%block name="style">
-    <link href="${request.static_url('mcmanager:static/css/bootstrap-rowlink.min.css')}" rel="stylesheet">
-</%block>
 <%block name="endscripts">
-    <script src="${request.static_url('mcmanager:static/js/bootstrap-rowlink.min.js')}"></script>
+    <script src="${request.static_url('mcmanager:static/js/rowlink.js')}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             $('#topcheck').change(function(){

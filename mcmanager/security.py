@@ -20,7 +20,8 @@ def check_pass(username, password):
         user = User.objects(email=username).first()
     else:
         user = User.objects(username=username).first()
-    if user is not None and bcrypt.hashpw(hpass(password), user.password) == user.password and user.activate is None:
+    password_correct = bcrypt.hashpw(hpass(password), user.password) == user.password
+    if user is not None and password_correct and user.activate is None:
         return user.username
     else:
         return False
@@ -31,12 +32,13 @@ def password_hash(password):
 
 
 class Root(object):
-    __acl__ = [(Allow, Everyone, 'view'),
-               (Allow, 'group:user', 'user'),
-               (Allow, 'group:contributor', ('user', 'contributor')),
-               (Allow, 'group:moderator', ('user', 'contributor', 'moderator')),
-               (Allow, 'group:admin', ('user', 'contributor', 'moderator', 'admin'))
-               ]
+    __acl__ = [
+        (Allow, Everyone, 'view'),
+        (Allow, 'group:user', 'user'),
+        (Allow, 'group:contributor', ('user', 'contributor')),
+        (Allow, 'group:moderator', ('user', 'contributor', 'moderator')),
+        (Allow, 'group:admin', ('user', 'contributor', 'moderator', 'admin'))
+    ]
 
     def __init__(self, request):
         pass

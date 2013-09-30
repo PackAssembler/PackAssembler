@@ -11,13 +11,20 @@ class ModViews(ViewBase):
     def modlist(self):
         post = self.request.params
 
+        mods = Mod.objects
+
         if 'q' in post:
             versions = ModVersion.objects(Q(mc_min=post['q']) | Q(mc_max=post['q']))
-            mods = Mod.objects(
-                Q(name__icontains=post['q']) | Q(author__icontains=post['q']) |
+
+            if 'outdated' in post['q']:
+                mods = mods(outdated=True)
+                query = post['q'].replace('outdated', '').strip()
+            else:
+                query = post['q']
+
+            mods = mods(
+                Q(name__icontains=query) | Q(author__icontains=query) |
                 Q(versions__in=versions))
-        else:
-            mods = Mod.objects
 
         if self.logged_in is None:
             packs = []

@@ -59,11 +59,11 @@
     % for mod in sorted(pack.mods):
         <tr>
         % if perm:
-            <td data-href="${request.route_url('removepackmod', modid=mod.id, packid=pack.id)}" class="link-cell middle center cursor-pointer">
+            <td data-href="${request.route_url('removepackmod', modid=mod.id, packid=pack.id)}" class="linked middle center cursor-pointer">
                 <i class="icon-remove text-danger"></i>
             </td>
         % endif
-            <td data-href="${request.route_url('viewmod', id=mod.id)}" class="link-cell link-cell-hover giant">
+            <td data-href="${request.route_url('viewmod', id=mod.id)}" class="linked-tab link-hover giant">
                 ${mod.name}
             </td>
         </tr>
@@ -79,6 +79,7 @@
 % endif</%doc>
 <%block name="endscripts">
     <script src="//raw.github.com/makeusabrew/bootbox/master/bootbox.js"></script>
+    <script src="${request.static_url('mcmanager:static/js/rowlink.js')}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             $('#delete').click(function(){
@@ -92,11 +93,6 @@
             });
             $('#showurl').click(function(){
                 window.prompt("Copy to clipboard: Ctrl+C, Enter", "${request.route_url('mcuxmlpack', id=pack.id)}");
-            });
-            $('.link-cell').click(function(){
-                //window.location = $(this).data('href');
-                var win = window.open($(this).data('href'), '_blank');
-                win.focus();
             });
         });
     </script>
