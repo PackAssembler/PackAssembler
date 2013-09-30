@@ -111,8 +111,9 @@ class PackViews(ViewBase):
         if self.has_perm(Pack.objects(id=self.request.matchdict['id']).only('owner').first()):
             Pack.objects(id=self.request.matchdict['id']).update_one(
                 add_to_set__mods=post.getall('mods'))
-            #return HTTPFound(self.request.route_url('viewpack', id=self.request.matchdict['id']))
-            return HTTPFound(self.request.referer)
+            return HTTPFound(self.request.referer if
+                             hasattr(self.request, 'referer') else
+                             self.request.route_url('viewpack', id=self.request.matchdict['id']))
         else:
             return HTTPForbidden()
 
