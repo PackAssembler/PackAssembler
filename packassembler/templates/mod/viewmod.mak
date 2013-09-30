@@ -1,4 +1,5 @@
 <%inherit file="base.mak"/>
+<%namespace name="listcommon" file="list.mak" />
 <%!
     import re
     def linejoin(text):
@@ -22,21 +23,7 @@
     <div class="col-lg-8">
         <h2>${title}</h2>
         <div class="dropdown inline">
-            <a class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" href="#">
-                Add to Pack
-                <span class="icon-caret-down"></span>
-            </a>
-            <ul class="dropdown-menu">
-                % if packs:
-                    % for pack in packs:
-                    <li><a href="${request.route_url('addpackmod', id=pack.id)}?mods=${mod.id}">${pack.name}</a></li>
-                    % endfor
-                % else:
-                    <li><a href="#">You have no packs!</a></li>
-                % endif
-                <li class="divider"></li>
-                <li><a href="${request.route_url('addpack')}">Add Pack</a></li>
-            </ul>
+            ${listcommon.add_to_pack(packs)}
         </div>
         % if mod.owner.group == 'orphan':
             % if user is not None and user.group != 'user':

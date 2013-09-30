@@ -4,21 +4,9 @@ ${listcommon.head()}
 <hr>
 <div class="row bmargin relative-position">
     <div class="col-lg-10">
-        <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
-            Add to Pack
-            <span class="icon-caret-down"></span>
-        </a>
-        <ul class="dropdown-menu">
-            % if packs:
-                % for pack in packs:
-                <li><a href="#" data-id="${pack.id}">${pack.name}</a></li>
-                % endfor
-            % else:
-                <li><a href="#">You have no packs!</a></li>
-            % endif
-            <li class="divider"></li>
-            <li><a href="${request.route_url('addpack')}" class="action-add">Add Pack</a></li>
-        </ul>
+        <div class="dropdown">
+            ${listcommon.add_to_pack(packs)}
+        </div>
     </div>
     <div class="col-lg-2 force-bottom">
         <div class="pull-right">
@@ -35,7 +23,6 @@ ${listcommon.head()}
         % for mod in mods:
             <tr class="${'danger' if mod.outdated else ''} linked" data-href="${request.route_url('viewmod', id=mod.id)}">
                 <td class="nolink center">
-                    <%doc><a href="${request.route_url('viewmod', id=mod.id)}"></%doc>
                     <input type="checkbox" name="mods" value="${mod.id}">
                 </td>
                 <td>${mod.name}</a></td>

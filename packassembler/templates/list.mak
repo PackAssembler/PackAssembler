@@ -15,3 +15,21 @@
     </div>
 </div>
 </%def>
+
+<%def name="add_to_pack(packs)">
+    <a class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" href="#">
+        Add to Pack
+        <span class="icon-caret-down"></span>
+    </a>
+    <ul class="dropdown-menu">
+        % if packs:
+            % for pack in packs:
+            <li><a href="#" data-id="${pack.id}">${pack.name}</a></li>
+            % endfor
+        % else:
+            <li><a href="#">You have no packs!</a></li>
+        % endif
+        <li class="divider"></li>
+        <li><a href="${request.route_url('addpack')}" class="action-add">Add Pack</a></li>
+    </ul>
+</%def>
