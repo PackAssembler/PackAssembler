@@ -74,6 +74,12 @@ class ViewBase(object):
         else:
             return TypeError('Cannot only check dependencies for Mod and Pack types')
 
+    def get_add_pack_data(self):
+        if self.logged_in is None:
+            return []
+        else:
+            return Pack.objects(owner=self.current_user).only('id', 'name')
+
 
 def opt_dict(**kwargs):
     d = {}

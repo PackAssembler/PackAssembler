@@ -23,6 +23,9 @@
     <div class="col-lg-8">
         <h2>${title}</h2>
         <div class="dropdown inline">
+            <form method="POST" action="">
+                <input type="hidden" name="mods" value="${mod.id}">
+            </form>
             ${listcommon.add_to_pack(packs)}
         </div>
         % if mod.owner.group == 'orphan':
@@ -167,8 +170,11 @@
         {
             background: url("${mod.banner.image}") no-repeat scroll left;
             background-size: cover;
-            color: ${mod.banner.text_color};
             background-width: 100%;
+        }
+        div#modInfobar h2
+        {
+            color: ${mod.banner.text_color};
         }
     % endif
     </style>
@@ -205,4 +211,5 @@
             });
         });
     </script>
+    ${listcommon.add_to_pack_script()}
 </%block>

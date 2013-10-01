@@ -26,12 +26,8 @@ class ModViews(ViewBase):
                 Q(name__icontains=query) | Q(author__icontains=query) |
                 Q(versions__in=versions))
 
-        if self.logged_in is None:
-            packs = []
-        else:
-            packs = Pack.objects(owner=self.current_user)
-
-        return self.return_dict(title='Mod List', mods=mods, packs=packs)
+        return self.return_dict(
+            title='Mod List', mods=mods, packs=self.get_add_pack_data())
 
     @view_config(route_name='adoptmod', permission='contributor')
     def adopt(self):
@@ -142,14 +138,9 @@ class ModViews(ViewBase):
     def viewmod(self):
         mod = self.get_db_object(Mod, perm=False)
 
-        if self.logged_in is None:
-            packs = []
-        else:
-            packs = Pack.objects(owner=self.current_user)
-
         return self.return_dict(title=mod.name,
                                 mod=mod,
-                                packs=packs,
+                                packs=self.get_add_pack_data(),
                                 perm=self.has_perm(mod),
                                 by_author=Mod.objects(
                                     author__icontains=mod.author),

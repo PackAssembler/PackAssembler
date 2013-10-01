@@ -1,4 +1,5 @@
 <%inherit file="base.mak"/>
+<%namespace name="listcommon" file="list.mak" />
 <div class="row">
     <div class="col-lg-8">
         <h2>${title}</h2>
@@ -55,20 +56,25 @@
 </table>
 <h3>Mods</h3>
 % if pack.mods:
-    <table class="table table-white table-bordered">
-    % for mod in sorted(pack.mods):
-        <tr>
-        % if perm:
-            <td data-href="${request.route_url('removepackmod', modid=mod.id, packid=pack.id)}" class="linked middle center cursor-pointer">
-                <i class="icon-remove text-danger"></i>
-            </td>
-        % endif
-            <td data-href="${request.route_url('viewmod', id=mod.id)}" class="linked-tab link-hover giant">
-                ${mod.name}
-            </td>
-        </tr>
-    % endfor
+    <div class="dropdown bmargin">
+        ${listcommon.add_to_pack(packs, message='Combine with Pack')}
     </div>
+    <form method="POST" action="">
+        <table class="table table-white table-bordered">
+        % for mod in sorted(pack.mods):
+            <tr>
+            % if perm:
+                <td data-href="${request.route_url('removepackmod', modid=mod.id, packid=pack.id)}" class="linked middle center cursor-pointer">
+                    <i class="icon-remove text-danger"></i>
+                </td>
+            % endif
+                <td data-href="${request.route_url('viewmod', id=mod.id)}" class="linked-tab link-hover giant">
+                    <input type="hidden" name="mods" value="${mod.id}">
+                    ${mod.name}
+                </td>
+            </tr>
+        % endfor
+    </form>
 % else:
     No Mods Yet!
 % endif
@@ -96,4 +102,7 @@
             });
         });
     </script>
+    % if pack.mods:
+        ${listcommon.add_to_pack_script()}
+    % endif
 </%block>

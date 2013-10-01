@@ -49,10 +49,7 @@ ${listcommon.head()}
             $('#topcheck').change(function(){
                 $('input[name="mods"]').prop('checked', this.checked);
             });
-            $('[data-id]').click(function(){
-                $('form').attr('action', '/pack/addmod/' + $(this).data('id'))
-                $('form').submit();
-            });
         });
     </script>
+    ${listcommon.add_to_pack_script()}
 </%block>

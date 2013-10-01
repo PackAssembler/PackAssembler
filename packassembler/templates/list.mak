@@ -16,9 +16,9 @@
 </div>
 </%def>
 
-<%def name="add_to_pack(packs)">
+<%def name="add_to_pack(packs, message='Add to Pack')">
     <a class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" href="#">
-        Add to Pack
+        ${message}
         <span class="icon-caret-down"></span>
     </a>
     <ul class="dropdown-menu">
@@ -32,4 +32,15 @@
         <li class="divider"></li>
         <li><a href="${request.route_url('addpack')}" class="action-add">Add Pack</a></li>
     </ul>
+</%def>
+
+<%def name="add_to_pack_script()">
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('[data-id]').click(function(){
+                $('form').attr('action', '/pack/addmod/' + $(this).data('id'))
+                $('form').submit();
+            });
+        })
+    </script>
 </%def>
