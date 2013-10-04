@@ -87,7 +87,7 @@
                                 <%def name="shortcut(desc, keys)">
                                     <dt>
                                         % for key in keys.split(' '):
-                                            <kbd>${key}</kbd>
+                                            <kbd class="light">${key}</kbd>
                                         % endfor
                                     </dt>
                                     <dd>
@@ -100,7 +100,7 @@
                                     ${shortcut('Pack List', 'g p')}
                                     ${shortcut('Server List', 'g s')}
                                     ${shortcut('FAQ', 'g f')}
-                                    ${shortcut('Login/Profile', 'g p')}
+                                    ${shortcut('Login/Profile', 'g l')}
                                 </dl>
                             </div>
                             <div>
@@ -145,9 +145,9 @@
         Mousetrap.bind('g s', function() { window.location = '${request.route_url('serverlist')}'; });
         Mousetrap.bind('g f', function() { window.location = '${request.route_url('faq')}'; });
         % if user is None:
-            Mousetrap.bind('g p', function() { window.location = '${request.route_url('login')}'; });
+            Mousetrap.bind('g l', function() { window.location = '${request.route_url('login')}'; });
         % else:
-            Mousetrap.bind('g p', function() { window.location = '${request.route_url('profile', id=user.id)}'; });
+            Mousetrap.bind('g l', function() { window.location = '${request.route_url('profile', id=user.id)}'; });
         % endif
         // Show
         Mousetrap.bind('s k', function() { $('#keyboard-shortcuts').modal('toggle'); });
@@ -162,6 +162,17 @@
         Mousetrap.bind('f l', function() { $('input').last().focus(); });
         // Hidden
         Mousetrap.bind('esc', function() { $('.modal').modal('hide'); });
+    </script>
+    ## Tracking
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-5915643-11', 'stephenmac.com');
+      ga('send', 'pageview');
+
     </script>
     <%block name="endscripts">
     </%block>

@@ -69,6 +69,18 @@ class ModViews(ViewBase):
 
         return js_out
 
+    @view_config(route_name='moveversion', permission='user')
+    def moveversion(self):
+        mod = self.get_db_object(Mod)
+
+        ind = int(self.request.matchdict['index'])
+        s = int(self.request.matchdict['shift'])
+
+        mod.versions.insert(len(mod.versions)-ind-1+s, mod.versions.pop(-ind-1))
+        mod.save()
+
+        return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
+
     @view_config(route_name='editbanner', permission='user', renderer='genericform.mak')
     def editbanner(self):
         post = self.request.params
@@ -100,11 +112,14 @@ class ModViews(ViewBase):
         form = ModForm(post)
 
         if 'submit' in post and form.validate():
-            mod = Mod(owner=self.current_user)
-            form.populate_obj(mod)
-            mod.rid = form.name.data.replace(' ', '_')
-            mod.save()
-            return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
+            try:
+                mod = Mod(owner=self.current_user)
+                form.populate_obj(mod)
+                mod.rid = form.name.data.replace(' ', '_')
+                mod.save()
+                return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
+            except NotUniqueError:
+                form.name.errors.append('Already exists.')
 
         return self.return_dict(title='Add Mod', f=form, cancel=self.request.route_url('modlist'))
 

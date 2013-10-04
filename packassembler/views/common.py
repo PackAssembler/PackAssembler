@@ -1,6 +1,5 @@
 from pyramid.security import authenticated_userid, has_permission
 from pyramid.httpexceptions import HTTPFound
-from urllib.request import urlopen
 from urllib.parse import urlencode
 from ..security import Root
 from hashlib import md5
@@ -111,9 +110,6 @@ def validate_captcha(request):
 
 def url_md5(url, BLOCKSIZE=16 * 1024):
     hasher = md5()
-    req = urlopen(url)
-    buf = req.read(BLOCKSIZE)
-    while len(buf) > 0:
-        hasher.update(buf)
-        buf = req.read(BLOCKSIZE)
+    req = requests.get(url)
+    hasher.update(req.content)
     return hasher.hexdigest()

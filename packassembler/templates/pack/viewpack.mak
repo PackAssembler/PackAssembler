@@ -45,7 +45,7 @@
                         <li><a href="${request.route_url('downloadbuild', id=build.id)}"><i class="icon-fixed-width icon-download"></i> JSON</a></li>
                         <li><a href="${request.route_url('mcuxml', id=build.id)}"><i class="icon-fixed-width icon-file-text"></i> MCU XML</a></li>
                         % if perm:
-                            <li><a href="${request.route_url('removebuild', id=build.id)}"><i class="icon-fixed-width icon-trash"></i> Delete</a></li>
+                            <li><a href="${request.route_url('deletebuild', id=build.id)}"><i class="icon-fixed-width icon-trash"></i> Delete</a></li>
                         % endif
                     </ul>
                 </div>

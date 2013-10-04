@@ -35,6 +35,8 @@ class ServerViews(ViewBase):
                 return HTTPFound(location=self.request.route_url('viewserver', id=server.id))
             except DoesNotExist:
                 error = 'Pack or Revision Does Not Exist'
+            except NotUniqueError:
+                form.name.errors.append('Already exists.')
 
         return self.return_dict(title='Add Server', error=error, f=form, cancel=self.request.route_url('serverlist'))
 

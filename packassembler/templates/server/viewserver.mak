@@ -25,7 +25,7 @@
                     <td>Homepage</td>
                     <td>
                         % if server.url:
-                            <a target="_blank" rel="nofollow" href="${server.url}">${server.url}</a>
+                            <a rel="nofollow" href="${server.url}">${server.url}</a>
                         % else:
                             None
                         % endif

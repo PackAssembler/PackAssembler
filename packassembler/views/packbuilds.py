@@ -82,8 +82,8 @@ class PackBuildViews(ViewBase):
 
         return self.return_dict(title='New Build', error=error, f=form, cancel=self.request.route_url('viewpack', id=pack.id))
 
-    @view_config(route_name='removebuild', permission='user')
-    def removebuild(self):
+    @view_config(route_name='deletebuild', permission='user')
+    def deletebuild(self):
         pb = self.get_db_object(PackBuild)
 
         if self.check_depends(pb):
@@ -116,6 +116,25 @@ class PackBuildViews(ViewBase):
         pb = self.get_db_object(PackBuild, perm=False)
 
         return Response(generate_mcu_xml(self.request, pb), content_type='application/xml')
+
+    @view_config(route_name='paq')
+    def paq(self):
+        pb = self.get_db_object(PackBuild, perm=False)
+
+        resp = ''
+        for mv in pb.mod_versions:
+            resp += self.request.route_url('downloadversion', id=mv.id)
+            resp += '\nfalse\nfalse\nPAQ-Temp/mods\nPAQ-Temp/mods\n'
+            resp += mv.mod.rid + '.zip\n'
+
+        if pb.config:
+            resp += pb.config + '\nfakse\ntrue\nPAQ-Temp/downloads\nPAQ-Temp/config\nconfig.zip\n'
+
+        forge_filename = 'minecraftforge-installer-{0}-{1}.jar'.format(pb.mc_version, pb.forge_version)
+        forge_url = 'http://files.minecraftforge.net/minecraftforge/' + forge_filename
+        resp += forge_url + '\n' + forge_filename + '\n' + '{0}-Forge{1}'.format(pb.mc_version, pb.forge_version)
+
+        return Response(resp, content_type='text/plain')
 
     @view_config(route_name='forgeversions', renderer='json')
     def forgeversions(self):
@@ -165,16 +184,7 @@ def generate_mcu_xml(request, pb, server=None):
 
     # Add the mods
     for mv in pb.mod_versions:
-        xml[0].append(E.Module(
-            E.URL(request.route_url('downloadversion', id=mv.id)),
-            E.Required('true'),
-            E.ModType('Regular'),
-            E.MD5(mv.mod_file.md5 if mv.mod_file else mv.mod_file_url_md5),
-            {
-                'id': mv.mod.rid,
-                'name': '{0} ({1})'.format(mv.mod.name, mv.version),
-            }
-        ))
+        xml[0].append(mod_config(mv))
 
     # Get the config url, if there is none in either server or pack, leave it
     # blank
@@ -200,3 +210,16 @@ def generate_mcu_xml(request, pb, server=None):
         ))
 
     return tostring(xml)
+
+
+def mod_xml(mv):
+    return E.Module(
+        E.URL(request.route_url('downloadversion', id=mv.id)),
+        E.Required('true'),
+        E.ModType('Regular'),
+        E.MD5(mv.mod_file.md5 if mv.mod_file else mv.mod_file_url_md5),
+        {
+            'id': mv.mod.rid,
+            'name': '{0} ({1})'.format(mv.mod.name, mv.version),
+        }
+    )

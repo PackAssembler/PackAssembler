@@ -38,7 +38,7 @@
     <script type="text/javascript">
         $(document).ready(function(){
             $('[data-id]').click(function(){
-                $('form').attr('action', '/pack/addmod/' + $(this).data('id'))
+                $('form').attr('action', '/packs/' + $(this).data('id') + '/addmod');
                 $('form').submit();
             });
         })

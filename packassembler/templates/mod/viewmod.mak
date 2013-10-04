@@ -153,6 +153,12 @@
                             % if perm:
                                 <li><a href="${request.route_url('deleteversion', id=version.id)}"><i class="icon-fixed-width icon-trash"></i> Delete</a></li>
                                 <li><a href="${request.route_url('editversion', id=version.id)}"><i class="icon-fixed-width icon-pencil"></i> Edit</a></li>
+                                % if loop.index != 0:
+                                    <li><a href="${request.route_url('moveversion', id=mod.id, shift=1, index=loop.index)}"><i class="icon-fixed-width icon-arrow-up"></i> Move Up</a></li>
+                                % endif
+                                % if loop.index != len(mod.versions) - 1:
+                                    <li><a href="${request.route_url('moveversion', id=mod.id, shift=-1, index=loop.index)}"><i class="icon-fixed-width icon-arrow-down"></i> Move Down</a></li>
+                                % endif
                             % endif
                         </ul>
                     </div>
