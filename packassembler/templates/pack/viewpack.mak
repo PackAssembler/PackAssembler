@@ -60,15 +60,15 @@
         ${listcommon.add_to_pack(packs, message='Combine with Pack')}
     </div>
     <form method="POST" action="">
-        <table class="table table-white table-bordered">
+        <table class="table table-bordered table-hover">
         % for mod in sorted(pack.mods):
             <tr>
             % if perm:
-                <td data-href="${request.route_url('removepackmod', modid=mod.id, packid=pack.id)}" class="linked middle center cursor-pointer">
+                <td data-href="${request.route_url('removepackmod', modid=mod.id, packid=pack.id)}" class="linked middle center">
                     <i class="icon-remove text-danger"></i>
                 </td>
             % endif
-                <td data-href="${request.route_url('viewmod', id=mod.id)}" class="linked-tab link-hover giant">
+                <td data-href="${request.route_url('viewmod', id=mod.id)}" class="linked giant">
                     <input type="hidden" name="mods" value="${mod.id}">
                     ${mod.name}
                 </td>

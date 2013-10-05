@@ -22,14 +22,19 @@ class VersionViews(ViewBase):
                 mv.mod_file_url = None
                 mv.mod_file_url_md5 = None
             except AttributeError:
-                mv.mod_file_url_md5 = url_md5(form.mod_file_url.data)
+                mv.mod_file_url_md5, mv.mod_file_url = url_md5(form.mod_file_url.data)
+
+            mv.depends, mv.opt_depends = get_depends(post)
             mv.save()
 
             mod.versions.append(mv)
             mod.save()
             return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
 
-        return self.return_dict(title="Add Mod Version", f=form, cancel=self.request.route_url('viewmod', id=mod.id))
+        return self.return_dict(
+            title="Add Mod Version", mods=Mod.objects,
+            f=form, cancel=self.request.route_url('viewmod', id=mod.id)
+        )
 
     @view_config(route_name='editversion', renderer='editmodversion.mak', permission='user')
     def editversion(self):
@@ -46,12 +51,17 @@ class VersionViews(ViewBase):
             except AttributeError:
                 if mv.mod_file_url:
                     mv.mod_file = None
-                    mv.mod_file_url_md5 = url_md5(form.mod_file_url.data)
+                    mv.mod_file_url_md5, mv.mod_file_url = url_md5(form.mod_file_url.data)
+
+            mv.depends, mv.opt_depends = get_depends(post)
             mv.save()
 
             return HTTPFound(location=self.request.route_url('viewmod', id=mv.mod.id))
 
-        return self.return_dict(title="Edit Mod Version", f=form, cancel=self.request.route_url('viewmod', id=mv.mod.id))
+        return self.return_dict(
+            title="Edit Mod Version", mods=Mod.objects, mv=mv,
+            f=form, cancel=self.request.route_url('viewmod', id=mv.mod.id)
+        )
 
     @view_config(route_name='downloadversion')
     def downloadversion(self):
@@ -72,3 +82,18 @@ class VersionViews(ViewBase):
             mv.mod_file.delete()
         mv.delete()
         return HTTPFound(location=self.request.route_url('viewmod', id=mv.mod.id))
+
+
+def get_depends(post):
+    req = []
+    opt = []
+    for mid in post.getall('depends'):
+        try:
+            if mid in post.getall('opt_depends'):
+                opt.append(Mod.objects.get(id=mid))
+            else:
+                req.append(Mod.objects.get(id=mid))
+        except DoesNotExist:
+            pass
+
+    return req, opt

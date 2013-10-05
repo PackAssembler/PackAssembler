@@ -87,7 +87,6 @@ table.listtable > * > tr > * {line-height: 30px !important;}
 
 /* View Pages */
 div.panel-heading {font-size: 17px; color: white !important;}
-/*table.table-white {background-color: white;}*/
 td.middle {vertical-align: middle !important;}
 td:hover.link-hover {background-color: rgb(40, 40, 40); cursor: pointer;}
 td.giant {width: 100%;}

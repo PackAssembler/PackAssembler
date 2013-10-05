@@ -37,7 +37,10 @@ class ModVersion(Document):
     ## If not defined, default to any version
     forge_min = StringField(max_length=FV)
     forge_max = StringField(max_length=FV)
-    # Mod version and upload datetime
+    # Dependencies
+    depends = ListField(ReferenceField('Mod'))
+    opt_depends = ListField(ReferenceField('Mod'))
+    # Actual version number
     version = StringField(required=True)
     # The file itself
     mod_file = FileField(collection_name='modfs')
@@ -96,13 +99,15 @@ class Mod(Document):
     }
 
 Mod.register_delete_rule(ModVersion, 'mod', CASCADE)
+Mod.register_delete_rule(ModVersion, 'depends', PULL)
+Mod.register_delete_rule(ModVersion, 'opt_depends', PULL)
 
 
 class PackBuild(Document):
     # Build number
     revision = IntField(required=True)
     # Mod versoins
-    mod_versions = ListField(ReferenceField(ModVersion))
+    mod_versions = ListField(ReferenceField(ModVersion, reverse_delete_rule=DENY))
     # Configuration, should be on external server
     config = URLField()
     # Version information

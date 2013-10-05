@@ -112,4 +112,4 @@ def url_md5(url, BLOCKSIZE=16 * 1024):
     hasher = md5()
     req = requests.get(url)
     hasher.update(req.content)
-    return hasher.hexdigest()
+    return hasher.hexdigest(), req.url

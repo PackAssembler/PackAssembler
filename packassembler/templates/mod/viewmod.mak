@@ -13,7 +13,7 @@
         return '<a href="{0}" target="_blank" rel="nofollow">{1}</a>'.format(text, trun)
 
     def autolink(text):
-        urlre = re.compile("(\(?https?://[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|])(\">|</a>)?")
+        urlre = re.compile('(http|ftp|https):\/\/([\w\-_]+(?:(?:\.[\w\-_]+)+))([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?')
         try:
             return urlre.sub(lambda m: externallink(m.group(0)), text)
         except TypeError:

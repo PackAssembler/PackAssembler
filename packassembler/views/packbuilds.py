@@ -184,7 +184,7 @@ def generate_mcu_xml(request, pb, server=None):
 
     # Add the mods
     for mv in pb.mod_versions:
-        xml[0].append(mod_config(mv))
+        xml[0].append(mod_xml(E, request, mv))
 
     # Get the config url, if there is none in either server or pack, leave it
     # blank
@@ -202,7 +202,7 @@ def generate_mcu_xml(request, pb, server=None):
             E.URL(config_url),
             E.Required('true'),
             E.ModType('Extract', {'inRoot': 'true'}),
-            E.MD5(url_md5(config_url)),
+            E.MD5(url_md5(config_url)[0]),
             {
                 'id': 'Config',
                 'name': 'Config'
@@ -212,7 +212,7 @@ def generate_mcu_xml(request, pb, server=None):
     return tostring(xml)
 
 
-def mod_xml(mv):
+def mod_xml(E, request, mv):
     return E.Module(
         E.URL(request.route_url('downloadversion', id=mv.id)),
         E.Required('true'),

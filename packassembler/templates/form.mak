@@ -8,9 +8,9 @@
     </div>
 </%def>
 
-<%def name="showsubmit(cancel, name='submit')">
+<%def name="showsubmit(cancel, name='submit', offset=2)">
     <div class="form-group">
-        <div class="col-lg-offset-2 col-lg-10">
+        <div class="col-lg-offset-${offset} col-lg-${12-offset}">
             <button type="submit" class="btn btn-primary" name="${name}">Submit</button> &nbsp; ${'<a href="{0}">Cancel</a>'.format(cancel) if cancel else '' | n}
         </div>
     </div>
