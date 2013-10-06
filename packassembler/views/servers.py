@@ -23,7 +23,7 @@ class ServerViews(ViewBase):
                     pack=pack)
                 params = opt_dict(
                     name=form.name.data,
-                    rid=form.name.data.replace(' ', '_'),
+                    rid=slugify(form.name.data),
                     url=form.url.data,
                     host=form.host.data,
                     port=form.port.data,
@@ -36,7 +36,7 @@ class ServerViews(ViewBase):
             except DoesNotExist:
                 error = 'Pack or Revision Does Not Exist'
             except NotUniqueError:
-                form.name.errors.append('Already exists.')
+                form.name.errors.append('Name or Readable ID Already Exists.')
 
         return self.return_dict(title='Add Server', error=error, f=form, cancel=self.request.route_url('serverlist'))
 

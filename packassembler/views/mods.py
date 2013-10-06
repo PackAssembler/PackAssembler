@@ -115,11 +115,11 @@ class ModViews(ViewBase):
             try:
                 mod = Mod(owner=self.current_user)
                 form.populate_obj(mod)
-                mod.rid = form.name.data.replace(' ', '_')
+                mod.rid = slugify(form.name.data)
                 mod.save()
                 return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
             except NotUniqueError:
-                form.name.errors.append('Already exists.')
+                form.name.errors.append('Name or Readable ID Already Exists.')
 
         return self.return_dict(title='Add Mod', f=form, cancel=self.request.route_url('modlist'))
 

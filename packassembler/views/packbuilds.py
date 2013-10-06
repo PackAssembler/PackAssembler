@@ -5,8 +5,6 @@ from lxml.builder import ElementMaker
 from pyramid.view import view_config
 from ..form import PackBuildForm
 from lxml.etree import tostring
-from bson import json_util
-from json import dumps
 from ..schema import *
 
 
@@ -92,11 +90,11 @@ class PackBuildViews(ViewBase):
         else:
             return HTTPFound(self.request.route_url('error', type='depends'))
 
-    @view_config(route_name='downloadbuild')
+    @view_config(route_name='downloadbuild', renderer='json')
     def downloadbuild(self):
         pb = self.get_db_object(PackBuild, perm=False)
         jdict = {
-            'pack_id': pb.pack.id,
+            'pack_id': str(pb.pack.id),
             'pack_name': pb.pack.name,
             'config': pb.config,
             'mc_version': pb.mc_version,
@@ -105,11 +103,12 @@ class PackBuildViews(ViewBase):
         }
         for mv in pb.mod_versions:
             jdict['mods'][str(mv.mod.id)] = {
+                'name': mv.mod.name,
                 'target': mv.mod.target,
-                'version': mv.id
+                'version': str(mv.id)
             }
 
-        return Response(dumps(jdict, default=json_util.default), content_type='application/json')
+        return jdict
 
     @view_config(route_name='mcuxml')
     def mcuxml(self):

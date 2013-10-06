@@ -66,6 +66,8 @@ class ViewBase(object):
         dtype = data.__class__.__name__
         if dtype == 'Mod':
             return Pack.objects(mods=data).first() is None
+        elif dtype == 'ModVersion':
+            return PackBuild.objects(mod_versions=data).first() is None
         elif dtype == 'Pack':
             return Server.objects(build__in=data.builds).first() is None
         elif dtype == 'PackBuild':
@@ -108,8 +110,14 @@ def validate_captcha(request):
         return t[0][0] == 't', CAPTCHA_MESSAGE + t[1]
 
 
-def url_md5(url, BLOCKSIZE=16 * 1024):
+def url_md5(url):
+    """ Returns MD5 of file at url. """
     hasher = md5()
     req = requests.get(url)
     hasher.update(req.content)
+    # Also return the end url, in case of redirect
     return hasher.hexdigest(), req.url
+
+
+def slugify(text):
+    return text.lower().replace(' ', '-')

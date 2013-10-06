@@ -17,7 +17,7 @@ Support for anything under 1.5.2 is deprecated. We will be removing it from the 
 <h4>Why can't I add any mods?</h4>
 In order to ensure that we don't have duplicates or mods with no permissions defined, we have made a decision to only allow contributors to add mods.
 
-<h4>How do permissions work?</h4>
+<h4 id="permissions">How do permissions work?</h4>
 When assesing the legality of having a copyrighted mod on our servers, we assume:
 <ol>
     <li>If no permission is specified for this unique situation, one must follow restrictions given for 'modpacks'.</li>

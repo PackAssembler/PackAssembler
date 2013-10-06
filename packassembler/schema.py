@@ -74,7 +74,7 @@ class Mod(Document):
     ## Name of mod
     name = StringField(required=True, max_length=32, unique=True)
     ## Readable id
-    rid = StringField()
+    rid = StringField(required=True, unique=True)
     ## Description of mod
     description = StringField()
     ## Author(s) of the mod
@@ -123,7 +123,7 @@ class Pack(Document):
     # Use devel?
     devel = BooleanField(default=False)
     # Readable id
-    rid = StringField(required=True)
+    rid = StringField(required=True, unique=True)
     # Mod List
     mods = ListField(ReferenceField(Mod, reverse_delete_rule=DENY))
     # Builds
@@ -147,7 +147,7 @@ class Server(Document):
     host = StringField(required=True)
     port = IntField(required=True)
     # Readable id
-    rid = StringField()
+    rid = StringField(required=True, unique=True)
     # Pack used
     build = ReferenceField('PackBuild', required=True, reverse_delete_rule=DENY)
     # Owner

@@ -67,6 +67,11 @@ def setup_routes(config):
     ## API
     config.add_route('mcuxmlpack', '/packs/{id}/mcuxml')
     config.add_route('forgeversions', '/packs/forgeversions')
+    ## Technic API
+    config.add_route('technic_packlist', '/technic/api/modpack/')
+    config.add_route('technic_viewpack', '/technic/api/modpack/{rid}/')
+    config.add_route('technic_viewbuild', '/technic/api/modpack/{rid}/{revision}/')
+    config.add_route('technic_repo', '/technic/api/repo/{rid}/resources/{image}')
     ## CRUD
     config.add_route('addpack', '/packs/add')
     config.add_route('clonepack', 'packs/{id}/clone')

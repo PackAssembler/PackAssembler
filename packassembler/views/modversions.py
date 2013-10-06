@@ -31,8 +31,9 @@ class VersionViews(ViewBase):
             mod.save()
             return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
 
+        mv = (mod.versions[-1] if mod.versions else None)
         return self.return_dict(
-            title="Add Mod Version", mods=Mod.objects,
+            title="Add Mod Version", mods=Mod.objects(id__ne=mod.id), mv=mv,
             f=form, cancel=self.request.route_url('viewmod', id=mod.id)
         )
 
@@ -78,10 +79,13 @@ class VersionViews(ViewBase):
         # Get modversion
         mv = self.get_db_object(ModVersion)
 
-        if mv.mod_file:
-            mv.mod_file.delete()
-        mv.delete()
-        return HTTPFound(location=self.request.route_url('viewmod', id=mv.mod.id))
+        if self.check_depends(mv):
+            if mv.mod_file:
+                mv.mod_file.delete()
+            mv.delete()
+            return HTTPFound(location=self.request.route_url('viewmod', id=mv.mod.id))
+        else:
+            return HTTPFound(self.request.route_url('error', type='depends'))
 
 
 def get_depends(post):
@@ -96,4 +100,4 @@ def get_depends(post):
         except DoesNotExist:
             pass
 
-    return req, opt
+    return (req if req else None), (opt if opt else None)

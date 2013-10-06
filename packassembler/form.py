@@ -123,7 +123,7 @@ class ParanoidTextAreaField(TextAreaField):
 
 class ModForm(SForm):
     name = namefield('Name')
-    description = SafeTextAreaField('Description')
+    description = ParanoidTextAreaField('Description')
     author = TextField('Author', validators=[
                        validators.required(), validators.Length(max=32)])
     url = urlfield('Homepage', v=[validators.required()])

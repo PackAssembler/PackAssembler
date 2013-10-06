@@ -1,4 +1,5 @@
-from pyramid.view import view_config
+from pyramid.view import view_config, notfound_view_config
+from pyramid.httpexceptions import HTTPNotFound
 from .common import ViewBase
 
 
@@ -35,3 +36,7 @@ class GeneralViews(ViewBase):
             return self.return_dict(title='Already Cloned', message='It seems that you have already cloned this pack. To make another, change the name of your other clone.')
         else:
             return self.return_dict(title='Error', message='An unknown error has occured: ' + e)
+
+    @notfound_view_config(append_slash=True)
+    def notfound(self):
+        return HTTPNotFound()

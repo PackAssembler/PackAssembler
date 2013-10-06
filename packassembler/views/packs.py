@@ -19,13 +19,11 @@ class PackViews(ViewBase):
                     owner=self.current_user,
                     name=form.name.data,
                     devel=form.devel.data,
-                    rid=form.name.data.replace(
-                        ' ',
-                        '_')).save(
-                )
+                    rid=slugify(form.name.data)
+                ).save()
                 return HTTPFound(location=self.request.route_url('viewpack', id=pack.id))
             except NotUniqueError:
-                form.name.errors.append('Already exists.')
+                form.name.errors.append('Name or Readable ID Already Exists.')
 
         return self.return_dict(title="Add Pack", f=form, cancel=self.request.route_url('modlist'))
 
