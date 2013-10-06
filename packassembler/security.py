@@ -20,8 +20,13 @@ def check_pass(username, password):
         user = User.objects(email=username).first()
     else:
         user = User.objects(username=username).first()
-    password_correct = bcrypt.hashpw(hpass(password), user.password) == user.password
-    if user is not None and password_correct and user.activate is None:
+
+    try:
+        password_correct = bcrypt.hashpw(hpass(password), user.password) == user.password
+    except AttributeError:
+        return False
+
+    if password_correct and user.activate is None:
         return user.username
     else:
         return False

@@ -18,67 +18,41 @@ class PackBuildViews(ViewBase):
 
     @view_config(route_name='addbuild', renderer='addbuild.mak', permission='user')
     def addbuild(self):
+        # Error info
+        req = {}
         error = ''
+
+        # Get basic info
         pack = self.get_db_object(Pack)
         post = self.request.params
         form = PackBuildForm(post)
 
         if 'submit' in post and form.validate():
-            elist = []
+            # Create the PackBuild, initialize mod_versions
+            pb = PackBuild(pack=pack, revision=pack.latest + 1)
 
-            splitm = form.mc_version.data.split('.')
-            splitf = form.forge_version.data.split('.')
+            # Populate the new pack build with WTForms data
+            form.populate_obj(pb)
 
-            mod_versions = []
+            # Add all the mod versions and save
+            suc, vs, req = get_versions(pack, post)
+            if suc:
+                if not req:
+                    pb.mod_versions = vs
+                    pb.save()
 
-            for mod in pack.mods:
-                mc_compat = [i for i in mod.versions
-                             if i.mc_min.split('.') <= splitm
-                             and i.mc_max.split('.') >= splitm]
-                if mc_compat:
-                    forge_compat = []
-                    for version in mc_compat:
-                        dversion = version.to_mongo()
-                        forge_min = dversion.get(
-                            'forge_min', '0.0.0.000').split('.')
-                        forge_max = dversion.get(
-                            'forge_max', '9.9.9.999').split('.')
-                        if forge_min <= splitf and forge_max >= splitf:
-                            forge_compat.append(version)
-                    if forge_compat:
-                        dcompat = [
-                            version for version in forge_compat if version.devel is False or pack.devel is True]
-                        if dcompat:
-                            selected = max(
-                                dcompat, key=lambda v: v.version.split('.'))
-                        else:
-                            selected = max(
-                                forge_compat, key=lambda v: v.version.split('.'))
-                        mod_versions.append(selected)
-                    else:
-                        elist.append(self.linkerror(mod, 'is incompatible with Forge ' +
-                                     form.forge_version.data))
-                else:
-                    elist.append(self.linkerror(mod, 'is incompatible with Minecraft ' +
-                                 form.mc_version.data))
-            if elist:
-                error = '<ul>'
-                for e in elist:
-                    error += '<li>' + e + '</li>'
-                error += '</ul>'
+                    pack.latest = pb.revision
+                    pack.builds.append(pb)
+                    pack.save()
+
+                    return HTTPFound(self.request.route_url('viewpack', id=pack.id))
             else:
-                pb = PackBuild(
-                    mod_versions=mod_versions, mc_version=form.mc_version.data,
-                    forge_version=form.forge_version.data, pack=pack, revision=pack.latest + 1)
-                if form.config.data:
-                    pb.config = form.config.data
-                pb.save()
-                pack.latest = pb.revision
-                pack.builds.append(pb)
-                pack.save()
-                return HTTPFound(self.request.route_url('viewpack', id=pack.id))
+                error = 'Some versions were not accounted for. Please try again.'
 
-        return self.return_dict(title='New Build', error=error, f=form, cancel=self.request.route_url('viewpack', id=pack.id))
+        return self.return_dict(
+            title='New Build', f=form, depends=req, mods=pack.mods, error=error,
+            cancel=self.request.route_url('viewpack', id=pack.id)
+        )
 
     @view_config(route_name='deletebuild', permission='user')
     def deletebuild(self):
@@ -143,6 +117,47 @@ class PackBuildViews(ViewBase):
         return build_data[mc_version]
 
 
+# Build creation
+def get_versions(pack, post):
+    mod_versions = []
+    required = {}
+    suc = True
+
+    for mod in pack.mods:
+        mid = str(mod.id)
+        if mid in post:
+            # Get the specified version
+            version = get_version(mod.versions, post[mid])
+
+            # Check dependencies
+            unsat = check_dependencies(version.depends, pack.mods)
+
+            # Add to the list
+            if not unsat:
+                mod_versions.append(version)
+            else:
+                required[mid] = unsat
+        else:
+            suc = False
+
+    return suc, mod_versions, required
+
+
+def get_version(versions, version_id):
+    return [i for i in versions if str(i.id) == version_id][0]
+
+
+def check_dependencies(l1, l2):
+    unsat = []
+
+    for dep in l1:
+        if dep not in l2:
+            unsat.append(dep)
+
+    return unsat
+
+
+# XML Generation
 def generate_mcu_xml(request, pb, server=None):
     E = ElementMaker(nsmap={
         'noNamespaceSchemaLocation': 'http://www.mcupdater.com/ServerPack',
