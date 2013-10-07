@@ -47,7 +47,7 @@ class PackBuildViews(ViewBase):
 
                     return HTTPFound(self.request.route_url('viewpack', id=pack.id))
             else:
-                error = 'Some versions were not accounted for. Please try again.'
+                error = 'Some mods were not accounted for. Check the advanced section and try again.'
 
         return self.return_dict(
             title='New Build', f=form, depends=req, mods=pack.mods, error=error,

@@ -48,7 +48,7 @@ def setup_routes(config):
     config.add_route('flagmod', '/mods/{id}/flag')
     config.add_route('moveversion', '/mods/{id}/moveversion/{index}/{shift}')
     ## Details
-    config.add_route('editbanner', '/mods/{id}/banner/edit')
+    config.add_route('editmodbanner', '/mods/{id}/banner/edit')
     ## CRUD
     config.add_route('addmod', '/mods/add')
     config.add_route('editmod', '/mods/{id}/edit')
@@ -67,6 +67,8 @@ def setup_routes(config):
     ## API
     config.add_route('mcuxmlpack', '/packs/{id}/mcuxml')
     config.add_route('forgeversions', '/packs/forgeversions')
+    ## Details
+    config.add_route('editpackbanner', '/packs/{id}/banner/edit')
     ## Technic API
     config.add_route('technic_packlist', '/technic/api/modpack/')
     config.add_route('technic_viewpack', '/technic/api/modpack/{rid}/')
@@ -95,6 +97,8 @@ def setup_routes(config):
     config.add_route('serverlist', '/servers')
     ## API
     config.add_route('mcuxmlserver', '/servers/{id}/mcuxml')
+    ## Details
+    config.add_route('editserverbanner', '/servers/{id}/banner/edit')
     ## CRUD
     config.add_route('addserver', '/servers/add')
     config.add_route('editserver', '/servers/{id}/edit')

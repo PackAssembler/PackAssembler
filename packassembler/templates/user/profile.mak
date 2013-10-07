@@ -1,9 +1,9 @@
 <%inherit file="base.mak"/>
-<%namespace name="avatar" file="avatar.mak" />   
+<%namespace name="extras" file="extras.mak" />
 <div class="row">
     <div class="col-lg-6">
         <div class="profilebox">
-            <div class="profilebox-avatar">${avatar.avatar(owner, 150)}</div>
+            <div class="profilebox-avatar">${extras.avatar(owner, 150)}</div>
             <div class="profilebox-info">
                 <h2>${title}</h2>
                 % if admin:

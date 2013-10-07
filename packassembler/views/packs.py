@@ -67,7 +67,7 @@ class PackViews(ViewBase):
         else:
             packs = Pack.objects
 
-        return self.return_dict(title="Pack List", packs=packs)
+        return self.return_dict(title="Packs", packs=packs)
 
     @view_config(route_name='deletepack', permission='user')
     def deletepack(self):

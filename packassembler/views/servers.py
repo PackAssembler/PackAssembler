@@ -84,7 +84,7 @@ class ServerViews(ViewBase):
         else:
             servers = Server.objects
 
-        return self.return_dict(title="Server List", servers=servers)
+        return self.return_dict(title="Servers", servers=servers)
 
     @view_config(route_name='deleteserver', permission='user')
     def deleteserver(self):

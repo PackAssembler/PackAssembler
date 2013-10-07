@@ -1,5 +1,6 @@
 <%inherit file="base.mak"/>
-<div class="row">
+<%namespace name="extras" file="extras.mak" />
+<div class="row bpadding infobar">
     <div class="col-lg-8">
         <h2>${title}</h2>
         <a href="#" class="btn btn-primary btn-sm" id='showurl'>Copy MCUpdater URL</a>
@@ -15,6 +16,11 @@
     % endif
     </div>
 </div>
+% if perm:
+    <div class="row pull-right">
+        <a href="${request.route_url('editserverbanner', id=server.id)}" id="changeBanner">Change Banner</a>
+    </div>
+% endif
 <hr>
 <div class="row">
     <div class="col-lg-6">
@@ -50,6 +56,9 @@
         </div>
     </div>
 </div>
+<%block name="style">
+    ${extras.banner_style(server)}
+</%block>
 <%block name="endscripts">
     <script src="//raw.github.com/makeusabrew/bootbox/master/bootbox.js"></script>
     <script type="text/javascript">

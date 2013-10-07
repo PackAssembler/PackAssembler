@@ -1,5 +1,6 @@
 <%inherit file="base.mak"/>
 <%namespace name="listcommon" file="list.mak" />
+<%namespace name="extras" file="extras.mak" />
 <%!
     import re
     def linejoin(text):
@@ -19,7 +20,7 @@
         except TypeError:
             return 'None'
 %>
-<div class="row bpadding" id="modInfobar">
+<div class="row bpadding infobar">
     <div class="col-lg-8">
         <h2>${title}</h2>
         <div class="dropdown inline">
@@ -52,7 +53,7 @@
 </div>
 % if perm:
     <div class="row pull-right">
-        <a href="${request.route_url('editbanner', id=mod.id)}" id="changeBanner">Change Banner</a>
+        <a href="${request.route_url('editmodbanner', id=mod.id)}" id="changeBanner">Change Banner</a>
     </div>
 % endif
 <hr>
@@ -170,20 +171,7 @@
 </div>
 <small>Permission: ${mod.permission | autolink,linejoin,n}</small>
 <%block name="style">
-    <style type="text/css">
-    % if mod.banner:
-        div#modInfobar
-        {
-            background: url("${mod.banner.image}") no-repeat scroll left;
-            background-size: cover;
-            background-width: 100%;
-        }
-        div#modInfobar h2
-        {
-            color: ${mod.banner.text_color};
-        }
-    % endif
-    </style>
+    ${extras.banner_style(mod)}
 </%block>
 <%block name="endscripts">
     <script src="//raw.github.com/makeusabrew/bootbox/master/bootbox.js"></script>

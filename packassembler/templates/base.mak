@@ -37,14 +37,14 @@
                     ${genclass('Home')}
                         <a href="${request.route_url('home')}">Home</a>
                     </li>
-                    ${genclass('Mod List')}
-                        <a href="${request.route_url('modlist')}">Mod List</a>
+                    ${genclass('Mods')}
+                        <a href="${request.route_url('modlist')}">Mods</a>
                     </li>
-                    ${genclass('Pack List')}
-                        <a href="${request.route_url('packlist')}">Pack List</a>
+                    ${genclass('Packs')}
+                        <a href="${request.route_url('packlist')}">Packs</a>
                     </li>
-                    ${genclass('Server List')}
-                        <a href="${request.route_url('serverlist')}">Server List</a>
+                    ${genclass('Servers')}
+                        <a href="${request.route_url('serverlist')}">Servers</a>
                     </li>
                     ${genclass('FAQ')}
                         <a href="${request.route_url('faq')}">FAQ</a>
@@ -96,9 +96,9 @@
                                 </%def>
                                 <dl>
                                     ${shortcut('Home', 'g h')}
-                                    ${shortcut('Mod List', 'g m')}
-                                    ${shortcut('Pack List', 'g p')}
-                                    ${shortcut('Server List', 'g s')}
+                                    ${shortcut('Mods', 'g m')}
+                                    ${shortcut('Packs', 'g p')}
+                                    ${shortcut('Servers', 'g s')}
                                     ${shortcut('FAQ', 'g f')}
                                     ${shortcut('Login/Profile', 'g l')}
                                 </dl>

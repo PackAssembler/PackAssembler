@@ -132,6 +132,8 @@ class Pack(Document):
     latest = IntField(required=True, default=0)
     # Owner of Pack
     owner = ReferenceField(User, required=True, reverse_delete_rule=DENY)
+    # Formatting extras
+    banner = EmbeddedDocumentField(Banner)
 
     meta = {
         'ordering': ['name']
@@ -154,6 +156,8 @@ class Server(Document):
     owner = ReferenceField(User, required=True, reverse_delete_rule=DENY)
     # Configuration, should be on external server
     config = URLField()
+    # Formatting extras
+    banner = EmbeddedDocumentField(Banner)
 
     meta = {
         'ordering': ['name']

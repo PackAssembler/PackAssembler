@@ -1,5 +1,6 @@
 <%inherit file="base.mak"/>
 <%namespace name="form" file="form.mak" />
+<%namespace name="emd" file="editmodversion.mak" />
 <h2>${title}</h2>
 <hr>
 <div class="row">
@@ -28,21 +29,22 @@
                 % endif
             </%form:showinput>
             ${form.showfield(f.config)}
-            <hr>
-            % for mod in mods:
-                <%form:showinput name="${mod.id}" label="${mod.name}">
-                    <div class="input-group" id="select_${mod.id}">
-                        <select name="${mod.id}" class="form-control">
-                        % for version in mod.versions[::-1]:
-                            <option value="${version.id}" data-mc-max="${version.mc_max}" data-mc-min="${version.mc_min}">${version.version}</option>
-                        % endfor
-                        </select>
-                        <span class="input-group-addon">
-                            <input type="checkbox" id="${mod.id}_checkbox" class="pull-right" title="Enable All Versions">
-                        </span>
-                    </div>
-                </%form:showinput>
-            % endfor
+            <%emd:autopanel header="Advanced" id="adv-header">
+                % for mod in mods:
+                    <%form:showinput name="${mod.id}" label="${mod.name}">
+                        <div class="input-group" id="select_${mod.id}">
+                            <select name="${mod.id}" class="form-control">
+                            % for version in mod.versions[::-1]:
+                                <option value="${version.id}" data-mc-max="${version.mc_max}" data-mc-min="${version.mc_min}">${version.version}</option>
+                            % endfor
+                            </select>
+                            <span class="input-group-addon">
+                                <input type="checkbox" id="${mod.id}_checkbox" class="pull-right" title="Enable All Versions">
+                            </span>
+                        </div>
+                    </%form:showinput>
+                % endfor
+            </%emd:autopanel>
             ${form.showsubmit(cancel)}
         </form>
     </div>
@@ -78,10 +80,16 @@
                         if (checked ||
                             $(this).data('mc-min').split('.') <= mc_version &&
                             $(this).data('mc-max').split('.') >= mc_version){
+                            // Enable this option
                             $(this).prop('disabled', false);
                         }
                         else{
+                            // Disable this option
                             $(this).prop('disabled', true);
+
+                            // Select the first option that's still enabled
+                            var new_val = $(this).siblings(':enabled:first').val();
+                            $(this).parent().val(new_val)
                         }
                     });
                 });

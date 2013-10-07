@@ -1,6 +1,7 @@
 <%inherit file="base.mak"/>
 <%namespace name="listcommon" file="list.mak" />
-<div class="row">
+<%namespace name="extras" file="extras.mak" />
+<div class="row bpadding infobar">
     <div class="col-lg-8">
         <h2>${title}</h2>
         <a href="#" class="btn btn-primary btn-sm" id='showurl'>Copy MCUpdater URL</a>
@@ -17,6 +18,11 @@
     % endif
     </div>
 </div>
+% if perm:
+    <div class="row pull-right">
+        <a href="${request.route_url('editpackbanner', id=pack.id)}" id="changeBanner">Change Banner</a>
+    </div>
+% endif
 <hr>
 <h3>Builds</h3>
 % if perm:
@@ -78,11 +84,9 @@
 % else:
     No Mods Yet!
 % endif
-<%doc>% if perm:
-    <div class="tmargin">
-        <a href="${request.route_url('addpackmod', id=pack.id)}"><i class="icon-plus no-decoration"></i> Add Mod to Pack</a>
-    </div>
-% endif</%doc>
+<%block name="style">
+    ${extras.banner_style(pack)}
+</%block>
 <%block name="endscripts">
     <script src="//raw.github.com/makeusabrew/bootbox/master/bootbox.js"></script>
     <script src="${request.static_url('packassembler:static/js/rowlink.js')}"></script>

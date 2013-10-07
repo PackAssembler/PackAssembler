@@ -27,7 +27,7 @@ class ModViews(ViewBase):
                 Q(versions__in=versions))
 
         return self.return_dict(
-            title='Mod List', mods=mods, packs=self.get_add_pack_data())
+            title='Mods', mods=mods, packs=self.get_add_pack_data())
 
     @view_config(route_name='adoptmod', permission='contributor')
     def adopt(self):
@@ -81,12 +81,28 @@ class ModViews(ViewBase):
 
         return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
 
-    @view_config(route_name='editbanner', permission='user', renderer='genericform.mak')
+    @view_config(route_name='editmodbanner', permission='user', renderer='genericform.mak')
+    @view_config(route_name='editpackbanner', permission='user', renderer='genericform.mak')
+    @view_config(route_name='editserverbanner', permission='user', renderer='genericform.mak')
     def editbanner(self):
+        # Get our route name and post info
+        rname = self.request.matched_route.name
         post = self.request.params
-        mod = self.get_db_object(Mod, perm=False)
-        banner = mod.banner or Banner()
+
+        # Get the object
+        obj = self.get_db_object({
+            'editmodbanner': Mod,
+            'editpackbanner': Pack,
+            'editserverbanner': Server
+        }[rname], perm=False)
+
+        banner = obj.banner or Banner()
         form = BannerForm(post, banner)
+
+        prev = self.request.route_url(
+            'view' + rname.replace('edit', '').replace('banner', ''),
+            id=obj.id
+        )
 
         if 'submit' in post and form.validate():
             form.populate_obj(banner)
@@ -95,16 +111,16 @@ class ModViews(ViewBase):
 
             # Don't save the banner if there is none to show
             if banner.image is None:
-                mod.banner = None
+                obj.banner = None
             else:
-                mod.banner = banner
+                obj.banner = banner
 
             # Save the mod
-            mod.save()
+            obj.save()
 
-            return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
+            return HTTPFound(location=prev)
 
-        return self.return_dict(title='Edit Banner', f=form, cancel=self.request.route_url('viewmod', id=mod.id))
+        return self.return_dict(title='Edit Banner', f=form, cancel=prev)
 
     @view_config(route_name='addmod', renderer='genericform.mak', permission='contributor')
     def addmod(self):
