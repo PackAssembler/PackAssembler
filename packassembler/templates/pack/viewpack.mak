@@ -65,7 +65,7 @@
     <div class="dropdown bmargin">
         ${listcommon.add_to_pack(packs, message='Combine with Pack')}
     </div>
-    <form method="POST" action="">
+    <form method="POST">
         <table class="table table-bordered table-hover">
         % for mod in sorted(pack.mods):
             <tr>
@@ -80,7 +80,9 @@
                 </td>
             </tr>
         % endfor
+        </table>
     </form>
+    <small class="pull-right">${len(pack.mods)} mods.</small>
 % else:
     No Mods Yet!
 % endif

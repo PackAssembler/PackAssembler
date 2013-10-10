@@ -9,7 +9,7 @@
                 <h4>Change Password</h3>
             </div>
             <div class="panel-body">
-                <form method="POST" action="" role="form" class="form-horizontal">
+                <form method="POST" role="form" class="form-horizontal">
                     ${form.showfield(pf.password)}
                     ${form.showfield(pf.confirm)}
                     <hr>
@@ -24,7 +24,7 @@
                 <h4>Change Email</h3>
             </div>
             <div class="panel-body">
-                <form method="POST" action="" role="form" class="form-horizontal">
+                <form method="POST" role="form" class="form-horizontal">
                     ${form.showfield(ef.email)}
                     ${ef.current_user()}
                     ${form.showfield(ef.current)}
@@ -37,7 +37,7 @@
                 <h4>Avatar Type</h3>
             </div>
             <div class="panel-body">
-                <form method="POST" action="" role="form" class="form-horizontal">
+                <form method="POST" role="form" class="form-horizontal">
                     ${form.showfields(af)}
                     ${form.showsubmit(None, name='avatar_submit')}
                 </form>

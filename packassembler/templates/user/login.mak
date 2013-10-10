@@ -5,7 +5,7 @@
 <div class="row">
     <div class="col-lg-12">
         ${form.formerror(error)}
-        <form method="POST" action="" role="form" class="form-horizontal">
+        <form method="POST" role="form" class="form-horizontal">
             ${form.showfield(f.username)}
             ${f.came_from()}
             ${form.showfield(f.password)}

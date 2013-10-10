@@ -14,7 +14,7 @@ ${listcommon.head()}
         </div>
     </div>
 </div>
-<form method="POST" action="" role="form">
+<form method="POST" role="form">
     <table class="table table-hover table-bordered listtable">
         <thead>
             <tr><th class="center"><input type="checkbox" id="topcheck"></th><th>Name</th><th>Author</th><th>Latest Version</th><th>Latest Supported</th><th>Maintainer</th></tr>
@@ -25,7 +25,7 @@ ${listcommon.head()}
                 <td class="nolink center">
                     <input type="checkbox" name="mods" value="${mod.id}">
                 </td>
-                <td>${mod.name}</a></td>
+                <td>${mod.name}</td>
                 <td>${mod.author}</td>
                 <%
                     if mod.versions:
@@ -41,7 +41,7 @@ ${listcommon.head()}
         </tbody>
     </table>
 </form>
-<small class="pull-right">${len(mods.filter(outdated=True))} flagged mods.</small>
+<small class="pull-right">${len(mods)} mods, ${len(mods.filter(outdated=True))} flagged.</small>
 <%block name="endscripts">
     <script src="${request.static_url('packassembler:static/js/rowlink.js')}"></script>
     <script type="text/javascript">

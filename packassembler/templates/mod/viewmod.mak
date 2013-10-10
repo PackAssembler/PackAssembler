@@ -24,7 +24,7 @@
     <div class="col-lg-8">
         <h2>${title}</h2>
         <div class="dropdown inline">
-            <form method="POST" action="">
+            <form method="POST">
                 <input type="hidden" name="mods" value="${mod.id}">
             </form>
             ${listcommon.add_to_pack(packs)}

@@ -15,6 +15,7 @@ ${listcommon.head()}
     % endfor
     </tbody>
 </table>
+<small class="pull-right">${len(servers)} servers.</small>
 <%block name="endscripts">
     <script src="${request.static_url('packassembler:static/js/rowlink.js')}"></script>
 </%block>
