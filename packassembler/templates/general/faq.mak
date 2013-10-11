@@ -44,7 +44,7 @@ Either you checked the 'Use Development Versions' checkbox on your Pack's settin
 <h4>How can I change my avatar?</h4>
 Visit <a href="http://gravatar.com/">Gravatar</a>.
 
-<h4>So, what exactly are these user groups that I see on profile pages?</h4>
+<h4 id="groups">So, what exactly are these user groups that I see on profile pages?</h4>
 There are currently four types of users: user, contributor, moderator, and administrator. Each has specific permissions, limiting what they can do. Permissions are comulative.
 <dl class="well">
     <dt>User</dt><dd>Can create and edit their Packs and Servers</dd>
