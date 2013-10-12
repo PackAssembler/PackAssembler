@@ -87,6 +87,10 @@ class VersionViews(ViewBase):
         else:
             return HTTPFound(self.request.route_url('error', type='depends'))
 
+    @view_config(route_name='versiondetails', renderer='versiondetails.mak')
+    def versiondetails(self):
+        return {'version': self.get_db_object(ModVersion, perm=False)}
+
 
 def get_depends(post):
     req = []

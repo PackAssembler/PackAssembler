@@ -130,9 +130,9 @@
     % endif
 </div>
 <div class="table-responsive">
-    <table class="table table-hover table-bordered">
+    <table class="table table-hover">
         <thead>
-            <tr><th>Version</th><th>Devel</th><th>MC Min</th><th>MC Max</th><th>Uploaded</th><th>MD5</th><th>Action</th></tr>
+            <tr><th>Version</th><th>Devel</th><th>MC Min</th><th>MC Max</th><th>Action</th></tr>
         </thead>
         <tbody>
         % for version in mod.versions[::-1]:
@@ -141,8 +141,6 @@
                 <td>${version.devel}</td>
                 <td>${version.mc_min}</td>
                 <td>${version.mc_max}</td>
-                <td>${version.id.generation_time.strftime('%e %b %Y %I:%m:%S %p')}</td>
-                <td>${version.mod_file.md5 if version.mod_file else version.mod_file_url_md5}</td>
                 ##<td>&nbsp;</td>
                 <td>
                     <div class="btn-group">
@@ -151,6 +149,7 @@
                             <span class="icon-caret-down"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="${request.route_url('downloadversion', id=version.id)}"><i class="icon-fixed-width icon-download"></i> Download</a></li>
+                            <li><a href="${request.route_url('versiondetails', id=version.id)}" class="details"><i class="icon-fixed-width icon-file-text"></i> Details</a></li>
                             % if perm:
                                 <li><a href="${request.route_url('deleteversion', id=version.id)}"><i class="icon-fixed-width icon-trash"></i> Delete</a></li>
                                 <li><a href="${request.route_url('editversion', id=version.id)}"><i class="icon-fixed-width icon-pencil"></i> Edit</a></li>
@@ -168,6 +167,19 @@
         % endfor
         </tbody>
     </table>
+</div>
+<div class="modal fade" id="details-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Version Details</h4>
+      </div>
+      <div class="modal-body" id="details-modal-content">
+        <p>Nothing Here</p>
+      </div>
+    </div>
+  </div>
 </div>
 <small>Permission: ${mod.permission | autolink,linejoin,n}</small>
 <%block name="style">
@@ -203,6 +215,12 @@
                     }
                 }, 'json');
             });
+            $('.details').click(function(e){
+                e.preventDefault();
+                console.log($(this).attr('href'));
+                $('#details-modal-content').load($(this).attr('href'));
+                $('#details-modal').modal();
+            })
         });
     </script>
     ${listcommon.add_to_pack_script()}

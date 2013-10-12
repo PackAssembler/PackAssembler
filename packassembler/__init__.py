@@ -60,8 +60,9 @@ def setup_routes(config):
     # Mod versions
     config.add_route('addversion', '/mods/{id}/versions/add')
     config.add_route('editversion', '/mods/versions/{id}/edit')
-    config.add_route('downloadversion', '/mods/versions/{id}')
+    config.add_route('downloadversion', '/mods/versions/{id}/download')
     config.add_route('deleteversion', '/mods/versions/{id}/delete')
+    config.add_route('versiondetails', '/mods/versions/{id}')
 
     # Packs
     ## Listing
