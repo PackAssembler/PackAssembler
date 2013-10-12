@@ -1,8 +1,10 @@
 from pyramid.httpexceptions import HTTPFound
 from ..form import ModForm, BannerForm
 from pyramid.view import view_config
+from mandrill import Mandrill
 from ..schema import *
 from .common import *
+import threading
 
 
 class ModViews(ViewBase):
@@ -57,6 +59,9 @@ class ModViews(ViewBase):
         mod.outdated = not mod.outdated
         mod.save()
 
+        if mod.outdated:
+            self.send_out_of_date_notification(mod)
+
         return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
 
     @view_config(route_name='flagmod', permission='user', renderer='json', xhr=True)
@@ -66,6 +71,9 @@ class ModViews(ViewBase):
         js_out = {'success': True, 'outdated': not mod.outdated}
         mod.outdated = js_out['outdated']
         mod.save()
+
+        if mod.outdated:
+            self.send_out_of_date_notification(mod)
 
         return js_out
 
@@ -177,3 +185,20 @@ class ModViews(ViewBase):
                                     author__icontains=mod.author),
                                 with_mod=Pack.objects(mods=mod)
                                 )
+
+    def send_out_of_date_notification(self, mod):
+        sender = Mandrill(self.request.registry.settings.get('mandrill_key'))
+        message = {
+            'to': [{'email': mod.owner.email, 'name': mod.owner.username}],
+            'global_merge_vars':
+            [{'content': self.request.route_url('viewmod', id=mod.id),
+              'name': 'modurl'},
+             {'content': mod.name, 'name': 'modname'}]
+        }
+        # Using thread so that the operation doesn't take too long.
+        # Probably not a good idea, no way to check for failure.
+        threading.Thread(target=sender.messages.send_template, kwargs={
+            'template_name': 'outdated',
+            'template_content': [],
+            'message': message,
+            'async': True}).start()

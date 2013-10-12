@@ -161,7 +161,6 @@ class UserViews(ViewBase):
             return rval
 
         elif 'email_submit' in post and email_form.validate():
-            print('this ran')
             user.email = email_form.email.data
             user.email_hash = ehash(email_form.email.data)
             try:
