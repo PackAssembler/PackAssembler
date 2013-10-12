@@ -97,3 +97,7 @@ td.giant {width: 100%;}
 .profilebox-info{float:left;padding-top: 34px;}
 .profilebox-info h2{line-height: normal; font-size:32px; margin: 10px 0 0 0;}
 .profilebox-info h3{margin:0; line-height: normal; font-size:18px;}
+
+/* User list */
+/*div.userbox{height: 300px;}*/
+div.userbox-avatar{margin-bottom: 6px;}

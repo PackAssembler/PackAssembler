@@ -25,6 +25,8 @@ def setup_routes(config):
     config.add_route('error', '/error/{type}')
 
     # User
+    ## Listing
+    config.add_route('userlist', '/users')
     ## Signup Process
     config.add_route('signup', '/users/signup')
     config.add_route('activate', '/users/{id}/activate/{key}')

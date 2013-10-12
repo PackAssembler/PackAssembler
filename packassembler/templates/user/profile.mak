@@ -16,11 +16,7 @@
                         </select>
                     </form>
                 % else:
-                    <%
-                        g = owner.group.title()
-                        colors = {'User': '', 'Contributor': 'text-success', 'Moderator': 'text-info', 'Admin': 'text-danger'}
-                    %>
-                    <h3 class="${colors[g]}">${g}</h3>
+                    ${extras.show_group('h3', owner)}
                 % endif
             </div>
         </div>

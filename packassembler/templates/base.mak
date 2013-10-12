@@ -45,6 +45,9 @@
                     ${genclass('Servers')}
                         <a href="${request.route_url('serverlist')}">Servers</a>
                     </li>
+                    ${genclass('Users')}
+                        <a href="${request.route_url('userlist')}">Users</a>
+                    </li>
                     ${genclass('FAQ')}
                         <a href="${request.route_url('faq')}">FAQ</a>
                     </li>

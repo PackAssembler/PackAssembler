@@ -15,6 +15,17 @@ ehash = lambda e: md5(e.strip().encode()).hexdigest()
 
 class UserViews(ViewBase):
 
+    @view_config(route_name='userlist', renderer='userlist.mak')
+    def userlist(self):
+        post = self.request.params
+
+        if 'q' in post:
+            users = User.objects(username__icontains=post['q'])
+        else:
+            users = User.objects
+
+        return self.return_dict(title="Users", users=users)
+
     @view_config(route_name='signup', renderer='signup.mak')
     def signup(self):
         error = ''
