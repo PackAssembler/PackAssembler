@@ -35,7 +35,9 @@
                         <div class="input-group" id="select_${mod.id}">
                             <select name="${mod.id}" class="form-control">
                             % for version in mod.versions[::-1]:
-                                <option value="${version.id}" data-mc-max="${version.mc_max}" data-mc-min="${version.mc_min}">${version.version}</option>
+                                <option value="${version.id}" data-mc-max="${version.mc_max}" data-mc-min="${version.mc_min}">
+                                    ${version.version} ${'(Devel)' if version.devel else ''}
+                                </option>
                             % endfor
                             </select>
                             <span class="input-group-addon">

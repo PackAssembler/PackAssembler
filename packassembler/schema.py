@@ -120,8 +120,6 @@ class PackBuild(Document):
 class Pack(Document):
     # Information
     name = StringField(required=True, unique=True)
-    # Use devel?
-    devel = BooleanField(default=False)
     # Readable id
     rid = StringField(required=True, unique=True)
     # Mod List

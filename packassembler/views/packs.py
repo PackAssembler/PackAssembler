@@ -18,7 +18,6 @@ class PackViews(ViewBase):
                 pack = Pack(
                     owner=self.current_user,
                     name=form.name.data,
-                    devel=form.devel.data,
                     rid=slugify(form.name.data)
                 ).save()
                 return HTTPFound(location=self.request.route_url('viewpack', id=pack.id))
@@ -34,7 +33,6 @@ class PackViews(ViewBase):
             new_pack = Pack(
                 owner=self.current_user,
                 name='[{0}] {1}'.format(self.logged_in, current_pack.name),
-                devel=current_pack.devel,
                 mods=current_pack.mods,
                 rid=self.logged_in + '-' + current_pack.rid).save()
         except NotUniqueError:
@@ -49,7 +47,6 @@ class PackViews(ViewBase):
 
         if 'submit' in post and form.validate():
             pack.name = form.name.data
-            pack.devel = form.devel.data
             try:
                 pack.save()
                 return HTTPFound(location=self.request.route_url('viewpack', id=pack.id))

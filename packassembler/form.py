@@ -157,7 +157,6 @@ class EditModVersionForm(ModVersionForm):
 
 class PackForm(SForm):
     name = namefield('Name')
-    devel = BooleanField('Use Development Versions')
 
 
 # Pack Builds
