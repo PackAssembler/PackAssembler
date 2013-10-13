@@ -18,7 +18,7 @@
                     ${form.showfield(f.mc_min)}
                     ${form.showfield(f.mc_max)}
                     ${form.showfield(f.forge_min)}
-                    ${form.showfield(f.forge_min)}
+                    ${form.showfield(f.forge_max)}
                     <h4>Mod Dependencies</h4>
                     <%form:showinput name="add_depends" label="Add Dependency">
                         <select id="add_depends" class="form-control">
