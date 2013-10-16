@@ -17,10 +17,14 @@ class ServerViews(ViewBase):
 
         if 'submit' in post and form.validate():
             try:
-                pack = Pack.objects.get(id=form.packid.data)
-                pb = PackBuild.objects.get(
-                    revision=form.revision.data,
-                    pack=pack)
+                if form.packid.data:
+                    pack = Pack.objects.get(id=form.packid.data)
+                    pb = PackBuild.objects.get(
+                        revision=form.revision.data,
+                        pack=pack)
+                else:
+                    pb = None
+
                 params = opt_dict(
                     name=form.name.data,
                     rid=slugify(form.name.data),
@@ -53,10 +57,14 @@ class ServerViews(ViewBase):
 
         if 'submit' in post and form.validate():
             try:
-                pack = Pack.objects.get(id=form.packid.data)
-                pb = PackBuild.objects.get(
-                    revision=form.revision.data,
-                    pack=pack)
+                if form.packid.data:
+                    pack = Pack.objects.get(id=form.packid.data)
+                    pb = PackBuild.objects.get(
+                        revision=form.revision.data,
+                        pack=pack)
+                else:
+                    pb = None
+
                 params = opt_dict(
                     name=form.name.data,
                     url=form.url.data,

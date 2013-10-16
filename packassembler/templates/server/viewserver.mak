@@ -3,7 +3,9 @@
 <div class="row bpadding infobar">
     <div class="col-lg-8">
         <h2>${title}</h2>
+    % if server.build:
         <a href="#" class="btn btn-primary btn-sm" id='showurl'>Copy MCUpdater URL</a>
+    % endif
         <a href="#" class="btn btn-primary btn-sm" id='showid'>Copy ID to Clipboard</a>
         <h4><a href="${request.route_url('profile', id=server.owner.id)}">${server.owner.username}</a></h4>
     </div>
@@ -47,12 +49,16 @@
     <div class="col-lg-6">
         <div class="panel panel-default">
             <div class="panel-heading">Pack Build</div>
+        % if server.build:
             <table class="table">
                 <tr><td>Pack</td><td><a href="${request.route_url('viewpack', id=server.build.pack.id)}">${server.build.pack.name}</a></td></tr>
                 <tr><td>Pack Revision</td><td>${server.build.revision}</td></tr>
                 <tr><td>Minecraft Version</td><td>${server.build.mc_version}</td></tr>
                 <tr><td>Forge Version</td><td>${server.build.forge_version}</td></tr>
             </table>
+        % else:
+            <div class="panel-body">No pack build associated with this server yet.</div>
+        % endif
         </div>
     </div>
 </div>

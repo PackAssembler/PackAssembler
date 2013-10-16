@@ -28,6 +28,11 @@ class User(Document):
     ## Password reset code
     reset = IntField()
 
+    meta = {
+        'indexes': ['username'],
+        'ordering': ['username']
+    }
+
 
 class ModVersion(Document):
     # Minecraft version
@@ -149,7 +154,7 @@ class Server(Document):
     # Readable id
     rid = StringField(required=True, unique=True)
     # Pack used
-    build = ReferenceField('PackBuild', required=True, reverse_delete_rule=DENY)
+    build = ReferenceField('PackBuild', reverse_delete_rule=DENY)
     # Owner
     owner = ReferenceField(User, required=True, reverse_delete_rule=DENY)
     # Configuration, should be on external server

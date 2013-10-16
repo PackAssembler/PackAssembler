@@ -101,3 +101,4 @@ td.giant {width: 100%;}
 /* User list */
 /*div.userbox{height: 300px;}*/
 div.userbox-avatar{margin-bottom: 6px;}
+div:hover.userbox{background-color: rgb(40, 40, 40);}

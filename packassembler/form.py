@@ -175,9 +175,9 @@ class ServerForm(SForm):
     host = TextField('Host', validators=[validators.required()])
     port = IntegerField(
         'Port', validators=[validators.required(), validators.NumberRange(max=65535)])
-    packid = idfield('Pack ID', v=[validators.required()])
+    packid = idfield('Pack ID', v=[validators.Optional()])
     revision = IntegerField(
-        'Pack Revision', validators=[validators.required()])
+        'Pack Revision', validators=[validators.Optional()])
     config = urlfield('Custom Config', v=[validators.Optional()])
 
 
