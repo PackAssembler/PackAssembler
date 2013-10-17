@@ -52,8 +52,8 @@ class ServerViews(ViewBase):
         form = ServerForm(
             post,
             server,
-            packid=server.build.pack.id,
-            revision=server.build.revision)
+            packid=server.build.pack.id if server.build else "",
+            revision=server.build.revision if server.build else "")
 
         if 'submit' in post and form.validate():
             try:
@@ -71,8 +71,7 @@ class ServerViews(ViewBase):
                     host=form.host.data,
                     port=form.port.data,
                     config=form.config.data,
-                    build=pb,
-                    owner=self.current_user
+                    build=pb
                 )
                 for key, val in params.items():
                     server[key] = val

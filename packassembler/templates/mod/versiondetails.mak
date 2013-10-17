@@ -5,6 +5,12 @@
     <tr>
         <td>MD5</td><td>${version.mod_file.md5 if version.mod_file else version.mod_file_url_md5}</td>
     </tr>
+% if version.forge_min:
+    <tr><td>Forge Min</td><td>${version.forge_min}</td></tr>
+% endif
+% if version.forge_max:
+    <tr><td>Forge Max</td><td>${version.forge_max}</td></tr>
+% endif
 % if version.depends or version.opt_depends:
     <tr>
         <td>Dependencies</td>
