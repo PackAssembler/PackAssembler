@@ -38,6 +38,7 @@
                         ${f.mod_file()}
                     </%form:showinput>
                     ${form.showfield(f.mod_file_url)}
+                    ${form.showfield(f.upload_from_url)}
                 </%self:autopanel>
             </div>
             <hr>

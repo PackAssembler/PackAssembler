@@ -4,6 +4,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 from ..schema import *
 from .common import *
+import requests
 
 
 class VersionViews(ViewBase):
@@ -20,9 +21,15 @@ class VersionViews(ViewBase):
             try:
                 mv.mod_file = post[form.mod_file.name].file
                 mv.mod_file_url = None
-                mv.mod_file_url_md5 = None
             except AttributeError:
-                mv.mod_file_url_md5, mv.mod_file_url = url_md5(form.mod_file_url.data)
+                print(form.upload_from_url.data)
+                if form.upload_from_url.data:
+                    print('Do')
+                    mv.mod_file = requests.get(form.mod_file_url.data).content
+                    mv.mod_file_url = None
+                else:
+                    print('Do not')
+                    mv.mod_file_url_md5, mv.mod_file_url = url_md5(form.mod_file_url.data)
 
             mv.depends, mv.opt_depends = get_depends(post)
             mv.save()
@@ -51,8 +58,12 @@ class VersionViews(ViewBase):
                 mv.mod_file_url_md5 = None
             except AttributeError:
                 if mv.mod_file_url:
-                    mv.mod_file = None
-                    mv.mod_file_url_md5, mv.mod_file_url = url_md5(form.mod_file_url.data)
+                    if form.upload_from_url.data:
+                        mv.mod_file = requests.get(form.mod_file_url.data).content
+                        mv.mod_file_url = None
+                    else:
+                        mv.mod_file_url_md5, mv.mod_file_url = url_md5(form.mod_file_url.data)
+                        mv.mod_file = None
 
             mv.depends, mv.opt_depends = get_depends(post)
             mv.save()

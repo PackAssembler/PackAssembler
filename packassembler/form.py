@@ -147,6 +147,7 @@ class ModVersionForm(SForm):
     mod_file = FileField('File')
     mod_file_url = urlfield(
         'File URL', v=[either_mod_file, validators.Optional()])
+    upload_from_url = BooleanField('Upload from URL')
 
 
 class EditModVersionForm(ModVersionForm):

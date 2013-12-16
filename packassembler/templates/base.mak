@@ -3,8 +3,7 @@
 <head>
     <title>Pack Assembler &middot; ${title}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/cyborg/bootstrap.min.css" rel="stylesheet">
-    ##<link href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/simplex/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootswatch/3.0.2/cyborg/bootstrap.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
 
     <link href="${request.static_url('packassembler:static/css/master.css')}" rel="stylesheet">

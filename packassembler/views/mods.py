@@ -1,3 +1,4 @@
+from pyramid.threadlocal import get_current_registry
 from pyramid.httpexceptions import HTTPFound
 from ..form import ModForm, BannerForm
 from pyramid.view import view_config
@@ -84,7 +85,7 @@ class ModViews(ViewBase):
         ind = int(self.request.matchdict['index'])
         s = int(self.request.matchdict['shift'])
 
-        mod.versions.insert(len(mod.versions)-ind-1+s, mod.versions.pop(-ind-1))
+        mod.versions.insert(len(mod.versions) - ind - 1 + s, mod.versions.pop(-ind - 1))
         mod.save()
 
         return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
@@ -187,7 +188,7 @@ class ModViews(ViewBase):
                                 )
 
     def send_out_of_date_notification(self, mod):
-        sender = Mandrill(self.request.registry.settings.get('mandrill_key'))
+        sender = Mandrill(get_current_registry().settings.get('mandrill_key'))
         message = {
             'to': [{'email': mod.owner.email, 'name': mod.owner.username}],
             'global_merge_vars':

@@ -20,7 +20,7 @@
         ${form.formerror(error)}
         <form method="POST" action="" role="form" class="form-horizontal">
             ${form.showfield(f.mc_version)}
-            <%form:showinput name="forge_version" label="${f.mc_version.label}">
+            <%form:showinput name="forge_version" label="${f.forge_version.label}">
                 <select id="forge_version" name="forge_version" class="form-control"></select>
                 % if f.forge_version.errors:
                     % for error in f.forge_version.errors:

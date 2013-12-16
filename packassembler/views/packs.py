@@ -24,7 +24,7 @@ class PackViews(ViewBase):
             except NotUniqueError:
                 form.name.errors.append('Name or Readable ID Already Exists.')
 
-        return self.return_dict(title="Add Pack", f=form, cancel=self.request.route_url('modlist'))
+        return self.return_dict(title="Add Pack", f=form, cancel=self.request.route_url('packlist'))
 
     @view_config(route_name='clonepack', permission='user')
     def clonepack(self):

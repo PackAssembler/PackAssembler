@@ -1,10 +1,15 @@
 import unittest
 
+from configparser import ConfigParser
+
 from pyramid import testing
 from pyramid import httpexceptions
 from pyramid.decorator import reify
+from pyramid.registry import Registry
 
 from webob.multidict import MultiDict
+
+from functools import partial
 
 from packassembler import setup_auth, setup_tweens, setup_routes
 from .schema import *
@@ -13,6 +18,11 @@ from .schema import *
 # Helper functions
 def matchrequest(params=None, **kwargs):
     return testing.DummyRequest(matchdict=kwargs, params=params)
+
+
+class Struct:
+    def __init__(self, **entries):
+        self.__dict__.update(entries)
 
 # Globals
 URL = 'http://mml.stephenmac.com/static/archives/config.zip'
@@ -73,9 +83,9 @@ def create_mod(owner, name='TestMod', outdated=False,
     )
 
 
-def create_pack(owner, name='TestPack', devel=False, **kwargs):
+def create_pack(owner, name='TestPack', **kwargs):
     return Pack(
-        name=name, rid=create_rid(name), devel=devel,
+        name=name, rid=create_rid(name),
         owner=owner, **kwargs)
 
 
@@ -92,7 +102,7 @@ def mock_mod_data(name='SomeMod'):
 
 
 def mock_version_data(mc_min=MCVERSIONS[0], mc_max=MCVERSIONS[0], forge_min='',
-                      forge_max='', mod_file=None, mod_file_url=''):
+                      forge_max='', mod_file=None, mod_file_url='', upload_from_url=False):
     """ Create mock data for a mod version. """
     data = {
         'version': '1.0.0',
@@ -105,18 +115,18 @@ def mock_version_data(mc_min=MCVERSIONS[0], mc_max=MCVERSIONS[0], forge_min='',
         'mod_file_url': mod_file_url,
         'submit': ''
     }
+    if upload_from_url:
+        data['upload_from_url'] = True
 
     return data
 
 
-def mock_pack_data(name='SomePack', devel=False):
+def mock_pack_data(name='SomePack'):
     """ Creates mock data to create a pack. """
     data = {
         'name': name,
         'submit': ''
     }
-    if devel:
-        data['devel'] = True
 
     return data
 
@@ -124,7 +134,15 @@ def mock_pack_data(name='SomePack', devel=False):
 class DBTests(unittest.TestCase):
 
     def setUp(self):
-        self.config = testing.setUp()
+        parser = ConfigParser()
+        parser.read('../production.ini')
+        pval = partial(parser.get, 'app:main')
+
+        testRegistry = Registry()
+        testRegistry.settings = {'mandrill_key': pval('mandrill_key')}
+
+        self.config = testing.setUp(registry=testRegistry)
+
         setup_auth(self.config)
         setup_tweens(self.config)
         setup_routes(self.config)
@@ -318,8 +336,11 @@ class ModViewTests(DBTests):
         mod = create_mod(self.contributor).save()
 
         # Create request
-        request = matchrequest(
-            params=MultiDict({'image': IMG, 'submit': ''}), id=mod.id)
+        request = testing.DummyRequest(
+            matchdict={'id': mod.id},
+            params=MultiDict({'image': IMG, 'submit': ''}),
+            matched_route=Struct(name='editmodbanner')
+        )
         # Run
         self.makeOne(request).editbanner()
         # Check if the image has changed
@@ -336,9 +357,11 @@ class ModViewTests(DBTests):
         mod.save()
 
         # Create request
-        request = matchrequest(
+        request = testing.DummyRequest(
+            matchdict={'id': mod.id},
             params=MultiDict({'text_color': '#000000', 'submit': ''}),
-            id=mod.id)
+            matched_route=Struct(name='editmodbanner')
+        )
         # Run
         self.makeOne(request).editbanner()
         # Check if no banner exists
@@ -385,19 +408,20 @@ class VersionViewTests(DBTests):
         self.assertEqual(v.mc_min, data['mc_min'])
         self.assertEqual(v.mc_max, data['mc_max'])
 
-    def check_mod_file(self, v, data):
+    def check_mod_file(self, v, data, check_info=True):
         self.assertIsNotNone(v.mod_file)
-        # Check if content of file is the same
-        data['mod_file'].file.seek(0)
-        self.assertEqual(
-            self.download_version(v).body, data['mod_file'].file.read())
+        if check_info:
+            # Check if content of file is the same
+            data['mod_file'].file.seek(0)
+            self.assertEqual(
+                self.download_version(v).body, data['mod_file'].file.read())
+            # Close the test file
+            data['mod_file'].file.close()
         # Make sure mod_file_url and mod_file_url_md5 are not filled out
         self.assertIsNone(v.mod_file_url)
         self.assertIsNone(v.mod_file_url_md5)
         # Check if the attributes of the version are the same
         self.check_general(v, data)
-        # Close the test file
-        data['mod_file'].file.close()
 
     def check_mod_file_url(self, v, data):
         from urllib.request import urlopen
@@ -471,6 +495,24 @@ class VersionViewTests(DBTests):
         v = mod.versions[0]
         # Run tests
         self.check_mod_file(v, data)
+
+    def test_add_mod_version_with_url_and_upload_bool(self):
+        """
+        Ensure add version uses the url to upload a file if no mod_file is provided
+        """
+        # Create dummy mod
+        mod = create_mod(self.contributor).save()
+        # Create request
+        data = mock_version_data(mod_file_url=URL, upload_from_url=True)
+        request = matchrequest(params=MultiDict(data), id=mod.id)
+        # Run
+        self.makeOne(request).addversion()
+        # Reload the mod
+        mod.reload()
+        # Assign an easy-to-use variable to the version
+        v = mod.versions[0]
+        # Run tests
+        self.check_mod_file(v, data, check_info=False)
 
     def test_edit_mod_version_with_new_mod_file(self):
         """
@@ -635,8 +677,6 @@ class PackViewTests(DBTests):
 
     def check_pack(self, pack, data):
         self.assertEqual(pack.name, data['name'])
-        if 'devel' in data:
-            self.assertEqual(pack.devel, data['devel'])
 
     def test_pack_list_view_with_no_packs(self):
         """ Ensure the packlist returns no packs. """
@@ -686,7 +726,7 @@ class PackViewTests(DBTests):
         # Create dummy pack
         pack = create_pack(self.contributor).save()
         # Create request
-        data = mock_pack_data(name='NewName', devel=True)
+        data = mock_pack_data(name='NewName')
         request = matchrequest(id=pack.id, params=MultiDict(data))
         # Run
         self.makeOne(request).editpack()
@@ -706,7 +746,6 @@ class PackViewTests(DBTests):
         # Check if the pack has been cloned
         cpack = Pack.objects.get(name__contains=self.contributor.username)
         # Check if it's in fact cloned
-        self.assertEqual(cpack.devel, pack.devel)
         self.assertIn(pack.name, cpack.name)
         # Try again, should return an error page
         response = runner.clonepack()

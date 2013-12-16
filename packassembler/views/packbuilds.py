@@ -68,10 +68,10 @@ class PackBuildViews(ViewBase):
     def downloadbuild(self):
         pb = self.get_db_object(PackBuild, perm=False)
         jdict = {
-            'pack_id': str(pb.pack.id),
-            'pack_name': pb.pack.name,
+            'id': str(pb.pack.id),
+            'name': pb.pack.name,
             'config': pb.config,
-            'mc_version': pb.mc_version,
+            'mcv': pb.mc_version,
             'forge_version': pb.forge_version,
             'mods': {}
         }
@@ -114,7 +114,10 @@ class PackBuildViews(ViewBase):
         build_data = Setting.objects.get(key=VERSION_KEY).build_data
         mc_version = self.request.GET['mc_version'].replace('.', '_')
 
-        return build_data[mc_version]
+        try:
+            return build_data[mc_version]
+        except KeyError:
+            return []
 
 
 # Build creation

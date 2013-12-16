@@ -43,6 +43,8 @@ Either you checked the 'Use Development Versions' checkbox on your Pack's settin
 <h3>Other</h3>
 <h4>How can I change my avatar?</h4>
 Visit <a href="http://gravatar.com/">Gravatar</a>.
+<h4>My things got deleted!</h4>
+In order to keep things clean, we have opted to delete useless, empty, and inactive objects. If you don't want your things to be deleted, use the site correctly.
 
 <h4 id="groups">So, what exactly are these user groups that I see on profile pages?</h4>
 There are currently four types of users: user, contributor, moderator, and administrator. Each has specific permissions, limiting what they can do. Permissions are comulative.
