@@ -27,6 +27,9 @@ def check_pass(username, password):
         return False
 
     if password_correct and user.activate is None:
+        if user.reset:
+            user.reset = None
+            user.save()
         return user.username
     else:
         return False

@@ -11,15 +11,12 @@
 % if version.forge_max:
     <tr><td>Forge Max</td><td>${version.forge_max}</td></tr>
 % endif
-% if version.depends or version.opt_depends:
+% if version.depends:
     <tr>
         <td>Dependencies</td>
         <td>
         % for dep in version.depends:
             <a href="${request.route_url('viewmod', id=dep.id)}">${dep.name}</a><br>
-        % endfor
-        % for dep in version.opt_depends:
-            <a href="${request.route_url('viewmod', id=dep.id)}">${dep.name}</a> (Optional)<br>
         % endfor
         </td>
     </tr>

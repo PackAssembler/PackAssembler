@@ -115,5 +115,7 @@ class ServerViews(ViewBase):
     @view_config(route_name='mcuxmlserver')
     def mcuxmlserver(self):
         server = self.get_db_object(Server, perm=False)
-
-        return Response(generate_mcu_xml(self.request, server.build, server=server), content_type='application/xml')
+        if server.build:
+            return Response(generate_mcu_xml(self.request, server.build, server=server), content_type='application/xml')
+        else:
+            return Response("Could not complete your request. Server does not have a build associated with it.", content_type='text/plain')

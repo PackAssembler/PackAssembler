@@ -93,7 +93,7 @@
                             .attr('name', 'depends')
                         )
                     )
-                    .append($('<td>')
+                    /*.append($('<td>')
                         .attr('class', 'middle center')
                         .append($('<input>')
                             .attr('type', 'checkbox')
@@ -101,7 +101,7 @@
                             .attr('name', 'opt_depends')
                             .attr('title', 'Optional?')
                         )
-                    )
+                    )*/
                 );
 
                 // Add it to the list
@@ -124,10 +124,6 @@
             % if mv:
                 % for dep in mv.depends:
                     add_one('${dep.name}', '${dep.id}');
-                % endfor
-                % for dep in mv.opt_depends:
-                    add_one('${dep.name}', '${dep.id}');
-                    $('input[value="${dep.id}"][name="opt_depends"]').prop('checked', true);
                 % endfor
             % endif
         });

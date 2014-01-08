@@ -90,7 +90,7 @@
     ${extras.banner_style(pack)}
 </%block>
 <%block name="endscripts">
-    <script src="//raw.github.com/makeusabrew/bootbox/master/bootbox.js"></script>
+    <script src="//rawgithub.com/makeusabrew/bootbox/master/bootbox.js"></script>
     <script src="${request.static_url('packassembler:static/js/rowlink.js')}"></script>
     <script type="text/javascript">
         $(document).ready(function(){

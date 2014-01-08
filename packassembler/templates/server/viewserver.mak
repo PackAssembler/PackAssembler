@@ -66,7 +66,7 @@
     ${extras.banner_style(server)}
 </%block>
 <%block name="endscripts">
-    <script src="//raw.github.com/makeusabrew/bootbox/master/bootbox.js"></script>
+    <script src="//rawgithub.com/makeusabrew/bootbox/master/bootbox.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             $('#delete').click(function(){

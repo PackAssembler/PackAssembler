@@ -22,16 +22,13 @@ class VersionViews(ViewBase):
                 mv.mod_file = post[form.mod_file.name].file
                 mv.mod_file_url = None
             except AttributeError:
-                print(form.upload_from_url.data)
                 if form.upload_from_url.data:
-                    print('Do')
                     mv.mod_file = requests.get(form.mod_file_url.data).content
                     mv.mod_file_url = None
                 else:
-                    print('Do not')
                     mv.mod_file_url_md5, mv.mod_file_url = url_md5(form.mod_file_url.data)
 
-            mv.depends, mv.opt_depends = get_depends(post)
+            mv.depends = get_depends(post)
             mv.save()
 
             mod.versions.append(mv)
@@ -65,7 +62,7 @@ class VersionViews(ViewBase):
                         mv.mod_file_url_md5, mv.mod_file_url = url_md5(form.mod_file_url.data)
                         mv.mod_file = None
 
-            mv.depends, mv.opt_depends = get_depends(post)
+            mv.depends = get_depends(post)
             mv.save()
 
             return HTTPFound(location=self.request.route_url('viewmod', id=mv.mod.id))
@@ -105,14 +102,10 @@ class VersionViews(ViewBase):
 
 def get_depends(post):
     req = []
-    opt = []
     for mid in post.getall('depends'):
         try:
-            if mid in post.getall('opt_depends'):
-                opt.append(Mod.objects.get(id=mid))
-            else:
-                req.append(Mod.objects.get(id=mid))
+            req.append(Mod.objects.get(id=mid))
         except DoesNotExist:
             pass
 
-    return (req if req else None), (opt if opt else None)
+    return req if req else None

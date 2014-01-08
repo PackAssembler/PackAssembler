@@ -6,3 +6,4 @@ production.ini
 packassembler/.coverage
 packassembler/cover/
 packassembler.egg-info/
+packassembler/static/archives/libs.zip

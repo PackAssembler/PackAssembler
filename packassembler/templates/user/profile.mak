@@ -60,7 +60,7 @@
 </%def>
 
 <%block name="endscripts">
-    <script src="//raw.github.com/makeusabrew/bootbox/master/bootbox.js"></script>
+    <script src="//rawgithub.com/makeusabrew/bootbox/master/bootbox.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             $('#group').val('${owner.group}');

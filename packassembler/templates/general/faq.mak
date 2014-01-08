@@ -27,6 +27,14 @@ If the mod author does not allow uploading directly to the site according to the
 However, this is not allowed if the mod author specifically disallows the practice. In that case, the mod doesn't deserve to be used.
 <strong>If a mod is found without a satisfactory permission description all mod versions will be deleted.</strong>
 
+<h4>Do I have to use quotes when I'm quoting the author?</h4>
+No, you do not. We can assume:
+<ul>
+    <li>Links either point to the author's permission to use the mod or to a license text</li>
+    <li>Statements were originally made by the author</li>
+</ul>
+In other cases, please specify.
+
 
 <h3>Packs</h3>
 <h4>What is the difference between using this site and creating a "modpack" manually?</h4>

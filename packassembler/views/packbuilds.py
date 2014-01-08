@@ -79,6 +79,7 @@ class PackBuildViews(ViewBase):
             jdict['mods'][str(mv.mod.id)] = {
                 'name': mv.mod.name,
                 'target': mv.mod.target,
+                'rid': mv.mod.rid,
                 'version': str(mv.id)
             }
 

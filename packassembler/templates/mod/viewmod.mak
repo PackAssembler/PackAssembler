@@ -11,7 +11,8 @@
 
     def externallink(text):
         trun = text[:35] + (text[35:] and '...')
-        return '<a href="{0}" target="_blank" rel="nofollow">{1}</a>'.format(text, trun)
+        #return '<a href="{0}" target="_blank" rel="nofollow">{1}</a>'.format(text, trun)
+        return '<a href="{0}" rel="nofollow">{1}</a>'.format(text, trun)
 
     def autolink(text):
         urlre = re.compile('(http|ftp|https):\/\/([\w\-_]+(?:(?:\.[\w\-_]+)+))([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?')
@@ -62,7 +63,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">Details</div>
             <table class="table">
-                <tr><td>Author</td><td><a href="${request.route_url('modlist')}?q=${mod.author}">${mod.author}</a></td></tr>
+                <tr><td>Author</td><td><a href="${request.route_url('modlist')}?q=${mod.author}" rel="nofollow">${mod.author}</a></td></tr>
                 <tr><td>Homepage</td><td>
                 % if mod.url:
                     ${mod.url | externallink}
@@ -186,7 +187,7 @@
     ${extras.banner_style(mod)}
 </%block>
 <%block name="endscripts">
-    <script src="//raw.github.com/makeusabrew/bootbox/master/bootbox.js"></script>
+    <script src="//rawgithub.com/makeusabrew/bootbox/master/bootbox.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             $('#delete').click(function(){

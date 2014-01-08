@@ -4,7 +4,7 @@ from mongoengine import *
 # Mod targets
 TARGETS = ('server', 'client', 'both')
 # Minecraft versions
-MCVERSIONS = ('1.7.4', '1.6.4')
+MCVERSIONS = ('1.6.4',)
 # Forge version length
 FV = 16
 
@@ -44,7 +44,6 @@ class ModVersion(Document):
     forge_max = StringField(max_length=FV)
     # Dependencies
     depends = ListField(ReferenceField('Mod'))
-    opt_depends = ListField(ReferenceField('Mod'))
     # Actual version number
     version = StringField(required=True)
     # The file itself
@@ -105,7 +104,6 @@ class Mod(Document):
 
 Mod.register_delete_rule(ModVersion, 'mod', CASCADE)
 Mod.register_delete_rule(ModVersion, 'depends', PULL)
-Mod.register_delete_rule(ModVersion, 'opt_depends', PULL)
 
 
 class PackBuild(Document):

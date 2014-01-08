@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Pack Assembler &middot; ${title}</title>
+    <title>${title} &middot; Pack Assembler</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="google-site-verification" content="yXuM2JTT_NbRwI9pbVruYjq9W9t7bF9wIe7eiqwAy1A" />
     <link href="//netdna.bootstrapcdn.com/bootswatch/3.0.2/cyborg/bootstrap.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
 
