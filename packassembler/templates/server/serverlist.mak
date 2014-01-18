@@ -21,5 +21,6 @@ ${listcommon.head()}
 </table>
 <small class="pull-right">${len(servers)} servers.</small>
 <%block name="endscripts">
-    <script src="${request.static_url('packassembler:static/js/rowlink.js')}"></script>
+    <script src="${request.static_url('packassembler:static/js/bundled/wrapper.js')}"></script>
+    <script type="text/javascript">$(document).ready(function(){common.linkRows();});</script>
 </%block>

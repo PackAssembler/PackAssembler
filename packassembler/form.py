@@ -150,6 +150,12 @@ class ModVersionForm(SForm):
     upload_from_url = BooleanField('Upload from URL')
 
 
+class QuickModVersionForm(SForm):
+    version = TextField('Version', validators=[validators.required()])
+    mc = mcvfield('Minecraft')
+    url = urlfield('File URL', v=[either_mod_file, validators.Optional()])
+
+
 class EditModVersionForm(ModVersionForm):
     mod_file_url = urlfield('File URL', v=[validators.Optional()])
 

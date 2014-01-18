@@ -62,24 +62,29 @@
 </table>
 <h3>Mods</h3>
 % if pack.mods:
-    <div class="dropdown bmargin">
-        ${listcommon.add_to_pack(packs, message='Combine with Pack')}
+    <div class="bmargin dropdown">
+        ${listcommon.add_to_pack(packs, message='Add To Pack')}${'<a href="#" id="deleteSel" class="btn btn-sm btn-danger">Delete Selected</a>' if perm else '' | n}
     </div>
-    <form method="POST">
+    <form method="POST" action="${request.route_url('removepackmod', id=pack.id)}">
         <table class="table table-bordered table-hover">
-        % for mod in sorted(pack.mods):
-            <tr>
-            % if perm:
-                <td data-href="${request.route_url('removepackmod', modid=mod.id, packid=pack.id)}" class="linked middle center">
-                    <i class="icon-remove text-danger"></i>
-                </td>
-            % endif
-                <td data-href="${request.route_url('viewmod', id=mod.id)}" class="linked giant">
-                    <input type="hidden" name="mods" value="${mod.id}">
-                    ${mod.name}
-                </td>
-            </tr>
-        % endfor
+            <thead>
+                <tr>
+                    <th class="center"><input type="checkbox" id="topcheck"></th>
+                    <th>Mod</th>
+                </tr>
+            </thead>
+            <tbody>
+            % for mod in sorted(pack.mods):
+                <tr>
+                    <td class="center nolink">
+                        <input type="checkbox" name="mods" value="${mod.id}">
+                    </td>
+                    <td data-href="${request.route_url('viewmod', id=mod.id)}" class="linked giant">
+                        ${mod.name}
+                    </td>
+                </tr>
+            % endfor
+            </tbody>
         </table>
     </form>
     <small class="pull-right">${len(pack.mods)} mods.</small>
@@ -91,9 +96,18 @@
 </%block>
 <%block name="endscripts">
     <script src="//rawgithub.com/makeusabrew/bootbox/master/bootbox.js"></script>
-    <script src="${request.static_url('packassembler:static/js/rowlink.js')}"></script>
+    <script src="${request.static_url('packassembler:static/js/bundled/wrapper.js')}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
+            common.linkRows();
+        % if pack.mods:
+            common.linkAutoCheck('topcheck', 'mods');
+            common.linkDynamicSubmit('form');
+            $('#deleteSel').click(function(){
+                $('form').attr('action', '${request.route_url("removepackmod", id=pack.id)}');
+                $('form').submit();
+            })
+        % endif
             $('#delete').click(function(){
                 bootbox.confirm("Are you sure you want to delete this pack?", function(result){
                     if (result)
@@ -108,7 +122,4 @@
             });
         });
     </script>
-    % if pack.mods:
-        ${listcommon.add_to_pack_script()}
-    % endif
 </%block>

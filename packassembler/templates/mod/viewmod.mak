@@ -188,8 +188,11 @@
 </%block>
 <%block name="endscripts">
     <script src="//rawgithub.com/makeusabrew/bootbox/master/bootbox.js"></script>
+    <script src="${request.static_url('packassembler:static/js/bundled/wrapper.js')}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
+            common.linkRows();
+            common.linkDynamicSubmit('form');
             $('#delete').click(function(){
                 bootbox.confirm("Are you sure you want to delete this mod?", function(result){
                     if (result)
@@ -224,5 +227,4 @@
             })
         });
     </script>
-    ${listcommon.add_to_pack_script()}
 </%block>

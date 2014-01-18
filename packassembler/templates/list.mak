@@ -33,14 +33,3 @@
         <li><a href="${request.route_url('addpack')}" class="action-add">Add Pack</a></li>
     </ul>
 </%def>
-
-<%def name="add_to_pack_script()">
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('[data-id]').click(function(){
-                $('form').attr('action', '/packs/' + $(this).data('id') + '/addmod');
-                $('form').submit();
-            });
-        })
-    </script>
-</%def>

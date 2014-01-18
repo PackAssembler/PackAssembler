@@ -139,6 +139,7 @@
     <script src="${request.static_url('packassembler:static/js/jquery-latest.js')}"></script>
     <script src="${request.static_url('packassembler:static/js/mousetrap.min.js')}"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
     <script type="text/javascript">
         // Go to
         Mousetrap.bind('g h', function() { window.location = '${request.route_url('home')}'; });

@@ -73,15 +73,19 @@ class PackBuildViews(ViewBase):
             'config': pb.config,
             'mcv': pb.mc_version,
             'forge_version': pb.forge_version,
-            'mods': {}
+            'mods': [],
+            'build': str(pb.id),
+            'revision': pb.revision
         }
         for mv in pb.mod_versions:
-            jdict['mods'][str(mv.mod.id)] = {
-                'name': mv.mod.name,
-                'target': mv.mod.target,
-                'rid': mv.mod.rid,
-                'version': str(mv.id)
-            }
+            jdict['mods'].append({
+                'id': str(mv.mod.id),        # Mod ID
+                'name': mv.mod.name,         # Full Mod Name
+                'target': mv.mod.target,     # Mod Target
+                'version': str(mv.id),       # Download URL
+                'filename': '{0}-{1}.jar'.format(
+                    mv.mod.rid, mv.version)  # What the file should be named once it's downloaded
+            })
 
         return jdict
 

@@ -33,13 +33,16 @@
 
 <hr>
 <div class="row">
-    ${showlist('Mods', mods)}
-    ${showlist('Packs', packs)}
-    ${showlist('Servers', servers)}
+    <% lg = owner.group == 'user' %>
+    % if not lg:
+        ${showlist('Mods', mods, lg)}
+    % endif
+    ${showlist('Packs', packs, lg)}
+    ${showlist('Servers', servers, lg)}
 </div>
 
-<%def name="showlist(heading, items)">
-    <div class="col-lg-4">
+<%def name="showlist(heading, items, lg)">
+    <div class="col-lg-${'6' if lg else '4'}">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4>${heading}</h4>

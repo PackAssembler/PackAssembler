@@ -103,6 +103,15 @@ class PackViews(ViewBase):
         else:
             return Response('No builds available.')
 
+    @view_config(route_name='downloadpack')
+    def downloadpack(self):
+        pack = self.get_db_object(Pack, perm=False)
+
+        if pack.builds:
+            return HTTPFound(self.request.route_url('downloadbuild', id=pack.builds[-1].id))
+        else:
+            return Reponse('No builds available.')
+
     @view_config(route_name='addpackmod', renderer='genericform.mak', permission='user')
     def addpackmod(self):
         post = self.request.params
@@ -116,9 +125,10 @@ class PackViews(ViewBase):
 
     @view_config(route_name='removepackmod', permission='user')
     def removepackmod(self):
-        if self.has_perm(Pack.objects(id=self.request.matchdict['packid']).only('owner').first()):
-            Pack.objects(id=self.request.matchdict['packid']).update_one(
-                pull__mods=self.request.matchdict['modid'])
-            return HTTPFound(self.request.route_url('viewpack', id=self.request.matchdict['packid']))
+        print(self.request.params.getall('mods'))
+        if self.has_perm(Pack.objects(id=self.request.matchdict['id']).only('owner').first()):
+            Pack.objects(id=self.request.matchdict['id']).update_one(
+                pull_all__mods=self.request.params.getall('mods'))
+            return HTTPFound(self.request.route_url('viewpack', id=self.request.matchdict['id']))
         else:
             return HTTPForbidden()

@@ -93,15 +93,6 @@
                             .attr('name', 'depends')
                         )
                     )
-                    /*.append($('<td>')
-                        .attr('class', 'middle center')
-                        .append($('<input>')
-                            .attr('type', 'checkbox')
-                            .attr('value', id)
-                            .attr('name', 'opt_depends')
-                            .attr('title', 'Optional?')
-                        )
-                    )*/
                 );
 
                 // Add it to the list

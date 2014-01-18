@@ -59,6 +59,7 @@ def setup_routes(config):
 
     # Mod versions
     config.add_route('addversion', '/mods/{id}/versions/add')
+    config.add_route('quickadd', '/mods/{id}/versions/quickadd')
     config.add_route('editversion', '/mods/versions/{id}/edit')
     config.add_route('downloadversion', '/mods/versions/{id}/download')
     config.add_route('deleteversion', '/mods/versions/{id}/delete')
@@ -69,6 +70,7 @@ def setup_routes(config):
     config.add_route('packlist', '/packs')
     ## API
     config.add_route('mcuxmlpack', '/packs/{id}/mcuxml')
+    config.add_route('downloadpack', '/packs/{id}/download')
     config.add_route('forgeversions', '/packs/forgeversions')
     ## Details
     config.add_route('editpackbanner', '/packs/{id}/banner/edit')
@@ -86,7 +88,7 @@ def setup_routes(config):
 
     ## Mods
     config.add_route('addpackmod', '/packs/{id}/addmod')
-    config.add_route('removepackmod', '/packs/{packid}/removemod/{modid}')
+    config.add_route('removepackmod', '/packs/{id}/removemod')
 
     ## Builds
     config.add_route('addbuild', '/packs/{id}/builds/add')

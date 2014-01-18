@@ -43,13 +43,12 @@ ${listcommon.head()}
 </form>
 <small class="pull-right">${len(mods)} mods, ${len(mods.filter(outdated=True))} flagged.</small>
 <%block name="endscripts">
-    <script src="${request.static_url('packassembler:static/js/rowlink.js')}"></script>
+    <script src="${request.static_url('packassembler:static/js/bundled/wrapper.js')}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
-            $('#topcheck').change(function(){
-                $('input[name="mods"]').prop('checked', this.checked);
-            });
+            common.linkRows();
+            common.linkAutoCheck('topcheck', 'mods');
+            common.linkDynamicSubmit('form');
         });
     </script>
-    ${listcommon.add_to_pack_script()}
 </%block>

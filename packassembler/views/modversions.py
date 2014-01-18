@@ -1,7 +1,8 @@
-from ..form import ModVersionForm, EditModVersionForm
+from ..form import ModVersionForm, EditModVersionForm, QuickModVersionForm
 from pyramid.response import Response, FileIter
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
+from ..security import check_pass
 from ..schema import *
 from .common import *
 import requests
@@ -15,7 +16,7 @@ class VersionViews(ViewBase):
         post = self.request.params
         form = ModVersionForm(post)
 
-        if 'submit' in post and form.validate():
+        if 'submit' in post and form.validate() and not version_exists(mod, form.version.data):
             mv = ModVersion(mod=mod)
             form.populate_obj(mv)
             try:
@@ -32,6 +33,7 @@ class VersionViews(ViewBase):
             mv.save()
 
             mod.versions.append(mv)
+            mod.outdated = False
             mod.save()
             return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
 
@@ -41,13 +43,41 @@ class VersionViews(ViewBase):
             f=form, cancel=self.request.route_url('viewmod', id=mod.id)
         )
 
+    @view_config(route_name='quickadd')
+    def quickadd(self):
+        post = self.request.params
+        mod = self.get_db_object(Mod, perm=False)
+
+        correct = check_pass(post['username'], post['password'])
+        if not correct or mod.owner.username != correct:
+            raise NoPermission
+
+        form = QuickModVersionForm(post)
+
+        if form.validate():
+            mv = ModVersion(mod=mod)
+            mv.mc_min = form.mc.data
+            mv.mc_max = form.mc.data
+            mv.version = form.version.data
+            mv.mod_file = requests.get(form.url.data).content
+            mv.depends = mod.versions[-1].depends if mod.versions else []
+            mv.devel = True
+            mv.save()
+
+            mod.versions.append(mv)
+            mod.outdated = False
+            mod.save()
+            return Response("All good!")
+
+        return Response("Something went wrong...")
+
     @view_config(route_name='editversion', renderer='editmodversion.mak', permission='user')
     def editversion(self):
         mv = self.get_db_object(ModVersion)
         post = self.request.params
         form = EditModVersionForm(post, mv)
 
-        if 'submit' in post and form.validate():
+        if 'submit' in post and form.validate() and not version_exists(mod, form.version.data):
             form.populate_obj(mv)
             try:
                 mv.mod_file = post[form.mod_file.name].file
@@ -77,8 +107,9 @@ class VersionViews(ViewBase):
         # Get modversion
         mv = self.get_db_object(ModVersion, perm=False)
 
+        cdisp = 'attachment; filename="{0}-{1}.jar"'.format(mv.mod.name, mv.version)
         if mv.mod_file:
-            return Response(app_iter=FileIter(mv.mod_file), content_type='application/zip', content_disposition='attachment; filename="{0}-{1}.jar"'.format(mv.mod.name, mv.version))
+            return Response(app_iter=FileIter(mv.mod_file), content_type='application/zip', content_disposition=cdisp)
         else:
             return HTTPFound(mv.mod_file_url)
 
@@ -109,3 +140,7 @@ def get_depends(post):
             pass
 
     return req if req else None
+
+
+def version_exists(m, version):
+    return any(x.version == version for x in m.versions)
