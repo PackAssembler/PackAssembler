@@ -44,11 +44,13 @@ def setup_routes(config):
     # Mods
     ## Listing
     config.add_route('modlist', '/mods')
+    config.add_route('qmlist', '/mods.json')
     ## Spcial Actions
     config.add_route('adoptmod', '/mods/{id}/adopt')
     config.add_route('disownmod', '/mods/{id}/disown')
     config.add_route('flagmod', '/mods/{id}/flag')
     config.add_route('moveversion', '/mods/{id}/moveversion/{index}/{shift}')
+    config.add_route('quickmod', '/mods/{id}.json')
     ## Details
     config.add_route('editmodbanner', '/mods/{id}/banner/edit')
     ## CRUD
@@ -64,6 +66,7 @@ def setup_routes(config):
     config.add_route('downloadversion', '/mods/versions/{id}/download')
     config.add_route('deleteversion', '/mods/versions/{id}/delete')
     config.add_route('versiondetails', '/mods/versions/{id}')
+    config.add_route('qmversions', '/mods/{id}/versions.json')
 
     # Packs
     ## Listing
@@ -74,11 +77,6 @@ def setup_routes(config):
     config.add_route('forgeversions', '/packs/forgeversions')
     ## Details
     config.add_route('editpackbanner', '/packs/{id}/banner/edit')
-    ## Technic API
-    config.add_route('technic_packlist', '/technic/api/modpack/')
-    config.add_route('technic_viewpack', '/technic/api/modpack/{rid}/')
-    config.add_route('technic_viewbuild', '/technic/api/modpack/{rid}/{revision}/')
-    config.add_route('technic_repo', '/technic/api/repo/{rid}/resources/{image}')
     ## CRUD
     config.add_route('addpack', '/packs/add')
     config.add_route('clonepack', 'packs/{id}/clone')
@@ -89,6 +87,10 @@ def setup_routes(config):
     ## Mods
     config.add_route('addpackmod', '/packs/{id}/addmod')
     config.add_route('removepackmod', '/packs/{id}/removemod')
+
+    ## Base Packs
+    config.add_route('addbasepack', '/packs/{id}/addbase')
+    config.add_route('removebasepack', '/packs/{id}/removebase')
 
     ## Builds
     config.add_route('addbuild', '/packs/{id}/builds/add')

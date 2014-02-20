@@ -18,6 +18,7 @@ class PackViews(ViewBase):
                 pack = Pack(
                     owner=self.current_user,
                     name=form.name.data,
+                    base=form.base.data,
                     rid=slugify(form.name.data)
                 ).save()
                 return HTTPFound(location=self.request.route_url('viewpack', id=pack.id))
@@ -47,6 +48,7 @@ class PackViews(ViewBase):
 
         if 'submit' in post and form.validate():
             pack.name = form.name.data
+            pack.base = form.base.data
             try:
                 pack.save()
                 return HTTPFound(location=self.request.route_url('viewpack', id=pack.id))
@@ -89,7 +91,6 @@ class PackViews(ViewBase):
 
     @view_config(route_name='viewpack', request_method='GET', accept='application/json', xhr=True)
     def viewpack_json(self):
-        print(self.request.accept)
         pack = self.get_db_object(Pack, perm=False)
 
         return Response(pack.to_json(), content_type='application/json')
@@ -112,11 +113,11 @@ class PackViews(ViewBase):
         else:
             return Reponse('No builds available.')
 
-    @view_config(route_name='addpackmod', renderer='genericform.mak', permission='user')
+    @view_config(route_name='addpackmod', permission='user')
     def addpackmod(self):
         post = self.request.params
 
-        if self.has_perm(Pack.objects(id=self.request.matchdict['id']).only('owner').first()):
+        if self.pack_perm():
             Pack.objects(id=self.request.matchdict['id']).update_one(
                 add_to_set__mods=post.getall('mods'))
             return HTTPFound(self.request.route_url('viewpack', id=self.request.matchdict['id']))
@@ -125,10 +126,32 @@ class PackViews(ViewBase):
 
     @view_config(route_name='removepackmod', permission='user')
     def removepackmod(self):
-        print(self.request.params.getall('mods'))
-        if self.has_perm(Pack.objects(id=self.request.matchdict['id']).only('owner').first()):
+        if self.pack_perm():
             Pack.objects(id=self.request.matchdict['id']).update_one(
                 pull_all__mods=self.request.params.getall('mods'))
             return HTTPFound(self.request.route_url('viewpack', id=self.request.matchdict['id']))
         else:
             return HTTPForbidden()
+
+    @view_config(route_name='addbasepack', permission='user')
+    def addbasepack(self):
+        post = self.request.params
+
+        if self.pack_perm():
+            Pack.objects(id=self.request.matchdict['id']).update_one(
+                add_to_set__bases=[x for x in post.getall('bases') if x != self.request.matchdict['id']])
+            return HTTPFound(self.request.route_url('viewpack', id=self.request.matchdict['id']))
+        else:
+            return HTTPForbidden()
+
+    @view_config(route_name='removebasepack', permission='user')
+    def removebasepack(self):
+        if self.pack_perm():
+            Pack.objects(id=self.request.matchdict['id']).update_one(
+                pull_all__bases=self.request.params.getall('bases'))
+            return HTTPFound(self.request.route_url('viewpack', id=self.request.matchdict['id']))
+        else:
+            return HTTPForbidden()
+
+    def pack_perm(self):
+        return self.has_perm(Pack.objects(id=self.request.matchdict['id']).only('owner').first())

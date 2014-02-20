@@ -25,7 +25,7 @@ class Struct:
         self.__dict__.update(entries)
 
 # Globals
-URL = 'http://mml.stephenmac.com/static/archives/config.zip'
+URL = 'http://mml.stephenmac.com/static/archives/empty.zip'
 IMG = 'http://placekitten.com/g/2000/600'
 
 
@@ -805,7 +805,7 @@ class PackViewTests(DBTests):
         # Create dummy pack
         pack = create_pack(self.contributor, mods=[mod]).save()
         # Create request
-        request = matchrequest(packid=pack.id, modid=mod.id)
+        request = matchrequest(id=pack.id, params=MultiDict({'mods': mod.id}))
         # Run
         self.makeOne(request).removepackmod()
         # Check it

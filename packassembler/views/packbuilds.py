@@ -5,6 +5,7 @@ from lxml.builder import ElementMaker
 from pyramid.view import view_config
 from ..form import PackBuildForm
 from lxml.etree import tostring
+from itertools import chain
 from ..schema import *
 
 
@@ -24,35 +25,38 @@ class PackBuildViews(ViewBase):
 
         # Get basic info
         pack = self.get_db_object(Pack)
-        post = self.request.params
-        form = PackBuildForm(post)
+        if pack.base:
+            return Response('Cannot add builds to a base pack.')
+        else:
+            post = self.request.params
+            form = PackBuildForm(post)
 
-        if 'submit' in post and form.validate():
-            # Create the PackBuild, initialize mod_versions
-            pb = PackBuild(pack=pack, revision=pack.latest + 1)
+            if 'submit' in post and form.validate():
+                # Create the PackBuild, initialize mod_versions
+                pb = PackBuild(pack=pack, revision=pack.latest + 1)
 
-            # Populate the new pack build with WTForms data
-            form.populate_obj(pb)
+                # Populate the new pack build with WTForms data
+                form.populate_obj(pb)
 
-            # Add all the mod versions and save
-            suc, vs, req = get_versions(pack, post)
-            if suc:
-                if not req:
-                    pb.mod_versions = vs
-                    pb.save()
+                # Add all the mod versions and save
+                suc, vs, req = get_versions(pack, post)
+                if suc:
+                    if not req:
+                        pb.mod_versions = vs
+                        pb.save()
 
-                    pack.latest = pb.revision
-                    pack.builds.append(pb)
-                    pack.save()
+                        pack.latest = pb.revision
+                        pack.builds.append(pb)
+                        pack.save()
 
-                    return HTTPFound(self.request.route_url('viewpack', id=pack.id))
-            else:
-                error = 'Some mods were not accounted for. Check the advanced section and try again.'
+                        return HTTPFound(self.request.route_url('viewpack', id=pack.id))
+                else:
+                    error = 'Some mods were not accounted for. Check the advanced section and try again.'
 
-        return self.return_dict(
-            title='New Build', f=form, depends=req, mods=pack.mods, error=error,
-            cancel=self.request.route_url('viewpack', id=pack.id)
-        )
+            return self.return_dict(
+                title='New Build', f=form, depends=req, mods=get_mods(pack), error=error,
+                cancel=self.request.route_url('viewpack', id=pack.id)
+            )
 
     @view_config(route_name='deletebuild', permission='user')
     def deletebuild(self):
@@ -126,6 +130,10 @@ class PackBuildViews(ViewBase):
 
 
 # Build creation
+def get_mods(pack):
+    return sorted(pack.mods + list(chain.from_iterable(map(get_mods, pack.bases))))
+
+
 def get_versions(pack, post):
     mod_versions = []
     required = {}
@@ -240,7 +248,7 @@ def mod_xml(E, request, mv):
         E.URL(request.route_url('downloadversion', id=mv.id)),
         E.Required('true'),
         E.ModType('Regular'),
-        E.MD5(mv.mod_file.md5 if mv.mod_file else mv.mod_file_url_md5),
+        E.MD5(mv.md5),
         {
             'id': mv.mod.rid,
             'name': '{0} ({1})'.format(mv.mod.name, mv.version),

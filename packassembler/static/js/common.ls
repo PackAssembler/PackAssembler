@@ -12,6 +12,10 @@ linkAutoCheck = (elemId, fieldName) !->
     $ "##{elemId}" .change (!-> $ "input[name='#{fieldName}']" .prop 'checked' @checked)
 
 
+linkStaticUrl = (packid) !->
+    <-! $ '[data-id]' .click _
+    window.location = "/packs/#{$ @ .data \id}/addbase?bases=#{packid}"
+
 linkDynamicSubmit = (selector) !->
     <-! $ '[data-id]' .click _
     form = $ selector
@@ -21,4 +25,5 @@ linkDynamicSubmit = (selector) !->
 module.exports =
     linkRows: linkRows,
     linkAutoCheck: linkAutoCheck,
+    linkStaticUrl: linkStaticUrl,
     linkDynamicSubmit: linkDynamicSubmit

@@ -55,6 +55,10 @@ class ModVersion(Document):
     # Is a development version
     devel = BooleanField(default=False)
 
+    @property
+    def md5(self):
+        return self.mod_file.md5 if self.mod_file else self.mod_file_url_md5
+
 
 class Banner(EmbeddedDocument):
     # Actual Image
@@ -125,8 +129,9 @@ class Pack(Document):
     name = StringField(required=True, unique=True)
     # Readable id
     rid = StringField(required=True, unique=True)
-    # Mod List
+    # Mod and Base Pack Lists
     mods = ListField(ReferenceField(Mod, reverse_delete_rule=DENY))
+    bases = ListField(ReferenceField('Pack', reverse_delete_rule=PULL))
     # Builds
     builds = ListField(ReferenceField(PackBuild, reverse_delete_rule=PULL))
     # Latest PackBuild revision
@@ -135,9 +140,11 @@ class Pack(Document):
     owner = ReferenceField(User, required=True, reverse_delete_rule=DENY)
     # Formatting extras
     banner = EmbeddedDocumentField(Banner)
+    # Base
+    base = BooleanField(default=False)
 
     meta = {
-        'ordering': ['name']
+        'ordering': ['name'],
     }
 
 Pack.register_delete_rule(PackBuild, 'pack', CASCADE)

@@ -77,25 +77,26 @@ class VersionViews(ViewBase):
         post = self.request.params
         form = EditModVersionForm(post, mv)
 
-        if 'submit' in post and form.validate() and not version_exists(mod, form.version.data):
-            form.populate_obj(mv)
-            try:
-                mv.mod_file = post[form.mod_file.name].file
-                mv.mod_file_url = None
-                mv.mod_file_url_md5 = None
-            except AttributeError:
-                if mv.mod_file_url:
-                    if form.upload_from_url.data:
-                        mv.mod_file = requests.get(form.mod_file_url.data).content
-                        mv.mod_file_url = None
-                    else:
-                        mv.mod_file_url_md5, mv.mod_file_url = url_md5(form.mod_file_url.data)
-                        mv.mod_file = None
+        if 'submit' in post and form.validate():
+            if form.version.data == mv.version or not version_exists(mv.mod, form.version.data):
+                form.populate_obj(mv)
+                try:
+                    mv.mod_file = post[form.mod_file.name].file
+                    mv.mod_file_url = None
+                    mv.mod_file_url_md5 = None
+                except AttributeError:
+                    if mv.mod_file_url:
+                        if form.upload_from_url.data:
+                            mv.mod_file = requests.get(form.mod_file_url.data).content
+                            mv.mod_file_url = None
+                        else:
+                            mv.mod_file_url_md5, mv.mod_file_url = url_md5(form.mod_file_url.data)
+                            mv.mod_file = None
 
-            mv.depends = get_depends(post)
-            mv.save()
+                mv.depends = get_depends(post)
+                mv.save()
 
-            return HTTPFound(location=self.request.route_url('viewmod', id=mv.mod.id))
+                return HTTPFound(location=self.request.route_url('viewmod', id=mv.mod.id))
 
         return self.return_dict(
             title="Edit Mod Version", mods=Mod.objects, mv=mv,
@@ -129,6 +130,25 @@ class VersionViews(ViewBase):
     @view_config(route_name='versiondetails', renderer='versiondetails.mak')
     def versiondetails(self):
         return {'version': self.get_db_object(ModVersion, perm=False)}
+
+    @view_config(route_name='qmversions', renderer='json')
+    def qmversions(self):
+        mod = self.get_db_object(Mod, perm=False)
+
+        mcvs = list(reversed(list(MCVERSIONS)))
+        versions = []
+        for v in mod.versions:
+            vdata = {
+                'mcCompat': mcvs[mcvs.index(v.mc_min) - 1:mcvs.index(v.mc_max) + 1],
+                'url': self.request.route_url('downloadversion', id=v.id) if v.mod_file else v.mod_file_url,
+                'md5': v.md5,
+                'version': v.version
+            }
+            if v.depends:
+                vdata['references'] = [{'uid': dep.rid, 'type': 'depends'} for dep in v.depends]
+            versions.append(vdata)
+
+        return versions
 
 
 def get_depends(post):

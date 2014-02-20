@@ -32,6 +32,13 @@ class ModViews(ViewBase):
         return self.return_dict(
             title='Mods', mods=mods, packs=self.get_add_pack_data())
 
+    @view_config(route_name='qmlist', renderer='json')
+    def qmlist(self):
+        return {
+            'baseUrl': self.request.route_url('modlist') + "/{}.json",
+            'index': [{"uid": m.rid, "url": str(m.id)} for m in Mod.objects]
+        }
+
     @view_config(route_name='adoptmod', permission='contributor')
     def adopt(self):
         # Get mod
@@ -89,6 +96,22 @@ class ModViews(ViewBase):
         mod.save()
 
         return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
+
+    @view_config(route_name='quickmod', renderer='json')
+    def quickmod(self):
+        mod = self.get_db_object(Mod, perm=False)
+        qm = {
+            'name': mod.name,
+            'author': {'developer': [mod.author]},
+            'uid': mod.rid,
+            'websiteUrl': mod.url,
+            'updateUrl': self.request.url,
+            'versionsUrl': self.request.route_url('qmversions', id=mod.id)
+        }
+        if mod.description:
+            qm['description'] = mod.description
+
+        return qm
 
     @view_config(route_name='editmodbanner', permission='user', renderer='genericform.mak')
     @view_config(route_name='editpackbanner', permission='user', renderer='genericform.mak')

@@ -164,6 +164,7 @@ class EditModVersionForm(ModVersionForm):
 
 class PackForm(SForm):
     name = namefield('Name')
+    base = BooleanField('Base Pack')
 
 
 # Pack Builds
