@@ -4,9 +4,9 @@ from pyramid.view import view_config, forbidden_view_config
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from ..security import check_pass, password_hash
 from pyramid.security import remember, forget
+import packassembler.views.email as email
 from pyramid.response import Response
 from random import getrandbits
-from mandrill import Mandrill
 from hashlib import md5
 from ..schema import *
 
@@ -206,35 +206,9 @@ class UserViews(ViewBase):
             perm=self.has_perm(user), admin=self.specperm('admin'))
 
     def send_confirmation(self, user):
-        sender = Mandrill(self.request.registry.settings.get('mandrill_key'))
-        message = {
-            'to': [{'email': user.email, 'name': user.username}],
-            'global_merge_vars':
-            [{'content': self.request.route_url(
-              'activate',
-              id=user.id,
-              key=user.activate),
-              'name': 'confirmaddress'}]
-        }
-        sender.messages.send_template(
-            template_name='confirmmcm',
-            template_content=[],
-            message=message,
-            async=True)
+        url = self.request.route_url('activate', id=user.id, key=user.activate)
+        email.confirmation(self.request.registry, user, url)
 
     def send_password_reset(self, user):
-        sender = Mandrill(self.request.registry.settings.get('mandrill_key'))
-        message = {
-            'to': [{'email': user.email, 'name': user.username}],
-            'global_merge_vars':
-            [{'content': self.request.route_url(
-              'reset',
-              id=user.id,
-              key=user.reset),
-              'name': 'reseturl'}]
-        }
-        sender.messages.send_template(
-            template_name='resetmcm',
-            template_content=[],
-            message=message,
-            async=True)
+        url = self.request.route_url('reset', id=user.id, key=user.reset)
+        email.password_reset(self.request.registry, user, url)

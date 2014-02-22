@@ -1,11 +1,9 @@
-from pyramid.threadlocal import get_current_registry
 from pyramid.httpexceptions import HTTPFound
+import packassembler.views.email as email
 from ..form import ModForm, BannerForm
 from pyramid.view import view_config
-from mandrill import Mandrill
 from ..schema import *
 from .common import *
-import threading
 
 
 class ModViews(ViewBase):
@@ -211,18 +209,5 @@ class ModViews(ViewBase):
                                 )
 
     def send_out_of_date_notification(self, mod):
-        sender = Mandrill(get_current_registry().settings.get('mandrill_key'))
-        message = {
-            'to': [{'email': mod.owner.email, 'name': mod.owner.username}],
-            'global_merge_vars':
-            [{'content': self.request.route_url('viewmod', id=mod.id),
-              'name': 'modurl'},
-             {'content': mod.name, 'name': 'modname'}]
-        }
-        # Using thread so that the operation doesn't take too long.
-        # Probably not a good idea, no way to check for failure.
-        threading.Thread(target=sender.messages.send_template, kwargs={
-            'template_name': 'outdated',
-            'template_content': [],
-            'message': message,
-            'async': True}).start()
+        url = self.request.route_url('viewmod', id=mod.id)
+        email.mod_outdated(self.request.registry, mod.owner, mod.name, url)
