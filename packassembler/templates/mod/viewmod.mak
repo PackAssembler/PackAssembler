@@ -119,13 +119,13 @@
 <div class="row bmargin relative-position">
     <div class="col-lg-8">
         <a href="${request.route_url('flagmod', id=mod.id)}" class="action-flag btn ${'btn-danger' if not mod.outdated else 'btn-default'}" id="flag">
-            <i class="icon-flag"></i> <span>${'Unf' if mod.outdated else 'F'}</span>lag as Outdated
+            <i class="fa fa-flag"></i> <span>${'Unf' if mod.outdated else 'F'}</span>lag as Outdated
         </a>
     </div>
     % if perm:
     <div class="col-lg-4 force-bottom">
         <div class="pull-right">
-            <a href="${request.route_url('addversion', id=mod.id)}" class="action-add"><i class="icon-plus no-decoration"></i> Add Version</a>
+            <a href="${request.route_url('addversion', id=mod.id)}" class="action-add"><i class="fa fa-plus no-decoration"></i> Add Version</a>
         </div>
     </div>
     % endif
@@ -144,21 +144,21 @@
                 <td>${version.mc_max}</td>
                 ##<td>&nbsp;</td>
                 <td>
-                    <div class="btn-group">
-                        <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="#">
                             Action
-                            <span class="icon-caret-down"></span></a>
+                            <span class="fa fa-caret-down"></span></button>
                         <ul class="dropdown-menu">
-                            <li><a href="${request.route_url('downloadversion', id=version.id)}"><i class="icon-fixed-width icon-download"></i> Download</a></li>
-                            <li><a href="${request.route_url('versiondetails', id=version.id)}" class="details"><i class="icon-fixed-width icon-file-text"></i> Details</a></li>
+                            <li><a href="${request.route_url('downloadversion', id=version.id)}"><i class="fa fa-download fa-fw"></i> Download</a></li>
+                            <li><a href="${request.route_url('versiondetails', id=version.id)}" class="details"><i class="fa fa-file-text fa-fw"></i> Details</a></li>
                             % if perm:
-                                <li><a href="${request.route_url('deleteversion', id=version.id)}"><i class="icon-fixed-width icon-trash"></i> Delete</a></li>
-                                <li><a href="${request.route_url('editversion', id=version.id)}"><i class="icon-fixed-width icon-pencil"></i> Edit</a></li>
+                                <li><a href="${request.route_url('deleteversion', id=version.id)}"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+                                <li><a href="${request.route_url('editversion', id=version.id)}"><i class="fa fa-pencil fa-fw"></i> Edit</a></li>
                                 % if loop.index != 0:
-                                    <li><a href="${request.route_url('moveversion', id=mod.id, shift=1, index=loop.index)}"><i class="icon-fixed-width icon-arrow-up"></i> Move Up</a></li>
+                                    <li><a href="${request.route_url('moveversion', id=mod.id, shift=1, index=loop.index)}"><i class="fa fa-arrow-up fa-fw"></i> Move Up</a></li>
                                 % endif
                                 % if loop.index != len(mod.versions) - 1:
-                                    <li><a href="${request.route_url('moveversion', id=mod.id, shift=-1, index=loop.index)}"><i class="icon-fixed-width icon-arrow-down"></i> Move Down</a></li>
+                                    <li><a href="${request.route_url('moveversion', id=mod.id, shift=-1, index=loop.index)}"><i class="fa fa-arrow-down fa-fw"></i> Move Down</a></li>
                                 % endif
                             % endif
                         </ul>

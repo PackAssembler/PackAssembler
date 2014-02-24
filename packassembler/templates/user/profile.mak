@@ -22,12 +22,13 @@
         </div>
     </div>
     <div class="col-lg-6">
-    % if perm:
         <div class="btn-group pull-right tmargin">
-            <a href="${request.route_url('edituser', id=owner.id)}" class="btn btn-info action-edit">Edit Account</a>
-            <a href="#" id="delete" class="btn btn-danger action-delete">Delete Account</a>
+            <a href="${request.route_url('emailuser', id=owner.id)}" class="btn btn-default">Send Message</a>
+            % if perm:
+                <a href="${request.route_url('edituser', id=owner.id)}" class="btn btn-info action-edit">Edit Account</a>
+                <a href="#" id="delete" class="btn btn-danger action-delete">Delete Account</a>
+            % endif
         </div>
-    % endif
     </div>
 </div>
 
@@ -50,7 +51,8 @@
             % if items:
                 <div class="list-group">
                     % for item in items:
-                        <a href="${request.route_url('view' + heading.lower()[:-1], id=item.id)}" class="list-group-item">${item.name}</a>
+                        <a href="${request.route_url('view' + heading.lower()[:-1], id=item.id)}"
+                           class="list-group-item ${'danger' if item.__class__.__name__ == 'Mod' and item.outdated else ''}">${item.name}</a>
                     % endfor
                 </div>
             % else:

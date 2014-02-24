@@ -1,4 +1,4 @@
-from ..form import UserForm, LoginForm, SendResetForm, ResetForm, EditUserPasswordForm, EditUserAvatarForm, EditUserEmailForm
+from ..form import UserForm, LoginForm, SendResetForm, ResetForm, EditUserPasswordForm, EditUserAvatarForm, EditUserEmailForm, EmailUserForm
 from .common import ViewBase, validate_captcha
 from pyramid.view import view_config, forbidden_view_config
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
@@ -137,6 +137,19 @@ class UserViews(ViewBase):
             return self.success_url('login', 'Password reset successfully.')
 
         return self.return_dict(title='Reset Password', f=form, cancel=self.request.route_url('login'))
+
+    @view_config(route_name='emailuser', renderer='genericform.mak', permission='user')
+    def emailuser(self):
+        user = self.get_db_object(User, perm=False)
+        post = self.request.params
+        form = EmailUserForm(post)
+
+        if 'submit' in post and form.validate():
+            email.user_email(self.request.registry, user, self.logged_in, form.message.data)
+
+            return HTTPFound(self.request.route_url('profile', id=user.id))
+
+        return self.return_dict(title='Send Email to ' + user.username, f=form, cancel=self.request.route_url('profile', id=user.id))
 
     @view_config(route_name='edituser', renderer='edituser.mak', permission='user')
     def edituser(self):

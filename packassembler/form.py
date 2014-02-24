@@ -240,3 +240,7 @@ class EditUserEmailForm(SForm):
 class EditUserAvatarForm(SForm):
     avatar_type = SelectField(
         'Avatar', choices=[('0', 'Gravatar'), ('1', 'Minotar')], validators=[validators.required()])
+
+
+class EmailUserForm(SForm):
+    message = SafeTextAreaField('Message')

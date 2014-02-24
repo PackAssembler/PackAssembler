@@ -7,10 +7,14 @@ def mandrillify(template):
 
         def mandrilled(reg, user, *args, **kwargs):
             sender = Mandrill(reg.settings.get('mandrill_key'))
-            message = {
-                'to': [{'email': user.email, 'name': user.username}],
-                'global_merge_vars': f(*args, **kwargs)
-            }
+
+            message = {'to': [{'email': user.email, 'name': user.username}]}
+
+            rval = f(*args, **kwargs)
+            if type(rval) == dict:
+                message.update(rval)
+            else:
+                message['global_merge_vars'] = rval
 
             sender_args = {
                 'template_name': template,
@@ -42,3 +46,14 @@ def mod_outdated(mod_name, mod_url):
         {'name': 'modurl', 'content': mod_url},
         {'name': 'modname', 'content': mod_name}
     ]
+
+
+@mandrillify('useremail')
+def user_email(sender, message):
+    return {
+        'subject': sender + ' on Pack Assembler has sent you a message',
+        'global_merge_vars': [
+            {'name': 'sender', 'content': sender},
+            {'name': 'message', 'content': message}
+        ]
+    }

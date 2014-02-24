@@ -32,7 +32,7 @@
     <h3>Builds</h3>
     % if perm:
         <div class="pull-right bmargin">
-            <a href="${request.route_url('addbuild', id=pack.id)}" class="action-add"><i class="icon-plus no-decoration"></i> New Build</a>
+            <a href="${request.route_url('addbuild', id=pack.id)}" class="action-add"><i class="fa fa-plus no-decoration"></i> New Build</a>
         </div>
     % endif
     <table class="table table-hover table-bordered">
@@ -51,12 +51,12 @@
                     <div class="btn-group">
                         <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
                             Action
-                            <span class="icon-caret-down"></span></a>
+                            <span class="fa fa-caret-down"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="${request.route_url('downloadbuild', id=build.id)}"><i class="icon-fixed-width icon-download"></i> JSON</a></li>
-                            <li><a href="${request.route_url('mcuxml', id=build.id)}"><i class="icon-fixed-width icon-file-text"></i> MCU XML</a></li>
+                            <li><a href="${request.route_url('downloadbuild', id=build.id)}"><i class="fa fa-download fa-fw"></i> JSON</a></li>
+                            <li><a href="${request.route_url('mcuxml', id=build.id)}"><i class="fa fa-file-text fa-fw"></i> MCU XML</a></li>
                             % if perm:
-                                <li><a href="${request.route_url('deletebuild', id=build.id)}"><i class="icon-fixed-width icon-trash"></i> Delete</a></li>
+                                <li><a href="${request.route_url('deletebuild', id=build.id)}"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
                             % endif
                         </ul>
                     </div>

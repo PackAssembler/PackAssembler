@@ -40,6 +40,8 @@ def setup_routes(config):
     config.add_route('edituser', '/users/{id}/edit')
     config.add_route('deleteuser', '/users/{id}/delete')
     config.add_route('profile', '/users/{id}')
+    ## Email
+    config.add_route('emailuser', '/users/{id}/email')
 
     # Mods
     ## Listing

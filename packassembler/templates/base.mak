@@ -4,8 +4,8 @@
     <title>${title} &middot; Pack Assembler</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<meta name="google-site-verification" content="yXuM2JTT_NbRwI9pbVruYjq9W9t7bF9wIe7eiqwAy1A" />
-    <link href="//netdna.bootstrapcdn.com/bootswatch/3.0.2/cyborg/bootstrap.min.css" rel="stylesheet">
-    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/cyborg/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
 
     <link href="${request.static_url('packassembler:static/css/master.css')}" rel="stylesheet">
     <link href="${request.static_url('packassembler:static/css/keys.min.css')}" rel="stylesheet">
@@ -61,11 +61,11 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 Logged in as ${user.username}
-                                <i class="icon-caret-down"></i>
+                                <i class="fa fa-caret-down"></i>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="${request.route_url('profile', id=user.id)}"><i class="icon-fixed-width icon-user"></i> Profile</a></li>
-                                <li><a href="${request.route_url('logout')}"><i class="icon-fixed-width icon-off"></i> Logout</a></li>
+                                <li><a href="${request.route_url('profile', id=user.id)}"><i class="fa fa-user fa-fw"></i> Profile</a></li>
+                                <li><a href="${request.route_url('logout')}"><i class="fa fa-power-off fa-fw"></i> Logout</a></li>
                             </ul>
                         </li>
                     % endif
@@ -138,7 +138,7 @@
     </div>
     <script src="${request.static_url('packassembler:static/js/jquery-latest.js')}"></script>
     <script src="${request.static_url('packassembler:static/js/mousetrap.min.js')}"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
     <script type="text/javascript">
         // Go to

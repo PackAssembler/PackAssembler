@@ -3,7 +3,7 @@
 ${listcommon.head()}
 <hr>
 <div class="pull-right bmargin">
-    <a href="${request.route_url('addserver')}" class="action-add"><i class="icon-plus no-decoration"></i> Add Server</a>
+    <a href="${request.route_url('addserver')}" class="action-add"><i class="fa fa-plus no-decoration"></i> Add Server</a>
 </div>
 <table class="table table-hover table-bordered listtable" data-provides="rowlink">
     <thead>
