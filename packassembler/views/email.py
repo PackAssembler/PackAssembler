@@ -51,9 +51,10 @@ def mod_outdated(mod_name, mod_url):
 @mandrillify('useremail')
 def user_email(sender, message):
     return {
-        'subject': sender + ' on Pack Assembler has sent you a message',
+        'subject': sender.username + ' on Pack Assembler has sent you a message',
         'global_merge_vars': [
-            {'name': 'sender', 'content': sender},
+            {'name': 'sender', 'content': sender.username},
             {'name': 'message', 'content': message}
-        ]
+        ],
+        'headers': {'Reply-To': sender.email}
     }

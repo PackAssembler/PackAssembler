@@ -145,7 +145,7 @@ class UserViews(ViewBase):
         form = EmailUserForm(post)
 
         if 'submit' in post and form.validate():
-            email.user_email(self.request.registry, user, self.logged_in, form.message.data)
+            email.user_email(self.request.registry, user, self.current_user, form.message.data)
 
             return HTTPFound(self.request.route_url('profile', id=user.id))
 
