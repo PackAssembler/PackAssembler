@@ -7,7 +7,7 @@ from sys import argv
 
 
 try:
-    connect(argv[1])
+    connect('', argv[1])
     User(username='Orphan', password=password_hash(argv[2]), email=argv[3],
          groups='orphan').save(validate=False)
 except IndexError:

@@ -1,7 +1,6 @@
 /* Base */
 body {
     padding-top: 60px;
-    /*background: url("../img/cream_pixels.png") repeat scroll 0% 0% transparent;*/
 }
 
 @media (max-width: 980px) {
@@ -59,6 +58,8 @@ tr.button-height td {line-height: 38px !important;}
 
 .linked {cursor: pointer;}
 .nolink {cursor: auto;}
+.table a.btn {text-decoration: none;}
+ul.dropdown-menu a {text-decoration: none;}
 
 /* Form */
 select.longer {
@@ -99,6 +100,5 @@ td.giant {width: 100%;}
 .profilebox-info h3{margin:0; line-height: normal; font-size:18px;}
 
 /* User list */
-/*div.userbox{height: 300px;}*/
 div.userbox-avatar{margin-bottom: 6px;}
 div:hover.userbox{background-color: rgb(40, 40, 40);}

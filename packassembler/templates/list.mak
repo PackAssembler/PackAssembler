@@ -19,7 +19,7 @@
 <%def name="add_to_pack(packs, message='Add to Pack')">
     <a class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" href="#">
         ${message}
-        <span class="icon-caret-down"></span>
+        <span class="fa fa-caret-down"></span>
     </a>
     <ul class="dropdown-menu">
         % if packs:

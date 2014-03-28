@@ -20,7 +20,7 @@ class ServerViews(ViewBase):
                 if form.packid.data:
                     pack = Pack.objects.get(id=form.packid.data)
                     pb = PackBuild.objects.get(
-                        revision=form.revision.data,
+                        revision=int(form.revision.data),
                         pack=pack)
                 else:
                     pb = None

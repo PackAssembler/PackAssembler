@@ -142,7 +142,7 @@ class VersionViews(ViewBase):
                 'mcCompat': mcvs[mcvs.index(v.mc_min) - 1:mcvs.index(v.mc_max) + 1],
                 'url': self.request.route_url('downloadversion', id=v.id) if v.mod_file else v.mod_file_url,
                 'md5': v.md5,
-                'version': v.version
+                'name': v.version
             }
             if v.depends:
                 vdata['references'] = [{'uid': dep.rid, 'type': 'depends'} for dep in v.depends]

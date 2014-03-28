@@ -30,6 +30,7 @@ class PackBuildViews(ViewBase):
         else:
             post = self.request.params
             form = PackBuildForm(post)
+            mods = get_mods(pack)
 
             if 'submit' in post and form.validate():
                 # Create the PackBuild, initialize mod_versions
@@ -39,7 +40,7 @@ class PackBuildViews(ViewBase):
                 form.populate_obj(pb)
 
                 # Add all the mod versions and save
-                suc, vs, req = get_versions(pack, post)
+                suc, vs, req = get_versions(mods, post)
                 if suc:
                     if not req:
                         pb.mod_versions = vs
@@ -54,7 +55,7 @@ class PackBuildViews(ViewBase):
                     error = 'Some mods were not accounted for. Check the advanced section and try again.'
 
             return self.return_dict(
-                title='New Build', f=form, depends=req, mods=get_mods(pack), error=error,
+                title='New Build', f=form, depends=req, mods=mods, error=error,
                 cancel=self.request.route_url('viewpack', id=pack.id)
             )
 
@@ -134,19 +135,19 @@ def get_mods(pack):
     return sorted(pack.mods + list(chain.from_iterable(map(get_mods, pack.bases))))
 
 
-def get_versions(pack, post):
+def get_versions(mods, post):
     mod_versions = []
     required = {}
     suc = True
 
-    for mod in pack.mods:
+    for mod in mods:
         mid = str(mod.id)
         if mid in post:
             # Get the specified version
             version = get_version(mod.versions, post[mid])
 
             # Check dependencies
-            unsat = check_dependencies(version.depends, pack.mods)
+            unsat = check_dependencies(version.depends, mods)
 
             # Add to the list
             if not unsat:
