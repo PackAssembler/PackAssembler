@@ -108,6 +108,8 @@ class ModViews(ViewBase):
         }
         if mod.description:
             qm['description'] = mod.description
+        if mod.banner:
+            qm['logoUrl'] = mod.banner.image
 
         return qm
 

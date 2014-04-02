@@ -78,7 +78,7 @@
                     $('<tr>').append($('<td>')
                         .attr('class', 'linked middle center link-hover')
                         .append(
-                            $('<i>').attr('class', 'icon-remove text-danger')
+                            $('<i>').attr('class', 'fa fa-times text-danger')
                         )
                         .click(function(){
                             remove_from_array(depends, id);

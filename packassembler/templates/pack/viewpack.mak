@@ -44,7 +44,7 @@
             <tr class="button-height">
                 <td>${build.revision}</td>
                 <td>${build.id.generation_time.strftime('%e %b %Y %I:%m:%S %p')}</td>
-                <td><a href="${build.config}">${build.config}</a></td>
+                <td>${'<a href={0}>{0}</a>'.format(build.config) if build.config else 'None' | n}</a></td>
                 <td>${build.mc_version}</td>
                 <td>${build.forge_version}</td>
                 <td>

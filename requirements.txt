@@ -1,0 +1,10 @@
+pyramid
+mongoengine
+cffi
+bcrypt
+mandrill
+wtforms
+htmllaundry
+nose
+nose-mongoengine
+coverage
