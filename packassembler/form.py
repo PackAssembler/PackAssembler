@@ -129,6 +129,7 @@ class ModForm(SForm):
     url = urlfield('Homepage', v=[validators.required()])
     target = targetfield('Target')
     permission = urlfield('Permission URL', v=[validators.Optional()])
+    donate = urlfield('Donation URL', v=[validators.Optional()])
 
 
 class BannerForm(SForm):
@@ -139,6 +140,7 @@ class BannerForm(SForm):
 
 class ModVersionForm(SForm):
     version = TextField('Version', validators=[validators.required()])
+    changelog = urlfield('Changelog', v=[validators.Optional()])
     mc_min = mcvfield('Minecraft Min')
     mc_max = mcvfield('Minecraft Max')
     forge_min = forgefield('Forge Min', v=[validators.Optional()])
@@ -153,7 +155,7 @@ class ModVersionForm(SForm):
 class QuickModVersionForm(SForm):
     version = TextField('Version', validators=[validators.required()])
     mc = mcvfield('Minecraft')
-    url = urlfield('File URL', v=[either_mod_file, validators.Optional()])
+    url = urlfield('File URL')
 
 
 class EditModVersionForm(ModVersionForm):

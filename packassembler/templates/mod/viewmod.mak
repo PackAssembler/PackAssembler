@@ -71,6 +71,9 @@
                 % endif
                 </td></tr>
                 <tr><td>Permission</td><td>${mod.permission | autolink,linejoin,n}</td></tr>
+            % if mod.donate:
+                <tr><td>Donate</td><td>${mod.donate | externallink}</td></tr>
+            % endif
                 <tr><td>Date Added</td><td>${mod.id.generation_time.strftime('%e %b %Y %I:%m:%S %p')}</td></tr>
                 <tr><td>Runs on</td><td>
                 <%def name="runson(mod)">

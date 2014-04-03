@@ -46,6 +46,8 @@ class ModVersion(Document):
     depends = ListField(ReferenceField('Mod'))
     # Actual version number
     version = StringField(required=True)
+    # A link to a changelog
+    changelog = URLField()
     # The file itself
     mod_file = FileField(collection_name='modfs')
     mod_file_url = URLField()
@@ -93,6 +95,8 @@ class Mod(Document):
     url = URLField(required=True)
     ## Permission from author (unless uploader is the author)
     permission = URLField()
+    ## Donation URL
+    donate = URLField()
     # Versions of the mod (and compatibility information)
     versions = ListField(ReferenceField(ModVersion, reverse_delete_rule=PULL))
     # Owner: Full permissions
