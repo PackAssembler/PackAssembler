@@ -92,7 +92,7 @@ class Mod(Document):
     ## Mod homepage
     url = URLField(required=True)
     ## Permission from author (unless uploader is the author)
-    permission = StringField()
+    permission = URLField()
     # Versions of the mod (and compatibility information)
     versions = ListField(ReferenceField(ModVersion, reverse_delete_rule=PULL))
     # Owner: Full permissions

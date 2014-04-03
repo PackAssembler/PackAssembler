@@ -11,7 +11,6 @@
 
     def externallink(text):
         trun = text[:35] + (text[35:] and '...')
-        #return '<a href="{0}" target="_blank" rel="nofollow">{1}</a>'.format(text, trun)
         return '<a href="{0}" rel="nofollow">{1}</a>'.format(text, trun)
 
     def autolink(text):
@@ -71,6 +70,7 @@
                     None
                 % endif
                 </td></tr>
+                <tr><td>Permission</td><td>${mod.permission | autolink,linejoin,n}</td></tr>
                 <tr><td>Date Added</td><td>${mod.id.generation_time.strftime('%e %b %Y %I:%m:%S %p')}</td></tr>
                 <tr><td>Runs on</td><td>
                 <%def name="runson(mod)">
@@ -133,16 +133,21 @@
 <div class="table-responsive">
     <table class="table table-hover">
         <thead>
-            <tr><th>Version</th><th>Devel</th><th>MC Min</th><th>MC Max</th><th>Action</th></tr>
+            <tr><th>Version</th><th>Direct Link<th>Devel</th><th>Minecraft</th><th>Action</th></tr>
         </thead>
         <tbody>
         % for version in mod.versions[::-1]:
             <tr class="button-height">
                 <td>${version.version}</td>
+                <td>
+                % if version.mod_file_url != None:
+                    <span class="text-danger">True</span>
+                % else:
+                    False
+                % endif
+                </td>
                 <td>${version.devel}</td>
-                <td>${version.mc_min}</td>
-                <td>${version.mc_max}</td>
-                ##<td>&nbsp;</td>
+                <td>${version.mc_min} - ${version.mc_max}</td>
                 <td>
                     <div class="dropdown">
                         <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="#">
@@ -182,7 +187,6 @@
     </div>
   </div>
 </div>
-<small>Permission: ${mod.permission | autolink,linejoin,n}</small>
 <%block name="style">
     ${extras.banner_style(mod)}
 </%block>

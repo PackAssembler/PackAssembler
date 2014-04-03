@@ -128,7 +128,7 @@ class ModForm(SForm):
                        validators.required(), validators.Length(max=32)])
     url = urlfield('Homepage', v=[validators.required()])
     target = targetfield('Target')
-    permission = ParanoidTextAreaField('Permission')
+    permission = urlfield('Permission URL', v=[validators.Optional()])
 
 
 class BannerForm(SForm):

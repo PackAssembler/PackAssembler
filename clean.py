@@ -2,5 +2,5 @@ from packassembler.schema import *
 connect('mmltest')
 
 for user in users:
-    if not Mod.objects(owner=user) and not Pack.objects(owner=user) and not Server.objects(owner=user):
+    if not Mod.objects(owner=user) and not Pack.objects(owner=user) and not Server.objects(owner=user) and user.group == 'user':
         user.delete()

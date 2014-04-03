@@ -24,8 +24,10 @@ When assesing the legality of having a copyrighted mod on our servers, we assume
     <li>No license given (or none which applies) by the creator means all rights reserved.</li>
 </ol>
 If the mod author does not allow uploading directly to the site according to the policy above, there is a second option: One may add a mod version by url. \
-However, this is not allowed if the mod author specifically disallows the practice. In that case, the mod doesn't deserve to be used.
-<strong>If a mod is found without a satisfactory permission description all mod versions will be deleted.</strong>
+Please note, this is a last resort measure which can cause tempers to flare and things to break. Please try and sort things out with the author before resorting \
+to this. This is not allowed if the mod author specifically disallows the practice. In that case, the mod has a conceited author and nothing can be done.
+<strong>If a mod is found without a satisfactory permission description all mod versions will be deleted. The only mods where 'None' is acceptable are those which \
+are maintained by their authors or those who directly link ALL their versions.</strong>
 
 <h4>Do I have to use quotes when I'm quoting the author?</h4>
 No, you do not. We can assume:
