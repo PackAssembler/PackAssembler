@@ -29,7 +29,7 @@ ${listcommon.head()}
                 <td>${mod.author}</td>
                 <%
                     if mod.versions:
-                        v = max(mod.versions, key=lambda v: v.version.split('.'))
+                        v = mod.versions[-1]
                     else:
                         v = None
                 %>

@@ -11,6 +11,7 @@
             <div class="panel-group" id="accordion">
                 <%self:autopanel header="General" id="general-header" default="True">
                     ${form.showfield(f.version)}
+                    ${form.showfield(f.changelog)}
                     ${form.showfield(f.devel)}
                 </%self:autopanel>
                 <%self:autopanel header="Dependencies" id="dependencies-header">

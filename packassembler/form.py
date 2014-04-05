@@ -19,7 +19,7 @@ def isalnum(form, field):
 
 
 def isforge(form, field):
-    if not re.match('^([0-9]{1,2}\.){3}[0-9]{3}$', field.data):
+    if not re.match('^([0-9]{1,4}\.){3}[0-9]{1,4}$', field.data):
         raise ValidationError('Not a valid forge version.')
 
 
@@ -55,17 +55,20 @@ def targetfield(name, **kwargs):
     return SelectField(name, choices=[('both', 'Server and Client'), ('server', 'Server'), ('client', 'Client')], **kwargs)
 
 
-def textfield_creator(default_validators):
+def textfield_creator(default_validators, filters=[]):
     def creator(name, v=[], **kwargs):
-        return TextField(name, validators=v + default_validators, **kwargs)
+        return TextField(name, validators=v + default_validators,
+            filters=filters, **kwargs)
     return creator
 
 forgefield = textfield_creator([isforge])
 urlfield = textfield_creator([validators.URL()])
 emailfield = textfield_creator([validators.Email()])
 idfield = textfield_creator([validators.Regexp('^[0-9a-f]{24}$')])
-namefield = textfield_creator(
-    [validators.required(), validators.Length(max=32), validators.Regexp('^[\w ]+$')])
+namefield = textfield_creator([
+    validators.required(),
+    validators.Length(max=32),
+    validators.Regexp('^[\w ]+$')], filters=[lambda x: x.strip() if x else x])
 
 
 # Specific Validators
@@ -140,7 +143,7 @@ class BannerForm(SForm):
 
 class ModVersionForm(SForm):
     version = TextField('Version', validators=[validators.required()])
-    changelog = urlfield('Changelog', v=[validators.Optional()])
+    changelog = urlfield('Changelog URL', v=[validators.Optional()])
     mc_min = mcvfield('Minecraft Min')
     mc_max = mcvfield('Minecraft Max')
     forge_min = forgefield('Forge Min', v=[validators.Optional()])

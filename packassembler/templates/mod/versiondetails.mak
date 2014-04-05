@@ -1,6 +1,6 @@
 <table class="table">
 % if version.changelog:
-    <tr><td>Changelog</td><td>${version.changelog}</td></tr>
+    <tr><td>Changelog</td><td><a href="${version.changelog}">${version.changelog}</a></td></tr>
 % endif
     <tr>
         <td>Uploaded</td><td>${version.id.generation_time.strftime('%e %b %Y %I:%m:%S %p')}</td>

@@ -4,7 +4,7 @@ from mongoengine import *
 # Mod targets
 TARGETS = ('server', 'client', 'both')
 # Minecraft versions
-MCVERSIONS = ('1.6.4',)
+MCVERSIONS = ('1.7.2', '1.6.4')
 # Forge version length
 FV = 16
 
@@ -94,7 +94,7 @@ class Mod(Document):
     ## Mod homepage
     url = URLField(required=True)
     ## Permission from author (unless uploader is the author)
-    permission = URLField()
+    permission = StringField()
     ## Donation URL
     donate = URLField()
     # Versions of the mod (and compatibility information)
