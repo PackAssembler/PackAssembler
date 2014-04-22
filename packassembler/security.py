@@ -1,3 +1,5 @@
+from pyramid.authentication import AuthTktAuthenticationPolicy
+from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.security import Allow, Everyone
 from mongoengine import connect
 from .schema import User
@@ -6,6 +8,16 @@ import hmac
 
 
 hpass = lambda password: hmac.new(password.encode()).digest()
+
+
+def includeme(config):
+    config.set_root_factory('packassembler.security.Root')
+    authn_policy = AuthTktAuthenticationPolicy('authtktpolicysek',
+                                               callback=find_group,
+                                               hashalg='sha512')
+    authz_policy = ACLAuthorizationPolicy()
+    config.set_authorization_policy(authz_policy)
+    config.set_authentication_policy(authn_policy)
 
 
 def find_group(userid, request):

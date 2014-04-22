@@ -3,6 +3,10 @@ from packassembler.views.common import NoPermission
 from .schema import DoesNotExist
 
 
+def includeme(config):
+    config.add_tween(exception_tween_factory)
+
+
 def exception_tween_factory(handler, registry):
     def exception_tween(request):
         try:
