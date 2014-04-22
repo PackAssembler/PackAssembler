@@ -68,12 +68,8 @@ class ViewBase(object):
             return Pack.objects(mods=data).first() is None
         elif dtype == 'ModVersion':
             return PackBuild.objects(mod_versions=data).first() is None
-        elif dtype == 'Pack':
-            return Server.objects(build__in=data.builds).first() is None
-        elif dtype == 'PackBuild':
-            return Server.objects(build=data).first() is None
         else:
-            return TypeError('Cannot only check dependencies for Mod and Pack types')
+            return TypeError('Cannot only check dependencies for Mod types')
 
     def get_add_pack_data(self):
         if self.logged_in is None:

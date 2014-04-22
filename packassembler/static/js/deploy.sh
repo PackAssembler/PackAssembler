@@ -1,3 +1,4 @@
 #!/bin/bash
-lsc -c *.ls
+lsc -c common.ls
 browserify wrapper.js -o bundled/wrapper.js
+rm common.js

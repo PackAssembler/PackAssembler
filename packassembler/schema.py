@@ -21,6 +21,8 @@ class User(Document):
     # Avatar
     avatar_type = IntField(default=0)
     email_hash = StringField(default='')
+    # Last login
+    last_login = DateTimeField()
 
     # Codes
     ## Activation code
@@ -100,7 +102,7 @@ class Mod(Document):
     # Versions of the mod (and compatibility information)
     versions = ListField(ReferenceField(ModVersion, reverse_delete_rule=PULL))
     # Owner: Full permissions
-    owner = ReferenceField(User, required=True, reverse_delete_rule=DENY)
+    owner = ReferenceField(User, required=True, reverse_delete_rule=CASCADE)
     # Is outdated?
     outdated = BooleanField(required=True, default=False)
     # Formatting extras
@@ -141,7 +143,7 @@ class Pack(Document):
     # Latest PackBuild revision
     latest = IntField(required=True, default=0)
     # Owner of Pack
-    owner = ReferenceField(User, required=True, reverse_delete_rule=DENY)
+    owner = ReferenceField(User, required=True, reverse_delete_rule=CASCADE)
     # Formatting extras
     banner = EmbeddedDocumentField(Banner)
     # Base
@@ -163,9 +165,9 @@ class Server(Document):
     # Readable id
     rid = StringField(required=True, unique=True)
     # Pack used
-    build = ReferenceField('PackBuild', reverse_delete_rule=DENY)
+    build = ReferenceField('PackBuild', reverse_delete_rule=NULLIFY)
     # Owner
-    owner = ReferenceField(User, required=True, reverse_delete_rule=DENY)
+    owner = ReferenceField(User, required=True, reverse_delete_rule=CASCADE)
     # Configuration, should be on external server
     config = URLField()
     # Formatting extras

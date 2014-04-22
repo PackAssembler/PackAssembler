@@ -189,7 +189,10 @@ class ModViews(ViewBase):
         # Get mod
         mod = self.get_db_object(Mod)
 
-        if self.check_depends(mod):
+        # Check if a PackBuild depends on a version
+        no_version_deps = all([self.check_depends(i) for i in mod.versions])
+
+        if self.check_depends(mod) and no_version_deps:
             for version in mod.versions:
                 version.mod_file.delete()
             mod.delete()

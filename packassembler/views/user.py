@@ -7,6 +7,7 @@ from pyramid.security import remember, forget
 import packassembler.views.email as email
 from pyramid.response import Response
 from random import getrandbits
+from datetime import datetime
 from hashlib import md5
 from ..schema import *
 
@@ -90,9 +91,12 @@ class UserViews(ViewBase):
 
         if 'submit' in post and form.validate():
             username = form.username.data
-            correct = check_pass(username, form.password.data)
-            if correct:
-                return HTTPFound(location=came_from, headers=remember(self.request, correct))
+            user = check_pass(username, form.password.data)
+            if user:
+                user.last_login = datetime.now()
+                user.save()
+                return HTTPFound(location=came_from, 
+                    headers=remember(self.request, user.username))
             error = 'Invalid username or password.'
 
         return self.return_dict(title='Login', error=error, f=form)

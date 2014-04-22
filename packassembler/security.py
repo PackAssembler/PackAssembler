@@ -30,9 +30,9 @@ def check_pass(username, password):
         if user.reset:
             user.reset = None
             user.save()
-        return user.username
+        return user
     else:
-        return False
+        return None
 
 
 def password_hash(password):

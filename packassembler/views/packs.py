@@ -70,14 +70,9 @@ class PackViews(ViewBase):
 
     @view_config(route_name='deletepack', permission='user')
     def deletepack(self):
-        # Get pack
         pack = self.get_db_object(Pack)
-
-        if self.check_depends(pack):
-            pack.delete()
-            return self.success_url('packlist', pack.name + ' deleted successfully.')
-        else:
-            return HTTPFound(self.request.route_url('error', type='depends'))
+        pack.delete()
+        return self.success_url('packlist', pack.name + ' deleted successfully.')
 
     @view_config(route_name='viewpack', renderer='viewpack.mak')
     def viewpack(self):

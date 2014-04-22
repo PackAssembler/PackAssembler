@@ -10,7 +10,8 @@ import requests
 
 class VersionViews(ViewBase):
 
-    @view_config(route_name='addversion', renderer='editmodversion.mak', permission='user')
+    @view_config(route_name='addversion', renderer='editmodversion.mak',
+                 permission='user')
     def addversion(self):
         mod = self.get_db_object(Mod)
         post = self.request.params
@@ -48,8 +49,8 @@ class VersionViews(ViewBase):
         post = self.request.params
         mod = self.get_db_object(Mod, perm=False)
 
-        correct = check_pass(post['username'], post['password'])
-        if not correct or mod.owner.username != correct:
+        user = check_pass(post['username'], post['password'])
+        if not user or mod.owner != user:
             raise NoPermission
 
         form = QuickModVersionForm(post)

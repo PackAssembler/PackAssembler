@@ -6,6 +6,9 @@
             <div class="profilebox-avatar">${extras.avatar(owner, 150)}</div>
             <div class="profilebox-info">
                 <h2>${title}</h2>
+                % if owner.last_login:
+                    <p>Last Login: ${owner.last_login.strftime('%e %b %Y %I:%m:%S %p')}</p>
+                % endif
                 % if admin:
                     <form method="post" action="${request.route_url('edituser', id=owner.id)}">
                         <select class="longer" id="group" name="group" value="">
@@ -52,7 +55,7 @@
                 <div class="list-group">
                     % for item in items:
                         <a href="${request.route_url('view' + heading.lower()[:-1], id=item.id)}"
-                           class="list-group-item ${'danger' if item.__class__.__name__ == 'Mod' and item.outdated else ''}">${item.name}</a>
+                           class="list-group-item ${'list-group-item-danger' if item.__class__.__name__ == 'Mod' and item.outdated else ''}">${item.name}</a>
                     % endfor
                 </div>
             % else:

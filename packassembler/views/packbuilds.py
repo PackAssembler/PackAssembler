@@ -61,13 +61,8 @@ class PackBuildViews(ViewBase):
 
     @view_config(route_name='deletebuild', permission='user')
     def deletebuild(self):
-        pb = self.get_db_object(PackBuild)
-
-        if self.check_depends(pb):
-            pb.delete()
-            return HTTPFound(location=self.request.referer)
-        else:
-            return HTTPFound(self.request.route_url('error', type='depends'))
+        self.get_db_object(PackBuild).delete()
+        return HTTPFound(location=self.request.referer)
 
     @view_config(route_name='downloadbuild', renderer='json')
     def downloadbuild(self):
