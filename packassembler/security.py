@@ -11,6 +11,7 @@ hpass = lambda password: hmac.new(password.encode()).digest()
 
 
 def includeme(config):
+    config.set_root_factory('packassembler.security.Root')
     authn_policy = AuthTktAuthenticationPolicy('authtktpolicysek',
                                                callback=find_group,
                                                hashalg='sha512')
