@@ -79,7 +79,7 @@
     <div id="main-content" class="container padded-top">
         ${next.body()}
     </div>
-    <script src="${request.static_url('packassembler:static/js/jquery-latest.js')}"></script>
+    <script src="${request.static_url('packassembler:static/js/lib/jquery-latest.js')}"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     ## Tracking
     <script>
