@@ -82,7 +82,6 @@ def includeme(config):
     config.add_route('deletebuild', '/packs/builds/{id}/delete')
     config.add_route('downloadbuild', '/packs/builds/{id}')
     config.add_route('mcuxml', '/packs/builds/{id}/mcuxml')
-    config.add_route('paq', '/packs/builds/{id}/paq')
 
     # Servers
     ## Listing

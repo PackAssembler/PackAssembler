@@ -1,6 +1,8 @@
 <%inherit file="base.mak"/>
 <%namespace name="listcommon" file="list.mak" />
 <%namespace name="extras" file="extras.mak" />
+<%namespace name="helper" module="packassembler.template_helpers.packs" />
+
 <div class="row bpadding infobar">
     <div class="col-lg-8">
         <h2>${title}</h2>
@@ -16,8 +18,8 @@
     <div class="col-lg-4">
     % if perm:
         <div class="btn-group pull-right tmargin">
-            <a href="${request.route_url('editpack', id=pack.id)}" class="btn btn-info action-edit">Edit Pack</a>
-            <a id="delete" class="btn btn-danger action-delete">Delete Pack</a>
+            <a href="${request.route_url('editpack', id=pack.id)}" class="btn btn-info">Edit Pack</a>
+            <a id="delete" class="btn btn-danger">Delete Pack</a>
         </div>
     % endif
     </div>
@@ -32,7 +34,7 @@
     <h3>Builds</h3>
     % if perm:
         <div class="pull-right bmargin">
-            <a href="${request.route_url('addbuild', id=pack.id)}" class="action-add"><i class="fa fa-plus no-decoration"></i> New Build</a>
+            <a href="${request.route_url('addbuild', id=pack.id)}"><i class="fa fa-plus no-decoration"></i> New Build</a>
         </div>
     % endif
     <table class="table table-hover table-bordered">
@@ -90,6 +92,9 @@
                     </td>
                     <td data-href="${request.route_url('viewmod', id=mod.id)}" class="linked giant">
                         ${mod.name}
+                    % if perm and pack.builds:
+                        ${helper.show_mod_label(pack.builds[-1], mod.versions)}
+                    % endif
                     </td>
                 </tr>
             % endfor

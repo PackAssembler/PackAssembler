@@ -29,8 +29,8 @@
     <div class="col-lg-4">
     % if perm:
         <div class="btn-group pull-right tmargin">
-            <a href="${request.route_url('editmod', id=mod.id)}" class="btn btn-info action-edit">Edit Mod</a>
-            <a id="delete" class="btn btn-danger action-delete">Delete Mod</a>
+            <a href="${request.route_url('editmod', id=mod.id)}" class="btn btn-info">Edit Mod</a>
+            <a id="delete" class="btn btn-danger">Delete Mod</a>
         </div>
     % endif
     </div>
@@ -105,14 +105,14 @@
 <h3>Versions</h3>
 <div class="row bmargin relative-position">
     <div class="col-lg-8">
-        <a href="${request.route_url('flagmod', id=mod.id)}" class="action-flag btn ${'btn-danger' if not mod.outdated else 'btn-default'}" id="flag">
+        <a href="${request.route_url('flagmod', id=mod.id)}" class="btn ${'btn-danger' if not mod.outdated else 'btn-default'}" id="flag">
             <i class="fa fa-flag"></i> <span>${'Unf' if mod.outdated else 'F'}</span>lag as Outdated
         </a>
     </div>
     % if perm:
     <div class="col-lg-4 force-bottom">
         <div class="pull-right">
-            <a href="${request.route_url('addversion', id=mod.id)}" class="action-add"><i class="fa fa-plus no-decoration"></i> Add Version</a>
+            <a href="${request.route_url('addversion', id=mod.id)}"><i class="fa fa-plus no-decoration"></i> Add Version</a>
         </div>
     </div>
     % endif

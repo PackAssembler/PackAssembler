@@ -12,8 +12,8 @@
     <div class="col-lg-4">
     % if perm:
         <div class="btn-group pull-right tmargin">
-            <a href="${request.route_url('editserver', id=server.id)}" class="btn btn-info action-edit">Edit Server</a>
-            <a id="delete" class="btn btn-danger action-delete">Delete Server</a>
+            <a href="${request.route_url('editserver', id=server.id)}" class="btn btn-info">Edit Server</a>
+            <a id="delete" class="btn btn-danger">Delete Server</a>
         </div>
     % endif
     </div>

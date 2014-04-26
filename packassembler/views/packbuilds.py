@@ -95,25 +95,6 @@ class PackBuildViews(ViewBase):
 
         return Response(generate_mcu_xml(self.request, pb), content_type='application/xml')
 
-    @view_config(route_name='paq')
-    def paq(self):
-        pb = self.get_db_object(PackBuild, perm=False)
-
-        resp = ''
-        for mv in pb.mod_versions:
-            resp += self.request.route_url('downloadversion', id=mv.id)
-            resp += '\nfalse\nfalse\nPAQ-Temp/mods\nPAQ-Temp/mods\n'
-            resp += mv.mod.rid + '.zip\n'
-
-        if pb.config:
-            resp += pb.config + '\nfakse\ntrue\nPAQ-Temp/downloads\nPAQ-Temp/config\nconfig.zip\n'
-
-        forge_filename = 'minecraftforge-installer-{0}-{1}.jar'.format(pb.mc_version, pb.forge_version)
-        forge_url = 'http://files.minecraftforge.net/minecraftforge/' + forge_filename
-        resp += forge_url + '\n' + forge_filename + '\n' + '{0}-Forge{1}'.format(pb.mc_version, pb.forge_version)
-
-        return Response(resp, content_type='text/plain')
-
     @view_config(route_name='forgeversions', renderer='json')
     def forgeversions(self):
         build_data = Setting.objects.get(key=VERSION_KEY).build_data

@@ -9,6 +9,11 @@ MCVERSIONS = ('1.7.2', '1.6.4')
 FV = 16
 
 
+def get_mcv_compat(mc_min, mc_max):
+    mcvs = list(MCVERSIONS)
+    return mcvs[mcvs.index(mc_max):mcvs.index(mc_min)+1]
+
+
 class User(Document):
     # Username, limited for formatting purposes
     username = StringField(required=True, min_length=6, max_length=32, unique=True)

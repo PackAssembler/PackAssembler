@@ -28,8 +28,8 @@
         <div class="btn-group pull-right tmargin">
             <a href="${request.route_url('emailuser', id=owner.id)}" class="btn btn-default">Send Message</a>
             % if perm:
-                <a href="${request.route_url('edituser', id=owner.id)}" class="btn btn-info action-edit">Edit Account</a>
-                <a href="#" id="delete" class="btn btn-danger action-delete">Delete Account</a>
+                <a href="${request.route_url('edituser', id=owner.id)}" class="btn btn-info">Edit Account</a>
+                <a href="#" id="delete" class="btn btn-danger">Delete Account</a>
             % endif
         </div>
     </div>

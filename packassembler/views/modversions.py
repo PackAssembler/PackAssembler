@@ -136,11 +136,10 @@ class VersionViews(ViewBase):
     def qmversions(self):
         mod = self.get_db_object(Mod, perm=False)
 
-        mcvs = list(reversed(list(MCVERSIONS)))
         versions = []
         for v in mod.versions:
             vdata = {
-                'mcCompat': mcvs[mcvs.index(v.mc_min) - 1:mcvs.index(v.mc_max) + 1],
+                'mcCompat': get_mcv_compat(v.mc_min, v.mc_max),
                 'url': self.request.route_url('downloadversion', id=v.id) if v.mod_file else v.mod_file_url,
                 'md5': v.md5,
                 'name': v.version

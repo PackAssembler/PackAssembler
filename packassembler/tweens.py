@@ -4,7 +4,7 @@ from .schema import DoesNotExist
 
 
 def includeme(config):
-    config.add_tween(exception_tween_factory)
+    config.add_tween('packassembler.tweens.exception_tween_factory')
 
 
 def exception_tween_factory(handler, registry):
