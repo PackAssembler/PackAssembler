@@ -66,28 +66,20 @@ class PackBuildViews(ViewBase):
 
     @view_config(route_name='downloadbuild', renderer='json')
     def downloadbuild(self):
-        pb = self.get_db_object(PackBuild, perm=False)
-        jdict = {
-            'id': str(pb.pack.id),
-            'name': pb.pack.name,
-            'config': pb.config,
-            'mcv': pb.mc_version,
-            'forge_version': pb.forge_version,
-            'mods': [],
-            'build': str(pb.id),
-            'revision': pb.revision
-        }
-        for mv in pb.mod_versions:
-            jdict['mods'].append({
-                'id': str(mv.mod.id),        # Mod ID
-                'name': mv.mod.name,         # Full Mod Name
-                'target': mv.mod.target,     # Mod Target
-                'version': str(mv.id),       # Download URL
-                'filename': '{0}-{1}.jar'.format(
-                    mv.mod.rid, mv.version)  # What the file should be named once it's downloaded
-            })
+        return generate_build(self.get_db_object(PackBuild, perm=False))
 
-        return jdict
+    @view_config(route_name='buildbyrev', renderer='json')
+    def buildbyrev(self):
+        rev = int(self.request.matchdict['rev'])
+        pack = self.get_db_object(Pack, perm=False)
+        if rev < 0:
+            try:
+                pb = pack.builds[rev]
+            except IndexError:
+                raise DoesNotExist
+        else:
+            pb = PackBuild.objects.get(pack=pack, revision=rev)
+        return generate_build(pb)
 
     @view_config(route_name='mcuxml')
     def mcuxml(self):
@@ -104,6 +96,31 @@ class PackBuildViews(ViewBase):
             return build_data[mc_version]
         except KeyError:
             return []
+
+
+# Build generation
+def generate_build(pb):
+    jdict = {
+        'id': str(pb.pack.id),
+        'name': pb.pack.name,
+        'config': pb.config,
+        'mcv': pb.mc_version,
+        'forge_version': pb.forge_version,
+        'mods': [],
+        'build': str(pb.id),
+        'revision': pb.revision
+    }
+    for mv in pb.mod_versions:
+        jdict['mods'].append({
+            'id': str(mv.mod.id),        # Mod ID
+            'name': mv.mod.name,         # Full Mod Name
+            'target': mv.mod.target,     # Mod Target
+            'version': str(mv.id),       # Download URL
+            'filename': '{0}-{1}.jar'.format(
+                mv.mod.rid, mv.version)  # What the file should be named once it's downloaded
+        })
+
+    return jdict
 
 
 # Build creation
