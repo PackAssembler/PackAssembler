@@ -14,7 +14,8 @@ requires = [
     'htmllaundry',
     'nose',
     'nose-mongoengine',
-    'coverage'
+    'coverage',
+    'pyramid_mako'
 ]
 
 setup(

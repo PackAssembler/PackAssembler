@@ -8,7 +8,6 @@
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
 
     <link href="${request.static_url('packassembler:static/css/master.css')}" rel="stylesheet">
-    <link href="${request.static_url('packassembler:static/css/keys.min.css')}" rel="stylesheet">
     <link href="${request.static_url('packassembler:static/img/favicon.ico')}" rel="icon">
     <%block name="style">
     </%block>

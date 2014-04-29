@@ -3,6 +3,7 @@ logs.log
 uwsgi.pid
 *.sublime-*
 production.ini
+development.ini
 packassembler/.coverage
 packassembler/cover/
 packassembler.egg-info/
