@@ -57,7 +57,10 @@ class ViewBase(object):
         return has_permission(permission, Root, self.request)
 
     def get_db_object(self, collection, perm=True):
-        data = collection.objects.get(id=self.request.matchdict['id'])
+        try:
+            data = collection.objects.get(id=self.request.matchdict['id'])
+        except ValidationError:
+            raise DoesNotExist
         if perm and not self.has_perm(data):
             raise NoPermission
         return data

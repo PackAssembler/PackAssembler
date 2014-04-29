@@ -44,7 +44,7 @@
 <div class="row">
     <div class="col-lg-4">
         <div class="panel panel-default">
-            <div class="panel-heading">Details</div>
+            <div class="panel-heading"><h4 class="panel-title">Details</div></h4>
             <table class="table">
                 <tr><td>Author</td><td><a href="${request.route_url('modlist')}?q=${mod.author}" rel="nofollow">${mod.author}</a></td></tr>
                 <tr><td>Homepage</td><td>
@@ -76,28 +76,41 @@
     </div>
     <div class="col-lg-4">
         <div class="panel panel-default">
-            <div class="panel-heading">Description</div>
+            <div class="panel-heading"><h4 class="panel-title">Description</div></h4>
             <div class="panel-body">${mod.description | autolink,linejoin,n}</div>
         </div>
     </div>
     <div class="col-lg-4">
-        <div class="panel-group">
+        <div class="panel-group" id="reference-accordion">
             <div class="panel panel-default">
-                <div class="panel-heading">Mods by ${mod.author}</div>
-                <div class="list-group">
-                % for m in by_author:
-                    <a href="${request.route_url('viewmod', id=m.id)}" class="list-group-item">${m.name}</a>
-                % endfor
+                <div class="panel-heading">
+                    <h4 class="panel-title"><a data-toggle="collapse" data-parent="#reference-accordion" href="#mods-by-panel">
+                            Mods by ${mod.author}</div>
+                        </a></h4>
+                <div class="collapse panel-collapse in" id="mods-by-panel">
+                    <div class="list-group">
+                    % for m in by_author:
+                        <a href="${request.route_url('viewmod', id=m.id)}" class="list-group-item">${m.name}</a>
+                    % endfor
+                    </div>
                 </div>
             </div>
+        % if with_mod:
             <div class="panel panel-default">
-                <div class="panel-heading">Packs with ${mod.name}</div>
-                <div class="list-group">
-                % for p in with_mod:
-                    <a href="${request.route_url('viewpack', id=p.id)}" class="list-group-item">${p.name}</a>
-                % endfor
+                <div class="panel-heading">
+                    <h4 class="panel-title"><a data-toggle="collapse" data-parent="#reference-accordion" href="#packs-with-panel">
+                        Packs with ${mod.name}
+                    </a></h4>
+                </div>
+                <div class="collapse panel-collapse" id="packs-with-panel">
+                    <div class="list-group">
+                    % for p in with_mod:
+                        <a href="${request.route_url('viewpack', id=p.id)}" class="list-group-item">${p.name}</a>
+                    % endfor
+                    </div>
                 </div>
             </div>
+        % endif
         </div>
     </div>
 </div>
