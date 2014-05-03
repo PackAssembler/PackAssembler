@@ -11,7 +11,10 @@
 <%def name="showsubmit(cancel, name='submit', offset=2)">
     <div class="form-group">
         <div class="col-lg-offset-${offset} col-lg-${12-offset}">
-            <button type="submit" class="btn btn-primary" name="${name}">Submit</button> &nbsp; ${'<a href="{0}">Cancel</a>'.format(cancel) if cancel else '' | n}
+            <button type="submit" class="btn btn-primary" name="${name}">Submit</button>&nbsp;
+        % if cancel:
+            <a href="${cancel}">Cancel</a>
+        % endif
         </div>
     </div>
 </%def>

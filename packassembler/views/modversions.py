@@ -132,24 +132,6 @@ class VersionViews(ViewBase):
     def versiondetails(self):
         return {'version': self.get_db_object(ModVersion, perm=False)}
 
-    @view_config(route_name='qmversions', renderer='json')
-    def qmversions(self):
-        mod = self.get_db_object(Mod, perm=False)
-
-        versions = []
-        for v in mod.versions:
-            vdata = {
-                'mcCompat': get_mcv_compat(v.mc_min, v.mc_max),
-                'url': self.request.route_url('downloadversion', id=v.id) if v.mod_file else v.mod_file_url,
-                'md5': v.md5,
-                'name': v.version
-            }
-            if v.depends:
-                vdata['references'] = [{'uid': dep.rid, 'type': 'depends'} for dep in v.depends]
-            versions.append(vdata)
-
-        return versions
-
 
 def get_depends(post):
     req = []

@@ -74,7 +74,9 @@
     % if not pack.base:
         ${listcommon.add_to_pack(packs, message='Add To Pack')}
     % endif
-        ${'<a href="#" id="delete-mods" class="btn btn-sm btn-danger">Delete Selected</a>' if perm else '' | n}
+    % if perm:
+        <a href="#" id="delete-mods" class="btn btn-sm btn-danger">Delete Selected</a>
+    % endif
     </div>
     <form method="POST" action="${request.route_url('removepackmod', id=pack.id)}" id="mods">
         <table class="table table-bordered table-hover">
@@ -108,7 +110,9 @@
 <br>
 <h3>Base Packs</h3>
 % if pack.bases:
-    <div class="bmargin">${'<a href="#" id="delete-bases" class="btn btn-sm btn-danger">Delete Selected</a>' if perm else '' | n}</div>
+    % if perm:
+        <div class="bmargin"><a href="#" id="delete-bases" class="btn btn-sm btn-danger">Delete Selected</a></div>
+    % endif
     <form method="POST" action="${request.route_url('removebasepack', id=pack.id)}" id="bases">
         <table class="table table-bordered table-hover">
             <thead>

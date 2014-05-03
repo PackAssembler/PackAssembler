@@ -51,7 +51,6 @@ def includeme(config):
     config.add_route('downloadversion', '/mods/versions/{id}/download')
     config.add_route('deleteversion', '/mods/versions/{id}/delete')
     config.add_route('versiondetails', '/mods/versions/{id}')
-    config.add_route('qmversions', '/mods/{id}/versions.json')
 
     # Packs
     ## Listing

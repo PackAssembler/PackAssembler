@@ -1,6 +1,36 @@
 <%inherit file="base.mak"/>
+<%namespace name="g" module="packassembler.template_helpers.general" />
 <%namespace name="listcommon" file="list.mak" />
-${listcommon.head()}
+## Similar to listcommon.head(), but with extra filters/buttons
+<div class="row">
+    <div class="col-lg-6">
+        <h2>${title}</h2>
+    </div>
+    <div class="col-lg-6">
+        <div class="pull-right">
+            <form id="search-form" class="form-inline" method="GET" action="${request.url}">
+                <div class="form-group">
+                    <input type="hidden" name="mc_version" value="${request.params.get('mc_version', '')}">
+                    <div id="version-dropdown" class="dropdown" display="none">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="version-dropdown-button" data-toggle="dropdown">
+                            MC Version
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            % for version in mc_versions:
+                                <li><a href="#">${version}</a></li>
+                            % endfor
+                        </ul>
+                    </div>
+                    <input type="search" name="q" class="form-control" value="${request.params.get('q', '')}" x-webkit-speech>
+                </div>
+                <button type="submit" class="btn">Search</button>
+                <button name="outdated" type="submit" class="btn btn-danger">Outdated</button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <hr>
 <div class="row bmargin relative-position">
     <div class="col-lg-10">
@@ -21,7 +51,7 @@ ${listcommon.head()}
         </thead>
         <tbody>
         % for mod in mods:
-            <tr class="${'danger' if mod.outdated else ''} linked" data-href="${request.route_url('viewmod', id=mod.id)}">
+            <tr class="${g.show_if('danger', mod.outdated)} linked" data-href="${request.route_url('viewmod', id=mod.id)}">
                 <td class="nolink center">
                     <input type="checkbox" name="mods" value="${mod.id}">
                 </td>
@@ -49,6 +79,18 @@ ${listcommon.head()}
             common.linkRows();
             common.linkAutoCheck('topcheck', 'mods');
             common.linkDynamicSubmit('form');
+
+            $('#version-dropdown').css('display', 'inline-block')
+            $('#version-dropdown > ul > li > a').click(function(){
+                var val = $(this).html();
+                $('input[name="mc_version"]').attr('value', val);
+            % if 'outdated' in request.params:
+                $('<input />').attr('type', 'hidden')
+                               .attr('name', 'outdated')
+                               .appendTo('#search-form');
+            % endif
+                $('#search-form').submit();
+            });
         });
     </script>
 </%block>

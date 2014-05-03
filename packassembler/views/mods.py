@@ -11,24 +11,26 @@ class ModViews(ViewBase):
     @view_config(route_name='modlist', renderer='modlist.mak')
     def modlist(self):
         post = self.request.params
-
-        mods = Mod.objects
+        q = Q()
 
         if 'q' in post:
-            versions = ModVersion.objects(Q(mc_min=post['q']) | Q(mc_max=post['q']))
+            q &= Q(name__icontains=post['q']) | Q(author__icontains=post['q'])
 
-            if 'outdated' in post['q']:
-                mods = mods(outdated=True)
-                query = post['q'].replace('outdated', '').strip()
-            else:
-                query = post['q']
+        if 'outdated' in post:
+            q &= Q(outdated=True)
 
-            mods = mods(
-                Q(name__icontains=query) | Q(author__icontains=query) |
-                Q(versions__in=versions))
+        if 'mc_version' in post:
+            v = post['mc_version']
+            if v in MCVERSIONS:
+                versions = ModVersion.objects(Q(mc_min=v) | Q(mc_max=v))
+                q &= Q(versions__in=versions)
 
         return self.return_dict(
-            title='Mods', mods=mods, packs=self.get_add_pack_data())
+            title='Mods',
+            mods=Mod.objects(q),
+            packs=self.get_add_pack_data(),
+            mc_versions=list(MCVERSIONS)
+        )
 
     @view_config(route_name='qmlist', renderer='json')
     def qmlist(self):
@@ -104,12 +106,22 @@ class ModViews(ViewBase):
             'uid': mod.rid,
             'websiteUrl': mod.url,
             'updateUrl': self.request.url,
-            'versionsUrl': self.request.route_url('qmversions', id=mod.id)
+            'versions': []
         }
         if mod.description:
             qm['description'] = mod.description
         if mod.banner:
             qm['logoUrl'] = mod.banner.image
+        for v in mod.versions:
+            vdata = {
+                'mcCompat': get_mcv_compat(v.mc_min, v.mc_max),
+                'url': self.request.route_url('downloadversion', id=v.id) if v.mod_file else v.mod_file_url,
+                'md5': v.md5,
+                'name': v.version
+            }
+            if v.depends:
+                vdata['references'] = [{'uid': dep.rid, 'type': 'depends'} for dep in v.depends]
+            qm['versions'].append(vdata)
 
         return qm
 

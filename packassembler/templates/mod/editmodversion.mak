@@ -1,5 +1,6 @@
 <%inherit file="base.mak"/>
 <%namespace name="form" file="form.mak" />
+<%namespace name="g" module="packassembler.template_helpers.general" />
 <h2>${title}</h2>
 <hr>
 <div class="row">
@@ -55,7 +56,7 @@
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#${parent}" href="#${id}">${header}</a>
             </h4>
         </div>
-        <div id="${id}" class="panel-collapse collapse${' in' if default else ''}">
+        <div id="${id}" class="panel-collapse collapse ${g.show_if('in', default)}">
             <div class="panel-body">
                 ${caller.body()}
             </div>

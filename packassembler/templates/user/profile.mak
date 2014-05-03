@@ -1,5 +1,6 @@
 <%inherit file="base.mak"/>
 <%namespace name="extras" file="extras.mak" />
+<%namespace name="g" module="packassembler.template_helpers.general" />
 <div class="row">
     <div class="col-lg-6">
         <div class="profilebox">
@@ -55,7 +56,7 @@
                 <div class="list-group">
                     % for item in items:
                         <a href="${request.route_url('view' + heading.lower()[:-1], id=item.id)}"
-                           class="list-group-item ${'list-group-item-danger' if item.__class__.__name__ == 'Mod' and item.outdated else ''}">${item.name}</a>
+                           class="list-group-item ${g.show_if('list-group-item-danger', item.__class__.__name__ == 'Mod' and item.outdated)}">${item.name}</a>
                     % endfor
                 </div>
             % else:

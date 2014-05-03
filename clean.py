@@ -1,7 +1,10 @@
+from pyramid.paster import bootstrap
 from datetime import datetime, timedelta
 from packassembler.schema import *
+from sys import argv
 
-connect('', host=input('DB URL: '))
+env = bootstrap(argv[1])
+connect('', host=env['registry'].settings.get('mongodb', 'packassembler'))
 too_old = datetime.now() - timedelta(days=45)
 
 for user in User.objects:

@@ -1,6 +1,7 @@
 <%inherit file="base.mak"/>
 <%namespace name="form" file="form.mak" />
 <%namespace name="emd" file="editmodversion.mak" />
+<%namespace name="g" module="packassembler.template_helpers.general" />
 <h2>${title}</h2>
 <hr>
 <div class="row">
@@ -36,7 +37,7 @@
                             <select name="${mod.id}" class="form-control">
                             % for version in mod.versions[::-1]:
                                 <option value="${version.id}" data-mc-max="${version.mc_max}" data-mc-min="${version.mc_min}">
-                                    ${version.version} ${'(Devel)' if version.devel else ''}
+                                    ${version.version} ${g.show_if('(Devel)', version.devel)}
                                 </option>
                             % endfor
                             </select>
