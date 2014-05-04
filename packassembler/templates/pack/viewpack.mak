@@ -30,6 +30,7 @@
     </div>
 % endif
 <hr>
+${extras.flash()}
 % if not pack.base:
     <h3>Builds</h3>
     % if perm:
@@ -142,7 +143,7 @@
     ${extras.banner_style(pack)}
 </%block>
 <%block name="endscripts">
-    <script src="//rawgithub.com/makeusabrew/bootbox/master/bootbox.js"></script>
+    <script src="${request.static_url('packassembler:static/js/lib/bootbox.min.js')}"></script>
     <script src="${request.static_url('packassembler:static/js/bundled/wrapper.js')}"></script>
     <script type="text/javascript">
         $(document).ready(function(){

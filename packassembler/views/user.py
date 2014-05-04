@@ -49,7 +49,9 @@ class UserViews(ViewBase):
                                 email_hash=ehash(form.email.data),
                                 activate=getrandbits(32)).save()
                     self.send_confirmation(user)
-                    return self.success_url('login', 'Successfully created an account please check your email to activate it.')
+
+                    self.request.session.flash('Successfully created an account please check your email to activate it.')
+                    return HTTPFound(self.request.route_url('login'))
                 except NotUniqueError:
                     error = 'Username or Email Already in Use.'
             else:
@@ -64,9 +66,12 @@ class UserViews(ViewBase):
         if user.activate == int(self.request.matchdict['key']):
             user.activate = None
             user.save()
-            return HTTPFound(location=self.request.route_url('login'))
+
+            self.request.session.flash('Account activated. Please login.')
         else:
-            return Response('Invalid Key')
+            self.request.session.flash('Invalid Key.', 'errors')
+
+        return HTTPFound(self.request.route_url('login'))
 
     @view_config(route_name='login', renderer='login.mak')
     @forbidden_view_config(renderer='login.mak')
@@ -86,8 +91,8 @@ class UserViews(ViewBase):
         if self.logged_in is not None:
             # If this is happening because the user has no permission
             if isinstance(self.request.exception, HTTPForbidden):
-                return HTTPFound(location=self.request.route_url('error', type='not_contributor'))
-            return HTTPFound(location=self.request.route_url('home'))
+                self.request.session.flash('You may not create nor adopt mods unless you are a contributor.', 'errors')
+            return HTTPFound(self.request.route_url('home'))
 
         if 'submit' in post and form.validate():
             username = form.username.data
@@ -120,7 +125,9 @@ class UserViews(ViewBase):
             user.save()
 
             self.send_password_reset(user)
-            return self.success_url('login', 'Please check your email to continue resetting your password.')
+
+            self.request.session.flash('Please check your email to continue resetting your password.')
+            return HTTPFound(self.request.route_url('login'))
 
         return self.return_dict(title='Forgot Password', f=form, cancel=self.request.route_url('login'))
 
@@ -138,7 +145,9 @@ class UserViews(ViewBase):
             user.password = password_hash(form.password.data)
             user.reset = None
             user.save()
-            return self.success_url('login', 'Password reset successfully.')
+
+            self.request.session.flash('Password reset successfully.')
+            return HTTPFound(self.request.route_url('login'))
 
         return self.return_dict(title='Reset Password', f=form, cancel=self.request.route_url('login'))
 
@@ -196,7 +205,11 @@ class UserViews(ViewBase):
             user.save()
             return rval
 
-        return self.return_dict(title="Edit Account", pf=password_form, ef=email_form, af=avatar_form, cancel=self.request.route_url('profile', id=user.id))
+        return self.return_dict(
+            title="Edit Account", pf=password_form,
+            ef=email_form, af=avatar_form,
+            cancel=self.request.route_url('profile', id=user.id)
+        )
 
     @view_config(route_name='deleteuser', permission='user')
     def deleteuser(self):
@@ -204,13 +217,13 @@ class UserViews(ViewBase):
         user = self.get_db_object(User)
 
         orphan = self.get_orphan_user()
-
         Mod.objects(owner=user).update(set__owner=orphan)
-        Pack.objects(owner=user).update(set__owner=orphan)
-        Server.objects(owner=user).update(set__owner=orphan)
 
         user.delete()
-        return HTTPFound(location=self.request.route_url('home'), headers=forget(self.request))
+
+        self.request.session.flash('User deleted successfully.')
+        headers = forget(self.request) if self.logged_in == user.username else None
+        return HTTPFound(location=self.request.route_url('home'), headers=headers)
 
     @view_config(route_name='profile', renderer='profile.mak')
     def profile(self):

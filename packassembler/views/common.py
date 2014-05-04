@@ -5,6 +5,7 @@ from ..security import Root
 from hashlib import md5
 from ..schema import *
 import requests
+import math
 
 CAPTCHA_URL = 'http://www.google.com/recaptcha/api/verify'
 CAPTCHA_ERRORS = {
@@ -33,9 +34,6 @@ class ViewBase(object):
         except DoesNotExist:
             rdict['user'] = None
         return rdict
-
-    def success_url(self, redirect, message):
-        return HTTPFound(location=self.request.route_url('success') + '?' + urlencode({'redirect': redirect, 'message': message}))
 
     def get_orphan_user(self):
         return User.objects(group="orphan").first()
@@ -120,3 +118,17 @@ def url_md5(url):
 
 def slugify(text):
     return text.lower().replace(' ', '-')
+
+
+def page_list(post, objs):
+    per_page = 20
+
+    page = int(post['page']) if 'page' in post else 1
+    if page < 1:
+        page = 1
+
+    start = (page-1) * per_page
+
+    l = objs.skip(start).limit(per_page)
+    assert len(l) == per_page
+    return l

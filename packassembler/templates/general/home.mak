@@ -1,4 +1,10 @@
 <%inherit file="base.mak"/>
+<%namespace name="extras" file="extras.mak" />
+<div class="row">
+    <div class="col-lg-12">
+        ${extras.flash()}
+    </div>
+</div>
 <div class="row">
     <div class="col-lg-12 jumbotron">
         <h1>Pack Assembler</h1>

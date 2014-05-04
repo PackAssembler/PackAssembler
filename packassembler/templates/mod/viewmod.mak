@@ -42,6 +42,11 @@
 % endif
 <hr>
 <div class="row">
+    <div class="col-lg-12">
+        ${extras.flash()}
+    </div>
+</div>
+<div class="row">
     <div class="col-lg-4">
         <div class="panel panel-default">
             <div class="panel-heading"><h4 class="panel-title">Details</div></h4>
@@ -191,7 +196,7 @@
     ${extras.banner_style(mod)}
 </%block>
 <%block name="endscripts">
-    <script src="//rawgithub.com/makeusabrew/bootbox/master/bootbox.js"></script>
+    <script src="${request.static_url('packassembler:static/js/lib/bootbox.min.js')}"></script>
     <script src="${request.static_url('packassembler:static/js/bundled/wrapper.js')}"></script>
     <script type="text/javascript">
         $(document).ready(function(){

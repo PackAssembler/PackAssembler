@@ -1,6 +1,8 @@
 <%inherit file="base.mak"/>
 <%namespace name="g" module="packassembler.template_helpers.general" />
 <%namespace name="listcommon" file="list.mak" />
+<%namespace name="extras" file="extras.mak" />
+
 ## Similar to listcommon.head(), but with extra filters/buttons
 <div class="row">
     <div class="col-lg-6">
@@ -32,6 +34,7 @@
 </div>
 
 <hr>
+${extras.flash()}
 <div class="row bmargin relative-position">
     <div class="col-lg-10">
         <div class="dropdown">
@@ -71,7 +74,7 @@
         </tbody>
     </table>
 </form>
-<small class="pull-right">${len(mods)} mods, ${len(mods.filter(outdated=True))} flagged.</small>
+<small class="pull-right">${len(mods)} mods, ${len(mods(outdated=True))} flagged.</small>
 <%block name="endscripts">
     <script src="${request.static_url('packassembler:static/js/bundled/wrapper.js')}"></script>
     <script type="text/javascript">

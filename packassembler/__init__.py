@@ -12,3 +12,4 @@ def includeme(config):
     config.include('.tweens')
     config.include('.routes')
     config.include('.views')
+    config.include('.sessions')

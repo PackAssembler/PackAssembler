@@ -37,8 +37,11 @@ class PackViews(ViewBase):
                 mods=current_pack.mods,
                 rid=self.logged_in + '-' + current_pack.rid).save()
         except NotUniqueError:
-            return HTTPFound(location=self.request.route_url('error', type='already_cloned'))
-        return HTTPFound(location=self.request.route_url('viewpack', id=new_pack.id))
+            self.request.session.flash('Already Cloned!', 'errors')
+            return HTTPFound(self.request.route_url('viewpack', id=current_pack.id))
+
+        self.request.session.flash(current_pack.name + ' cloned successfully.')
+        return HTTPFound(self.request.route_url('viewpack', id=new_pack.id))
 
     @view_config(route_name='editpack', renderer='genericform.mak', permission='user')
     def editpack(self):
@@ -51,9 +54,12 @@ class PackViews(ViewBase):
             pack.base = form.base.data
             try:
                 pack.save()
-                return HTTPFound(location=self.request.route_url('viewpack', id=pack.id))
+
+                self.request.session.flash('Changes saved.')
+                return HTTPFound(self.request.route_url('viewpack', id=pack.id))
+
             except NotUniqueError:
-                form.name.errors.append('Already exists.')
+                form.name.errors.append('A pack with that name already exists.')
 
         return self.return_dict(title="Edit Pack", f=form, cancel=self.request.route_url('viewpack', id=pack.id))
 
@@ -72,7 +78,9 @@ class PackViews(ViewBase):
     def deletepack(self):
         pack = self.get_db_object(Pack)
         pack.delete()
-        return self.success_url('packlist', pack.name + ' deleted successfully.')
+
+        self.request.session.flash(pack.name + ' deleted successfully.')
+        return HTTPFound(self.request.route_url('packlist'))
 
     @view_config(route_name='viewpack', renderer='viewpack.mak')
     def viewpack(self):
@@ -115,6 +123,8 @@ class PackViews(ViewBase):
         if self.pack_perm():
             Pack.objects(id=self.request.matchdict['id']).update_one(
                 add_to_set__mods=post.getall('mods'))
+
+            self.request.session.flash('Mod(s) added successfully.')
             return HTTPFound(self.request.route_url('viewpack', id=self.request.matchdict['id']))
         else:
             return HTTPForbidden()
@@ -124,6 +134,8 @@ class PackViews(ViewBase):
         if self.pack_perm():
             Pack.objects(id=self.request.matchdict['id']).update_one(
                 pull_all__mods=self.request.params.getall('mods'))
+
+            self.request.session.flash('Mod(s) removed successfully.')
             return HTTPFound(self.request.route_url('viewpack', id=self.request.matchdict['id']))
         else:
             return HTTPForbidden()

@@ -4,8 +4,6 @@ def includeme(config):
     config.add_route('home', '/')
     config.add_route('faq', '/faq')
     config.add_route('gettingstarted', '/gettingstarted')
-    config.add_route('success', '/success')
-    config.add_route('error', '/error/{type}')
 
     # User
     ## Listing

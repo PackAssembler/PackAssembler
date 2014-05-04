@@ -8,7 +8,7 @@ from .common import *
 
 class ModViews(ViewBase):
 
-    @view_config(route_name='modlist', renderer='modlist.mak')
+    @view_config(route_name='modlist', renderer='modlist.mak', http_cache=3600)
     def modlist(self):
         post = self.request.params
         q = Q()
@@ -25,9 +25,11 @@ class ModViews(ViewBase):
                 versions = ModVersion.objects(Q(mc_min=v) | Q(mc_max=v))
                 q &= Q(versions__in=versions)
 
+        #mods = page_list(post, Mod.objects(q))
+        mods = Mod.objects(q)
         return self.return_dict(
             title='Mods',
-            mods=Mod.objects(q),
+            mods=mods,
             packs=self.get_add_pack_data(),
             mc_versions=list(MCVERSIONS)
         )
@@ -48,6 +50,7 @@ class ModViews(ViewBase):
         mod.owner = self.current_user
         mod.save()
 
+        self.request.session.flash('Mod adopted.')
         return HTTPFound(self.request.route_url('viewmod', id=self.request.matchdict['id']))
 
     @view_config(route_name='disownmod', permission='user')
@@ -59,6 +62,7 @@ class ModViews(ViewBase):
         mod.owner = self.get_orphan_user()
         mod.save()
 
+        self.request.session.flash('Mod disowned.')
         return HTTPFound(self.request.route_url('viewmod', id=self.request.matchdict['id']))
 
     @view_config(route_name='flagmod', permission='user')
@@ -192,6 +196,8 @@ class ModViews(ViewBase):
         if 'submit' in post and form.validate():
             form.populate_obj(mod)
             mod.save()
+
+            self.request.session.flash('Changes saved.')
             return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
 
         return self.return_dict(title='Edit Mod', f=form, cancel=self.request.route_url('viewmod', id=mod.id))
@@ -208,9 +214,11 @@ class ModViews(ViewBase):
             for version in mod.versions:
                 version.mod_file.delete()
             mod.delete()
-            return self.success_url('modlist', mod.name + ' deleted successfully.')
+            self.request.session.flash(mod.name + ' deleted successfully.')
+            return HTTPFound(self.request.route_url('modlist'))
         else:
-            return HTTPFound(self.request.route_url('error', type='depends'))
+            self.request.session.flash('Could not delete the mod because a pack depends on it.', 'errors')
+            return HTTPFound(self.request.route_url('viewmod', id=mod.id))
 
     @view_config(route_name='viewmod', renderer='viewmod.mak')
     def viewmod(self):
