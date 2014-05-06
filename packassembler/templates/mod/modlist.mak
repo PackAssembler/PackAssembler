@@ -68,7 +68,7 @@ ${extras.flash()}
                 %>
                 <td>${v.version if v else None}</td>
                 <td>${v.mc_max if v else None}</td>
-                <td>${mod.owner.username}</td>
+                <td>${(mod.owner and mod.owner.username) or None}</td>
             </tr>
         % endfor
         </tbody>

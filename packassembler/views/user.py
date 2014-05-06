@@ -50,7 +50,7 @@ class UserViews(ViewBase):
                                 activate=getrandbits(32)).save()
                     self.send_confirmation(user)
 
-                    self.request.session.flash('Successfully created an account please check your email to activate it.')
+                    self.request.flash('Successfully created an account please check your email to activate it.')
                     return HTTPFound(self.request.route_url('login'))
                 except NotUniqueError:
                     error = 'Username or Email Already in Use.'
@@ -67,9 +67,9 @@ class UserViews(ViewBase):
             user.activate = None
             user.save()
 
-            self.request.session.flash('Account activated. Please login.')
+            self.request.flash('Account activated. Please login.')
         else:
-            self.request.session.flash('Invalid Key.', 'errors')
+            self.request.flash_error('Invalid Key.')
 
         return HTTPFound(self.request.route_url('login'))
 
@@ -91,7 +91,7 @@ class UserViews(ViewBase):
         if self.logged_in is not None:
             # If this is happening because the user has no permission
             if isinstance(self.request.exception, HTTPForbidden):
-                self.request.session.flash('You may not create nor adopt mods unless you are a contributor.', 'errors')
+                self.request.flash_error('You may not create nor adopt mods unless you are a contributor.')
             return HTTPFound(self.request.route_url('home'))
 
         if 'submit' in post and form.validate():
@@ -126,7 +126,7 @@ class UserViews(ViewBase):
 
             self.send_password_reset(user)
 
-            self.request.session.flash('Please check your email to continue resetting your password.')
+            self.request.flash('Please check your email to continue resetting your password.')
             return HTTPFound(self.request.route_url('login'))
 
         return self.return_dict(title='Forgot Password', f=form, cancel=self.request.route_url('login'))
@@ -146,7 +146,7 @@ class UserViews(ViewBase):
             user.reset = None
             user.save()
 
-            self.request.session.flash('Password reset successfully.')
+            self.request.flash('Password reset successfully.')
             return HTTPFound(self.request.route_url('login'))
 
         return self.return_dict(title='Reset Password', f=form, cancel=self.request.route_url('login'))
@@ -216,14 +216,11 @@ class UserViews(ViewBase):
         # Get user
         user = self.get_db_object(User)
 
-        orphan = self.get_orphan_user()
-        Mod.objects(owner=user).update(set__owner=orphan)
-
         user.delete()
 
-        self.request.session.flash('User deleted successfully.')
+        self.request.flash('User deleted successfully.')
         headers = forget(self.request) if self.logged_in == user.username else None
-        return HTTPFound(location=self.request.route_url('home'), headers=headers)
+        return HTTPFound(self.request.route_url('home'), headers=headers)
 
     @view_config(route_name='profile', renderer='profile.mak')
     def profile(self):

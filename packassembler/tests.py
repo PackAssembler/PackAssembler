@@ -11,13 +11,20 @@ from webob.multidict import MultiDict
 
 from functools import partial
 
-from packassembler import setup_auth, setup_tweens, setup_routes
 from .schema import *
 
 
+class DummyRequest(testing.DummyRequest):
+    session = {}
+    def flash(self, msg):
+        self.session['flash'] = [msg]
+
+    def flash_error(self, msg):
+        self.session['error_flash'] = [msg]
+
 # Helper functions
 def matchrequest(params=None, **kwargs):
-    return testing.DummyRequest(matchdict=kwargs, params=params)
+    return DummyRequest(matchdict=kwargs, params=params)
 
 
 class Struct:
@@ -48,18 +55,12 @@ class GeneralViewTests(unittest.TestCase):
     @property
     def dummy(self):
         """ Returns a Views instance with a dummy request. """
-        return self.makeOne(testing.DummyRequest())
+        return self.makeOne(DummyRequest())
 
     def test_home_view(self):
         """ Tests the home view, should have the title home. """
         result = self.dummy.home()
         self.assertEqual(result['title'], 'Home')
-
-    def test_error_view(self):
-        """ Error view should return correct message for an error type. """
-        request = matchrequest(type='already_cloned')
-        result = self.makeOne(request).error()
-        self.assertIn('already cloned this pack', result['message'])
 
 
 # DB helper functions
@@ -142,10 +143,11 @@ class DBTests(unittest.TestCase):
         testRegistry.settings = {'mandrill_key': pval('mandrill_key')}
 
         self.config = testing.setUp(registry=testRegistry)
+        self.config.include('packassembler.routes')
+        self.config.include('packassembler.tweens')
+        self.config.include('packassembler.security')
+        self.config.include('packassembler.sessions')
 
-        setup_auth(self.config)
-        setup_tweens(self.config)
-        setup_routes(self.config)
         self.config.testing_securitypolicy(userid=self.contributor.username)
 
     def tearDown(self):
@@ -162,14 +164,10 @@ class DBTests(unittest.TestCase):
     @property
     def dummy(self):
         """ Returns a Views instance with a dummy request. """
-        return self.makeOne(testing.DummyRequest())
+        return self.makeOne(DummyRequest())
 
 
 class ModViewTests(DBTests):
-
-    @classmethod
-    def setUpClass(self):
-        self.orphan = create_user('orphan', username='Orphan', email='orphan@example.com')
 
     def tearDown(self):
         super().tearDown()
@@ -212,7 +210,7 @@ class ModViewTests(DBTests):
         mod = create_mod(self.contributor, name='bMod').save()
         # Get result
         result = self.makeOne(
-            testing.DummyRequest(params={'q': 'b'})).modlist()
+            DummyRequest(params={'q': 'b'})).modlist()
         # Make sure there is only one mod
         self.assertTrue(len(result['mods']) == 1)
         self.assertEqual(result['mods'][0].name, mod.name)
@@ -231,7 +229,7 @@ class ModViewTests(DBTests):
     def test_add_mod_view_with_bad_input(self):
         """ Ensure the add mod page is validated by inputting bad info. """
         # Create request
-        request = testing.DummyRequest(params=MultiDict({
+        request = DummyRequest(params=MultiDict({
             'author': 'SAuthor',
             'url': 'somehomepage',
             'target': 'both',
@@ -253,7 +251,7 @@ class ModViewTests(DBTests):
         """ Ensure the add mod page is functional. """
         # Create request
         data = mock_mod_data()
-        request = testing.DummyRequest(params=MultiDict(data))
+        request = DummyRequest(params=MultiDict(data))
         # Run
         self.makeOne(request).addmod()
         # Get new Mod object
@@ -322,7 +320,7 @@ class ModViewTests(DBTests):
     def test_adopt_mod_view(self):
         """ Ensure the adopt view works. """
         # Create a dummy mod.
-        mod = create_mod(self.orphan).save()
+        mod = create_mod(None).save()
 
         # Run adopt()
         self.makeOne(matchrequest(id=mod.id)).adopt()
@@ -336,7 +334,7 @@ class ModViewTests(DBTests):
         mod = create_mod(self.contributor).save()
 
         # Create request
-        request = testing.DummyRequest(
+        request = DummyRequest(
             matchdict={'id': mod.id},
             params=MultiDict({'image': IMG, 'submit': ''}),
             matched_route=Struct(name='editmodbanner')
@@ -357,7 +355,7 @@ class ModViewTests(DBTests):
         mod.save()
 
         # Create request
-        request = testing.DummyRequest(
+        request = DummyRequest(
             matchdict={'id': mod.id},
             params=MultiDict({'text_color': '#000000', 'submit': ''}),
             matched_route=Struct(name='editmodbanner')
@@ -704,7 +702,7 @@ class PackViewTests(DBTests):
         pack2 = create_pack(self.contributor, name='bPack').save()
         # Get result
         result = self.makeOne(
-            testing.DummyRequest(params={'q': 'b'})).packlist()
+            DummyRequest(params={'q': 'b'})).packlist()
         # Check the listing
         self.assertTrue(len(result['packs']) == 1)
         self.check_pack(result['packs'][0], pack2)
@@ -713,7 +711,7 @@ class PackViewTests(DBTests):
         """ Ensure the add pack page is functional. """
         # Create request
         data = mock_pack_data()
-        request = testing.DummyRequest(params=MultiDict(data))
+        request = DummyRequest(params=MultiDict(data))
         # Run
         self.makeOne(request).addpack()
         # Get new Pack object
@@ -748,8 +746,8 @@ class PackViewTests(DBTests):
         # Check if it's in fact cloned
         self.assertIn(pack.name, cpack.name)
         # Try again, should return an error page
-        response = runner.clonepack()
-        self.assertIn('error', response.location)
+        runner.clonepack()
+        self.assertIn('already', request.session['error_flash'][0].lower())
 
     def test_delete_pack_view(self):
         """ Ensure the delete pack view is functional. """
@@ -761,12 +759,6 @@ class PackViewTests(DBTests):
         self.makeOne(request).deletepack()
         # Make sure it's gone
         self.assertIsNone(Pack.objects(id=pack.id).first())
-
-    @unittest.skip
-    def test_delete_pack_view_where_a_server_depends_on_the_pack(self):
-        """ Ensure a pack is not deleted if a server requires the pack. """
-        # Create dummy pack
-        #pack = create_pack(self.contributor).save()
 
     def test_view_pack_object(self):
         """ Ensure the view page returns the correct object. """

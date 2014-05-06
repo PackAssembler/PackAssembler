@@ -13,17 +13,15 @@
             </form>
             ${listcommon.add_to_pack(packs)}
         </div>
-        % if mod.owner.group == 'orphan':
+        % if mod.owner is None:
             % if user is not None and user.group != 'user':
                 <a href="${request.route_url('adoptmod', id=mod.id)}" class="btn btn-default btn-sm">Adopt</a>
-            % else:
-                <%block name="userlink"><h4><a href="${request.route_url('profile', id=mod.owner.id)}">${mod.owner.username}</a></h4></%block>
             % endif
         % else:
             % if perm:
                 <a href="${request.route_url('disownmod', id=mod.id)}" class="btn btn-default btn-sm">Disown</a>
             % endif
-            ${userlink()}
+            <h4><a href="${request.route_url('profile', id=mod.owner.id)}">${mod.owner.username}</a></h4>
         % endif
     </div>
     <div class="col-lg-4">

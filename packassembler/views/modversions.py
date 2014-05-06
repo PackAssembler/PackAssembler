@@ -37,7 +37,7 @@ class VersionViews(ViewBase):
             mod.outdated = False
             mod.save()
 
-            self.request.session.flash('Version added successfully.')
+            self.request.flash('Version added successfully.')
             return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
 
         mv = (mod.versions[-1] if mod.versions else None)
@@ -99,7 +99,7 @@ class VersionViews(ViewBase):
                 mv.depends = get_depends(post)
                 mv.save()
 
-                self.request.session.flash('Changes to version saved.')
+                self.request.flash('Changes to version saved.')
                 return HTTPFound(location=self.request.route_url('viewmod', id=mv.mod.id))
 
         return self.return_dict(
@@ -127,10 +127,10 @@ class VersionViews(ViewBase):
             if mv.mod_file:
                 mv.mod_file.delete()
             mv.delete()
-            self.request.session.flash('Version deleted successfully.')
+            self.request.flash('Version deleted successfully.')
             return HTTPFound(location=self.request.route_url('viewmod', id=mv.mod.id))
         else:
-            self.request.session.flash('Unable to delete that mod version, as some pack build depends on it.', 'errors')
+            self.request.flash_error('Unable to delete that mod version, as some pack build depends on it.')
             return HTTPFound(self.request.route_url('viewmod', id=mv.mod.id))
 
     @view_config(route_name='versiondetails', renderer='versiondetails.mak')

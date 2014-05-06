@@ -50,7 +50,7 @@ class ModViews(ViewBase):
         mod.owner = self.current_user
         mod.save()
 
-        self.request.session.flash('Mod adopted.')
+        self.request.flash('Mod adopted.')
         return HTTPFound(self.request.route_url('viewmod', id=self.request.matchdict['id']))
 
     @view_config(route_name='disownmod', permission='user')
@@ -58,11 +58,10 @@ class ModViews(ViewBase):
         # Get mod
         mod = self.get_db_object(Mod)
 
-        # Set owner to orphan
-        mod.owner = self.get_orphan_user()
+        mod.owner = None
         mod.save()
 
-        self.request.session.flash('Mod disowned.')
+        self.request.flash('Mod disowned.')
         return HTTPFound(self.request.route_url('viewmod', id=self.request.matchdict['id']))
 
     @view_config(route_name='flagmod', permission='user')
@@ -197,7 +196,7 @@ class ModViews(ViewBase):
             form.populate_obj(mod)
             mod.save()
 
-            self.request.session.flash('Changes saved.')
+            self.request.flash('Changes saved.')
             return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
 
         return self.return_dict(title='Edit Mod', f=form, cancel=self.request.route_url('viewmod', id=mod.id))
@@ -214,10 +213,10 @@ class ModViews(ViewBase):
             for version in mod.versions:
                 version.mod_file.delete()
             mod.delete()
-            self.request.session.flash(mod.name + ' deleted successfully.')
+            self.request.flash(mod.name + ' deleted successfully.')
             return HTTPFound(self.request.route_url('modlist'))
         else:
-            self.request.session.flash('Could not delete the mod because a pack depends on it.', 'errors')
+            self.request.flash_error('Could not delete the mod because a pack depends on it.')
             return HTTPFound(self.request.route_url('viewmod', id=mod.id))
 
     @view_config(route_name='viewmod', renderer='viewmod.mak')

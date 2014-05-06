@@ -37,10 +37,10 @@ class PackViews(ViewBase):
                 mods=current_pack.mods,
                 rid=self.logged_in + '-' + current_pack.rid).save()
         except NotUniqueError:
-            self.request.session.flash('Already Cloned!', 'errors')
+            self.request.flash_error('Already Cloned!')
             return HTTPFound(self.request.route_url('viewpack', id=current_pack.id))
 
-        self.request.session.flash(current_pack.name + ' cloned successfully.')
+        self.request.flash(current_pack.name + ' cloned successfully.')
         return HTTPFound(self.request.route_url('viewpack', id=new_pack.id))
 
     @view_config(route_name='editpack', renderer='genericform.mak', permission='user')
@@ -55,7 +55,7 @@ class PackViews(ViewBase):
             try:
                 pack.save()
 
-                self.request.session.flash('Changes saved.')
+                self.request.flash('Changes saved.')
                 return HTTPFound(self.request.route_url('viewpack', id=pack.id))
 
             except NotUniqueError:
@@ -79,7 +79,7 @@ class PackViews(ViewBase):
         pack = self.get_db_object(Pack)
         pack.delete()
 
-        self.request.session.flash(pack.name + ' deleted successfully.')
+        self.request.flash(pack.name + ' deleted successfully.')
         return HTTPFound(self.request.route_url('packlist'))
 
     @view_config(route_name='viewpack', renderer='viewpack.mak')
@@ -124,7 +124,7 @@ class PackViews(ViewBase):
             Pack.objects(id=self.request.matchdict['id']).update_one(
                 add_to_set__mods=post.getall('mods'))
 
-            self.request.session.flash('Mod(s) added successfully.')
+            self.request.flash('Mod(s) added successfully.')
             return HTTPFound(self.request.route_url('viewpack', id=self.request.matchdict['id']))
         else:
             return HTTPForbidden()
@@ -135,7 +135,7 @@ class PackViews(ViewBase):
             Pack.objects(id=self.request.matchdict['id']).update_one(
                 pull_all__mods=self.request.params.getall('mods'))
 
-            self.request.session.flash('Mod(s) removed successfully.')
+            self.request.flash('Mod(s) removed successfully.')
             return HTTPFound(self.request.route_url('viewpack', id=self.request.matchdict['id']))
         else:
             return HTTPForbidden()

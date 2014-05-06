@@ -107,7 +107,7 @@ class Mod(Document):
     # Versions of the mod (and compatibility information)
     versions = ListField(ReferenceField(ModVersion, reverse_delete_rule=PULL))
     # Owner: Full permissions
-    owner = ReferenceField(User, required=True, reverse_delete_rule=CASCADE)
+    owner = ReferenceField(User, reverse_delete_rule=NULLIFY)
     # Is outdated?
     outdated = BooleanField(required=True, default=False)
     # Formatting extras

@@ -77,7 +77,7 @@ class ServerViews(ViewBase):
                     server[key] = val
                 server.save()
 
-                self.request.session.flash('Changes saved.')
+                self.request.flash('Changes saved.')
                 return HTTPFound(location=self.request.route_url('viewserver', id=server.id))
             except DoesNotExist:
                 error = 'Pack or Revision Does Not Exist'
@@ -101,7 +101,7 @@ class ServerViews(ViewBase):
 
         server.delete()
 
-        self.request.session.flash('Server deleted.')
+        self.request.flash('Server deleted.')
         return HTTPFound(location=self.request.route_url('serverlist'))
 
     @view_config(route_name='viewserver', renderer='viewserver.mak')

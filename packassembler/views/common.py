@@ -23,7 +23,7 @@ class ViewBase(object):
 
     def __init__(self, request):
         self.request = request
-        self.logged_in = authenticated_userid(request)
+        self.logged_in = request.authenticated_userid
         connect('', host=request.registry.settings.get('mongodb', 'packassembler'))
         self.current_user = User.objects(username=self.logged_in).first()
 
@@ -34,9 +34,6 @@ class ViewBase(object):
         except DoesNotExist:
             rdict['user'] = None
         return rdict
-
-    def get_orphan_user(self):
-        return User.objects(group="orphan").first()
 
     def has_perm(self, data):
         dtype = data.__class__.__name__
@@ -49,7 +46,9 @@ class ViewBase(object):
         else:
             user = data.owner
 
-        return self.logged_in == user.username or self.specperm('moderator')
+        return (user is not None and
+                self.logged_in == user.username or
+                self.specperm('moderator'))
 
     def specperm(self, permission):
         return has_permission(permission, Root, self.request)

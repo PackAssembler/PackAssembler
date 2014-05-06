@@ -25,8 +25,11 @@ class PackBuildViews(ViewBase):
 
         # Get basic info
         pack = self.get_db_object(Pack)
+        # Set redirect
+        pack_page = HTTPFound(self.request.route_url('viewpack', id=pack.id))
         if pack.base:
-            return Response('Cannot add builds to a base pack.')
+            self.request.flash_error('Cannot add builds to a base pack.')
+            return pack_page
         else:
             post = self.request.params
             form = PackBuildForm(post)
@@ -50,9 +53,14 @@ class PackBuildViews(ViewBase):
                         pack.builds.append(pb)
                         pack.save()
 
-                        return HTTPFound(self.request.route_url('viewpack', id=pack.id))
+                        return pack_page
                 else:
                     error = 'Some mods were not accounted for. Check the advanced section and try again.'
+            else:
+                if pack.builds:
+                    base = pack.builds[-1]
+                    form.config.data = base.config
+                    form.mc_version.data = base.mc_version
 
             return self.return_dict(
                 title='New Build', f=form, depends=req, mods=mods, error=error,
