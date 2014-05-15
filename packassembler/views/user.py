@@ -100,7 +100,7 @@ class UserViews(ViewBase):
             if user:
                 user.last_login = datetime.now()
                 user.save()
-                return HTTPFound(location=came_from, 
+                return HTTPFound(location=came_from,
                     headers=remember(self.request, user.username))
             error = 'Invalid username or password.'
 

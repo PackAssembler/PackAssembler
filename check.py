@@ -11,7 +11,7 @@ for mod in d:
     name = mod['name']
     del mod['name']
     name_dict[name] = mod
- 
+
 not_in = []
 
 for mod in Mod.objects:
