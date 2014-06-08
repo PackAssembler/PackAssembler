@@ -22,7 +22,7 @@ class ModViews(ViewBase):
         if 'mc_version' in post:
             v = post['mc_version']
             if v in MCVERSIONS:
-                versions = ModVersion.objects(Q(mc_min=v) | Q(mc_max=v))
+                versions = ModVersion.objects(mc_version=v)
                 q &= Q(versions__in=versions)
 
         #mods = page_list(post, Mod.objects(q))
@@ -117,7 +117,7 @@ class ModViews(ViewBase):
             qm['logoUrl'] = mod.banner.image
         for v in mod.versions:
             vdata = {
-                'mcCompat': get_mcv_compat(v.mc_min, v.mc_max),
+                'mcCompat': [v.mc_version],
                 'url': self.request.route_url('downloadversion', id=v.id) if v.mod_file else v.mod_file_url,
                 'md5': v.md5,
                 'name': v.version

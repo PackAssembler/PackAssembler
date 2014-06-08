@@ -1,4 +1,3 @@
-from packassembler.schema import get_mcv_compat
 import packassembler.template_helpers.elements as e
 
 
@@ -18,7 +17,7 @@ def show_mod_label(context, latest_build, mod_versions):
         compat = False
 
         for v in new_vs:
-            if latest_build.mc_version in get_mcv_compat(v.mc_min, v.mc_max):
+            if latest_build.mc_version == v.mc_version:
                 compat = True
             else:
                 not_compat = True

@@ -9,11 +9,6 @@ MCVERSIONS = ('1.7.2', '1.6.4')
 FV = 16
 
 
-def get_mcv_compat(mc_min, mc_max):
-    mcvs = list(MCVERSIONS)
-    return mcvs[mcvs.index(mc_max):mcvs.index(mc_min)+1]
-
-
 class User(Document):
     # Username, limited for formatting purposes
     username = StringField(required=True, min_length=6, max_length=32, unique=True)
@@ -43,8 +38,9 @@ class User(Document):
 
 class ModVersion(Document):
     # Minecraft version
-    mc_min = StringField(choices=MCVERSIONS, required=True)
-    mc_max = StringField(choices=MCVERSIONS, required=True)
+    mc_min = StringField(choices=MCVERSIONS)
+    mc_max = StringField(choices=MCVERSIONS)
+    mc_version = StringField(choices=MCVERSIONS)
     # Minecraft Forge version
     ## If not defined, default to any version
     forge_min = StringField(max_length=FV)

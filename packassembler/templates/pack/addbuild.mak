@@ -36,7 +36,7 @@
                         <div class="input-group" id="select_${mod.id}">
                             <select name="${mod.id}" class="form-control">
                             % for version in mod.versions[::-1]:
-                                <option value="${version.id}" data-mc-max="${version.mc_max}" data-mc-min="${version.mc_min}">
+                                <option value="${version.id}" data-mc-version="${version.mc_version}">
                                     ${version.version} ${g.show_if('(Devel)', version.devel)}
                                 </option>
                             % endfor
@@ -81,8 +81,7 @@
                     var checked = $(this).find('input')[0].checked;
                     $(this).find('select').children().each(function(){
                         if (checked ||
-                            $(this).data('mc-min').split('.') <= mc_version &&
-                            $(this).data('mc-max').split('.') >= mc_version){
+                            $(this).data('mc-version') == mc_version){
                             // Enable this option
                             $(this).prop('disabled', false);
                         }

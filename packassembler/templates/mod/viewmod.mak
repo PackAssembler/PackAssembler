@@ -150,7 +150,7 @@
                 % endif
                 </td>
                 <td>${version.devel}</td>
-                <td>${version.mc_min} - ${version.mc_max}</td>
+                <td>${version.mc_version}</td>
                 <td>
                     <div class="dropdown">
                         <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="#">

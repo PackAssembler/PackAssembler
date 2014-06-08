@@ -17,8 +17,7 @@
                 </%self:autopanel>
                 <%self:autopanel header="Dependencies" id="dependencies-header">
                     <h4>MC and Forge</h4>
-                    ${form.showfield(f.mc_min)}
-                    ${form.showfield(f.mc_max)}
+                    ${form.showfield(f.mc_version)}
                     ${form.showfield(f.forge_min)}
                     ${form.showfield(f.forge_max)}
                     <h4>Mod Dependencies</h4>

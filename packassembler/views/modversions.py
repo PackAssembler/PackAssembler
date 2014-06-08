@@ -59,8 +59,7 @@ class VersionViews(ViewBase):
 
         if form.validate():
             mv = ModVersion(mod=mod)
-            mv.mc_min = form.mc.data
-            mv.mc_max = form.mc.data
+            mv.mc_version = form.mc.data
             mv.version = form.version.data
             mv.mod_file = requests.get(form.url.data).content
             mv.depends = mod.versions[-1].depends if mod.versions else []

@@ -193,8 +193,6 @@ def generate_mcu_xml(request, pb, server=None):
     if server:
         server_info['id'] = 'server-' + server.rid
         server_info['name'] = server.name
-        #server_info['newsUrl'] = server.url or request.route_url(
-        #    'viewpack', id=pb.pack.id)
         server_info['serverAddress'] = '{0}:{1}'.format(
             server.host, str(server.port))
     # If it's not, use the pack information

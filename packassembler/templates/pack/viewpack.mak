@@ -123,7 +123,7 @@ ${extras.flash()}
                 </tr>
             </thead>
             <tbody>
-            % for bpack in sorted(pack.bases):
+            % for bpack in sorted(pack.bases, key=lambda x: x.name):
                 <tr>
                     <td class="center nolink">
                         <input type="checkbox" name="bases" value="${bpack.id}">

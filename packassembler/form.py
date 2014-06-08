@@ -144,8 +144,7 @@ class BannerForm(SForm):
 class ModVersionForm(SForm):
     version = TextField('Version', validators=[validators.required()])
     changelog = urlfield('Changelog URL', v=[validators.Optional()])
-    mc_min = mcvfield('Minecraft Min')
-    mc_max = mcvfield('Minecraft Max')
+    mc_version = mcvfield('Minecraft Version')
     forge_min = forgefield('Forge Min', v=[validators.Optional()])
     forge_max = forgefield('Forge Max', v=[validators.Optional()])
     devel = BooleanField('Development Version')
