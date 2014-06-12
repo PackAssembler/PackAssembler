@@ -4,19 +4,7 @@ from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-requires = [
-    'pyramid',
-    'mongoengine',
-    'cffi',
-    'bcrypt',
-    'mandrill',
-    'wtforms',
-    'htmllaundry',
-    'nose',
-    'nose-mongoengine',
-    'coverage',
-    'pyramid_mako'
-]
+requires = [i[:-1] for i in open('requirements.txt').readlines()]
 
 setup(
     name='packassembler',

@@ -8,3 +8,4 @@ htmllaundry
 nose
 nose-mongoengine
 coverage
+pyramid_mako
