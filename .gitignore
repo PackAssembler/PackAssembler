@@ -9,5 +9,3 @@ packassembler/cover/
 packassembler.egg-info/
 packassembler/static/archives/libs.zip
 packassembler/static/js/bundled/
-packassembler/static/js/common.js
-packassembler/static/js/wrapper.js
