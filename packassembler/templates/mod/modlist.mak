@@ -48,31 +48,33 @@ ${extras.flash()}
     </div>
 </div>
 <form method="POST" role="form">
-    <table class="table table-hover table-bordered listtable">
-        <thead>
-            <tr><th class="center"><input type="checkbox" id="topcheck"></th><th>Name</th><th>Author</th><th>Latest Version</th><th>Latest Supported</th><th>Maintainer</th></tr>
-        </thead>
-        <tbody>
-        % for mod in mods:
-            <tr class="${g.show_if('danger', mod.outdated)} linked" data-href="${request.route_url('viewmod', id=mod.id)}">
-                <td class="nolink center">
-                    <input type="checkbox" name="mods" value="${mod.id}">
-                </td>
-                <td>${mod.name}</td>
-                <td>${mod.author}</td>
-                <%
-                    if mod.versions:
-                        v = mod.versions[-1]
-                    else:
-                        v = None
-                %>
-                <td>${v.version if v else None}</td>
-                <td>${v.mc_version if v else None}</td>
-                <td>${(mod.owner and mod.owner.username) or None}</td>
-            </tr>
-        % endfor
-        </tbody>
-    </table>
+	<div class="table-responsive">
+		<table class="table table-hover table-bordered listtable">
+			<thead>
+				<tr><th class="center"><input type="checkbox" id="topcheck"></th><th>Name</th><th>Author</th><th>Latest Version</th><th>Latest Supported</th><th>Maintainer</th></tr>
+			</thead>
+			<tbody>
+			% for mod in mods:
+				<tr class="${g.show_if('danger', mod.outdated)} linked" data-href="${request.route_url('viewmod', id=mod.id)}">
+					<td class="nolink center">
+						<input type="checkbox" name="mods" value="${mod.id}">
+					</td>
+					<td>${mod.name}</td>
+					<td>${mod.author}</td>
+					<%
+						if mod.versions:
+							v = mod.versions[-1]
+						else:
+							v = None
+					%>
+					<td>${v.version if v else None}</td>
+					<td>${v.mc_version if v else None}</td>
+					<td>${(mod.owner and mod.owner.username) or None}</td>
+				</tr>
+			% endfor
+			</tbody>
+		</table>
+	</div>
 </form>
 <small class="pull-right">${len(mods)} mods, ${len(mods(outdated=True))} flagged.</small>
 <%block name="endscripts">
