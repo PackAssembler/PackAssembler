@@ -4,8 +4,8 @@ uwsgi.pid
 *.sublime-*
 production.ini
 development.ini
-packassembler/.coverage
-packassembler/cover/
+.coverage
+htmlcov
 packassembler.egg-info/
 packassembler/static/archives/libs.zip
 packassembler/static/js/bundled/

@@ -1,4 +1,5 @@
 import pytest
+import copy
 
 from base import BaseTest, match_request, DummyRequest
 from packassembler.schema import Pack
@@ -19,7 +20,7 @@ def pack(request):
 
 
 def pack_to_data(pack):
-    data = pack._data
+    data = copy.copy(pack._data)
     data['submit'] = ''
     return data
 
@@ -30,7 +31,7 @@ class TestPackViews(BaseTest):
         return PackViews
 
     def pack_request(self, pack_id, params=None, **kwargs):
-        return self.make_one(match_request(params=params, id=pack_id, **kwargs))
+        return match_request(params=params, id=pack_id, **kwargs)
 
     def test_pack_list_with_no_packs(self):
         """ Ensure the packlist returns no packs. """
@@ -76,3 +77,28 @@ class TestPackViews(BaseTest):
         # Check if information is correct
         assert new_pack.name != pack.name
         assert new_pack.name == 'SomeNewName'
+
+    def test_clone_pack_view(self, pack):
+        """ Ensure the clone pack view is functional. """
+        # Generate request
+        request = self.pack_request(pack.id)
+        # Run
+        self.authenticate(pack.owner)
+        runner = self.make_one(request)
+        runner.clonepack()
+        # Check whether cloning actually happened
+        cpack = Pack.objects.get(name__contains=pack.owner.username)
+        assert pack.name in cpack.name
+        # Run again, should fail
+        runner.clonepack()
+        assert 'already' in request.session['error_flash'][0].lower()
+
+    def test_delete_pack_view(self, pack):
+        """ Ensure the delete pack view is functional. """
+        # Create request
+        request = self.pack_request(pack.id)
+        # Run
+        self.authenticate(pack.owner)
+        self.make_one(request).deletepack()
+        # Make sure it's gone
+        assert Pack.objects(id=pack.id).first() is None

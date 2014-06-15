@@ -4,9 +4,9 @@
 ${listcommon.head()}
 <hr>
 % for user in users:
-    <div class="userbox well col-lg-2 center linked" data-href="${request.route_url('profile', id=user.id)}">
+    <div class="userbox well col-md-2 center linked" data-href="${request.route_url('profile', id=user.id)}">
         <div class="userbox-avatar">
-            ${extras.avatar(user, 100)}
+            ${extras.avatar(user, 70)}
         </div>
         <br>
         <div>
