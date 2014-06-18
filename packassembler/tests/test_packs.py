@@ -1,7 +1,6 @@
 import pytest
-import copy
 
-from base import BaseTest, match_request, DummyRequest
+from base import BaseTest, match_request, DummyRequest, document_to_data
 from packassembler.schema import Pack
 from factories import PackFactory
 from webob.multidict import MultiDict
@@ -19,20 +18,12 @@ def pack(request):
     return pack
 
 
-def pack_to_data(pack):
-    data = copy.copy(pack._data)
-    data['submit'] = ''
-    return data
-
-
 class TestPackViews(BaseTest):
     def _get_test_class(self):
         from packassembler.views.packs import PackViews
         return PackViews
 
-    def pack_request(self, pack_id, params=None, **kwargs):
-        return match_request(params=params, id=pack_id, **kwargs)
-
+    # List tests - add search tests
     def test_pack_list_with_no_packs(self):
         """ Ensure the packlist returns no packs. """
         response = self.make_one(DummyRequest()).packlist()
@@ -51,10 +42,17 @@ class TestPackViews(BaseTest):
         # Delete the second dummy pack
         pack2.delete()
 
+    # CRUD tests - add bad input tests
+    def test_view_pack_view(self, pack):
+        """ Ensure the view pack page is functional. """
+        # Make sure the pack returned is the same as the original
+        response = self.make_one(match_request(id=pack.id)).viewpack()
+        assert response['pack'] == pack
+
     def test_add_pack_view(self, pack):
         """ Ensure the add pack page is functional. """
         # Generate request
-        request = DummyRequest(params=MultiDict(pack_to_data(pack)))
+        request = DummyRequest(params=MultiDict(document_to_data(pack)))
         # Run
         self.authenticate(pack.owner)
         self.make_one(request).addpack()
@@ -66,9 +64,9 @@ class TestPackViews(BaseTest):
     def test_edit_pack_view(self, pack):
         """ Ensure the edit pack page is functional. """
         # Generate request
-        data = pack_to_data(pack)
+        data = document_to_data(pack)
         data['name'] = 'SomeNewName'
-        request = self.pack_request(pack.id, params=MultiDict(data))
+        request = match_request(id=pack.id, params=MultiDict(data))
         # Run
         self.authenticate(pack.owner)
         self.make_one(request).editpack()
@@ -78,10 +76,21 @@ class TestPackViews(BaseTest):
         assert new_pack.name != pack.name
         assert new_pack.name == 'SomeNewName'
 
+    def test_delete_pack_view(self, pack):
+        """ Ensure the delete pack view is functional. """
+        # Create request
+        request = match_request(id=pack.id)
+        # Run
+        self.authenticate(pack.owner)
+        self.make_one(request).deletepack()
+        # Make sure it's gone
+        assert Pack.objects(id=pack.id).first() is None
+
+    # Extra action tests
     def test_clone_pack_view(self, pack):
         """ Ensure the clone pack view is functional. """
         # Generate request
-        request = self.pack_request(pack.id)
+        request = match_request(id=pack.id)
         # Run
         self.authenticate(pack.owner)
         runner = self.make_one(request)
@@ -92,13 +101,3 @@ class TestPackViews(BaseTest):
         # Run again, should fail
         runner.clonepack()
         assert 'already' in request.session['error_flash'][0].lower()
-
-    def test_delete_pack_view(self, pack):
-        """ Ensure the delete pack view is functional. """
-        # Create request
-        request = self.pack_request(pack.id)
-        # Run
-        self.authenticate(pack.owner)
-        self.make_one(request).deletepack()
-        # Make sure it's gone
-        assert Pack.objects(id=pack.id).first() is None

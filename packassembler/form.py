@@ -117,9 +117,11 @@ class SafeTextAreaField(TextAreaField):
 # TextAreaField, no HTML allowed
 
 class ParanoidTextAreaField(TextAreaField):
-
     def pre_validate(self, form):
-        self.data = htmllaundry.strip_markup(self.data)
+        if self.data and self.data != '':
+            self.data = htmllaundry.strip_markup(self.data)
+        else:
+            self.data = None
 
 
 # Mods

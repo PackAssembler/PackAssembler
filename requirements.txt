@@ -9,3 +9,4 @@ nose
 nose-mongoengine
 coverage
 pyramid_mako
+pyramid_mailer

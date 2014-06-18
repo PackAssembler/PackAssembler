@@ -25,7 +25,6 @@ class ModViews(ViewBase):
                 versions = ModVersion.objects(mc_version=v)
                 q &= Q(versions__in=versions)
 
-        #mods = page_list(post, Mod.objects(q))
         mods = Mod.objects(q)
         return self.return_dict(
             title='Mods',
@@ -234,4 +233,4 @@ class ModViews(ViewBase):
 
     def send_out_of_date_notification(self, mod):
         url = self.request.route_url('viewmod', id=mod.id)
-        email.mod_outdated(self.request.registry, mod.owner, mod.name, url)
+        email.mod_outdated(self.request, mod.owner, mod.name, url)

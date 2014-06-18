@@ -93,7 +93,7 @@ class Mod(Document):
     ## Author(s) of the mod
     author = StringField(required=True, max_length=32)
     ## Where to run mod (server, client, or both?)
-    target = StringField(required=True, choices=TARGETS, default='both')
+    target = StringField(choices=TARGETS, default='both')
     ## Mod homepage
     url = URLField(required=True)
     ## Permission from author (unless uploader is the author)

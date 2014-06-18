@@ -27,3 +27,14 @@ class PackFactory(MongoEngineFactory):
     name = factory.Sequence(partial(numbered, 'Pack'))
     rid = factory.Sequence(partial(numbered, 'pack'))
     owner = factory.SubFactory(UserFactory)
+
+
+class ModFactory(MongoEngineFactory):
+    FACTORY_FOR = schema.Mod
+
+    name = factory.Sequence(partial(numbered, 'Mod'))
+    rid = factory.Sequence(partial(numbered, 'pack'))
+    url = "http://www.example.com/"
+    outdated = False
+    owner = factory.SubFactory(UserFactory)
+    author = 'SomeAuthor'

@@ -1,4 +1,5 @@
 from pyramid import testing
+from copy import copy
 
 
 class DummyRequest(testing.DummyRequest):
@@ -22,6 +23,7 @@ class BaseTest:
     def setup_class(cls):
         cls.config = testing.setUp()
         cls.config.include('packassembler')
+        cls.config.include('pyramid_mailer.testing')
 
     @classmethod
     def teardown_class(cls):
@@ -37,3 +39,15 @@ def match_request(params=None, **kwargs):
 
 def create_rid(name):
     return name.replace(' ', '_')
+
+
+def document_to_data(doc):
+    data = copy(doc._data)
+    data['submit'] = ''
+
+    filtered = {}
+    for k, v in data.items():
+        if v is not None:
+            filtered[k] = v
+
+    return filtered

@@ -102,7 +102,6 @@
         }
 
         $(document).ready(function(){
-            $('#depends_table').find('tbody');
             $('#add_depends').change(function(){
                 // Assign useful variable to the data we want
                 var name = $("#add_depends option:selected").html();

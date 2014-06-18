@@ -158,7 +158,7 @@ class UserViews(ViewBase):
         form = EmailUserForm(post)
 
         if 'submit' in post and form.validate():
-            email.user_email(self.request.registry, user, self.current_user, form.message.data)
+            email.user_email(self.request, user, self.current_user, form.message.data)
 
             return HTTPFound(self.request.route_url('profile', id=user.id))
 
@@ -234,8 +234,8 @@ class UserViews(ViewBase):
 
     def send_confirmation(self, user):
         url = self.request.route_url('activate', id=user.id, key=user.activate)
-        email.confirmation(self.request.registry, user, url)
+        email.confirmation(self.request, user, url)
 
     def send_password_reset(self, user):
         url = self.request.route_url('reset', id=user.id, key=user.reset)
-        email.password_reset(self.request.registry, user, url)
+        email.password_reset(self.request, user, url)
