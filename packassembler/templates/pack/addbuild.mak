@@ -75,7 +75,7 @@
 
             function update_mod_versions(only){
                 var $select = only || $('div[id^=select]');
-                var mc_version = $('#mc_version')[0].value.split('.');
+                var mc_version = $('#mc_version')[0].value;
 
                 $select.each(function(){
                     var checked = $(this).find('input')[0].checked;

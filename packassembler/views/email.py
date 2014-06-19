@@ -92,7 +92,7 @@ You have been sent a message by {0} on Pack Assembler:
 #     def dec(f):
 
 #         def mandrilled(request, user, *args, **kwargs):
-#             sender = Mandrill(request.registry.settings.get('mandrill_key'))
+#             sender = Mandrill(request.registry.settings.get('mail.password'))
 
 #             message = {'to': [{'email': user.email, 'name': user.username}]}
 
