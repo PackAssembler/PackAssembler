@@ -148,7 +148,6 @@ class ModVersionForm(SForm):
     changelog = urlfield('Changelog URL', v=[validators.Optional()])
     mc_version = mcvfield('Minecraft Version')
     forge_min = forgefield('Forge Min', v=[validators.Optional()])
-    forge_max = forgefield('Forge Max', v=[validators.Optional()])
     devel = BooleanField('Development Version')
     mod_file = FileField('File')
     mod_file_url = urlfield(

@@ -18,6 +18,11 @@ def mod(request):
     return mod
 
 
+@pytest.fixture
+def mod_unsaved(request):
+    return ModFactory.build()
+
+
 def check_mod(moda, modb):
     assert moda.name == modb.name
     assert moda.author == modb.author
@@ -55,17 +60,19 @@ class TestModViews(BaseTest):
         response = self.make_one(match_request(id=mod.id)).viewmod()
         assert response['mod'] == mod
 
-    def test_add_mod_view(self, mod):
+    def test_add_mod_view(self, mod_unsaved):
         """ Ensure the add mod page is functional. """
         # Generate request
-        request = DummyRequest(params=MultiDict(document_to_data(mod)))
+        request = DummyRequest(params=MultiDict(document_to_data(mod_unsaved)))
         # Run
-        self.authenticate(mod.owner)
+        self.authenticate(mod_unsaved.owner)
         self.make_one(request).addmod()
         # Get new Mod object
         new_mod = Mod.objects.get()
         # Check if information is correct
-        assert new_mod.name == mod.name
+        assert new_mod.name == mod_unsaved.name
+        # Remove the mod in the interest of keeping the db clean
+        new_mod.delete()
 
     def test_edit_mod_view(self, mod):
         """ Ensure the edit mod page is functional. """
@@ -114,3 +121,40 @@ class TestModViews(BaseTest):
         assert mod.outdated
         runflag(False)
         assert not mod.outdated
+
+    def test_disown_mod_view(self, mod):
+        """ Ensure the disown view works. """
+        # Get original owner for cleanup
+        owner = mod.owner
+        # Run disown()
+        self.make_one(match_request(id=mod.id)).disown()
+        # Check if it's no longer owned by contributor
+        mod.reload()
+        assert mod.owner is None
+        # Reset for finish
+        mod.owner = owner
+        mod.save()
+
+    def test_adopt_mod_view(self, mod):
+        """ Ensure the adopt view works. """
+        # Get mod's current username and authenticate with it
+        target = mod.owner
+        self.authenticate(target)
+        # Make the mod have no owner
+        mod.owner = None
+        mod.save()
+        # Run adopt()
+        self.make_one(match_request(id=mod.id)).adopt()
+        # Check if contributor is the new owner
+        mod.reload()
+        assert mod.owner.id == target.id
+
+    def test_quickmod_view(self, mod):
+        """ Ensure the quickmod view works. """
+        # Create request
+        request = match_request(id=mod.id)
+        # Run
+        response = self.make_one(request).quickmod()
+        # Make sure the response at least has some things right
+        assert response['name'] == mod.name
+        assert len(response['versions']) == len(mod.versions)

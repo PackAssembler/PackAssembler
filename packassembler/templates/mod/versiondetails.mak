@@ -11,9 +11,6 @@
 % if version.forge_min:
     <tr><td>Forge Min</td><td>${version.forge_min}</td></tr>
 % endif
-% if version.forge_max:
-    <tr><td>Forge Max</td><td>${version.forge_max}</td></tr>
-% endif
 % if version.depends:
     <tr>
         <td>Dependencies</td>

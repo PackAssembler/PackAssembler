@@ -19,7 +19,6 @@
                     <h4>MC and Forge</h4>
                     ${form.showfield(f.mc_version)}
                     ${form.showfield(f.forge_min)}
-                    ${form.showfield(f.forge_max)}
                     <h4>Mod Dependencies</h4>
                     <%form:showinput name="add_depends" label="Add Dependency">
                         <select id="add_depends" class="form-control">

@@ -38,13 +38,10 @@ class User(Document):
 
 class ModVersion(Document):
     # Minecraft version
-    mc_min = StringField(choices=MCVERSIONS)
-    mc_max = StringField(choices=MCVERSIONS)
     mc_version = StringField(choices=MCVERSIONS)
     # Minecraft Forge version
     ## If not defined, default to any version
     forge_min = StringField(max_length=FV)
-    forge_max = StringField(max_length=FV)
     # Dependencies
     depends = ListField(ReferenceField('Mod'))
     # Actual version number
