@@ -29,7 +29,7 @@ var gdest = compose(gulp.dest, dest_path);
 
 // Styles task - Compiles styl files
 gulp.task('styles', function() {
-  return gsrc('styles/master.styl')
+  gsrc('styles/master.styl')
     .pipe(stylus())
     .pipe(gdest('css'))
     .pipe(rename({suffix: '.min'}))
@@ -39,20 +39,39 @@ gulp.task('styles', function() {
 
 // Scripts task - Compiles livescript
 gulp.task('scripts', function() {
-  return gsrc('scripts/*.ls')
+  gsrc('scripts/*.ls')
     .pipe(livescript({bare: true})
     .on('error', function(it){ throw it; }))
     .pipe(gdest('js'))
     .pipe(rename({suffix: '.min'}))
     .pipe(uglify())
     .pipe(gdest('js'));
+
+  gsrc('scripts/lib/*').pipe(gdest('js/lib'));
 });
 
 // Images task - Copies images
 gulp.task('images', function() {
-    return gsrc('
+  gsrc('images/**/*').pipe(gdest('img'));
+});
 
 // Clean task - Deletes outputs
 gulp.task('clean', function() {
-    return gulp.src(['packassembler/static/css', 'packassembler/static/js/*.js'], {read: false}).pipe(clean());
+  return gulp.src([
+    'packassembler/static/dist/js',
+    'packassembler/static/dist/img',
+    'packassembler/static/dist/css'
+  ], {read: false}).pipe(clean());
+});
+
+// Default task - Clean and build all
+gulp.task('default', ['clean'], function() {
+  gulp.start('styles', 'scripts', 'images');
+});
+
+// Watch
+gulp.task('watch', function() {
+  gulp.watch(src_path('images/**/*'), ['images']);
+  gulp.watch(src_path('styles/**/*'), ['styles']);
+  gulp.watch(src_path('scripts/**/*'), ['scripts']);
 });

@@ -7,8 +7,9 @@ development.ini
 .coverage
 htmlcov
 packassembler.egg-info/
-packassembler/static/archives/libs.zip
-packassembler/static/js/bundled/
 
 # Assets
 node_modules
+packassembler/static/dist/js/
+packassembler/static/dist/img/
+packassembler/static/dist/css/

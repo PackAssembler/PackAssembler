@@ -78,7 +78,7 @@ ${extras.flash()}
 </form>
 <small class="pull-right">${len(mods)} mods, ${len(mods(outdated=True))} flagged.</small>
 <%block name="endscripts">
-    <script src="${request.static_url('packassembler:static/js/common.js')}"></script>
+    <script src="${request.static_url('packassembler:static/dist/js/common.js')}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             common.linkRows();

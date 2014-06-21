@@ -7,8 +7,8 @@
     <link href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/cyborg/bootstrap.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
 
-    <link href="${request.static_url('packassembler:static/css/master.css')}" rel="stylesheet">
-    <link href="${request.static_url('packassembler:static/img/favicon.ico')}" rel="icon">
+    <link href="${request.static_url('packassembler:static/dist/css/master.css')}" rel="stylesheet">
+    <link href="${request.static_url('packassembler:static/dist/img/favicon.ico')}" rel="icon">
     <%block name="style">
     </%block>
 </head>
@@ -78,7 +78,7 @@
     <div id="main-content" class="container padded-top">
         ${next.body()}
     </div>
-    <script src="${request.static_url('packassembler:static/js/lib/jquery-latest.js')}"></script>
+    <script src="${request.static_url('packassembler:static/dist/js/lib/jquery-latest.js')}"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     ## Tracking
     <script>

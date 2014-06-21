@@ -27,3 +27,5 @@ window.common =
     linkAutoCheck: linkAutoCheck,
     linkStaticUrl: linkStaticUrl,
     linkDynamicSubmit: linkDynamicSubmit
+
+
