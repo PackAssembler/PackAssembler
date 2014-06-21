@@ -195,7 +195,7 @@
 </%block>
 <%block name="endscripts">
     <script src="${request.static_url('packassembler:static/js/lib/bootbox.min.js')}"></script>
-    <script src="${request.static_url('packassembler:static/js/bundled/wrapper.js')}"></script>
+    <script src="${request.static_url('packassembler:static/js/common.js')}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             common.linkRows();

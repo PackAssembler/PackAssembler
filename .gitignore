@@ -9,3 +9,6 @@ htmlcov
 packassembler.egg-info/
 packassembler/static/archives/libs.zip
 packassembler/static/js/bundled/
+
+# Assets
+node_modules

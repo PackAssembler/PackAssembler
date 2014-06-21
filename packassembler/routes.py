@@ -94,4 +94,4 @@ def includeme(config):
     config.add_route('deleteserver', '/servers/{id}/delete')
     config.add_route('viewserver', '/servers/{id}')
 
-    config.add_static_view('static', 'static', cache_max_age=3600)
+    config.add_static_view('static', 'static/dist', cache_max_age=3600)
