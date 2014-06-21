@@ -1,3 +1,4 @@
+<%namespace name="g" module="packassembler.template_helpers.general" />
 ## Bootstrap 3
 <%def name="showinput(label, name='')">
     <div class="form-group">
@@ -38,6 +39,19 @@
                     <span class="text-danger">${error}&nbsp;</span>
                 % endfor
             % endif
+        </div>
+    </div>
+</%def>
+
+<%def name="showradios(field)">
+    <div class="form-group">
+        ${field.label(class_='col-lg-2 control-label')}
+        <div class="col-lg-10">
+        % for subfield in field:
+            <label class="checkbox-inline ${g.show_if('drop-left-padding', not loop.index)}">
+                ${subfield} ${subfield.label}
+            </label>
+        % endfor
         </div>
     </div>
 </%def>

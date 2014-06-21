@@ -38,7 +38,7 @@ class User(Document):
 
 class ModVersion(Document):
     # Minecraft version
-    mc_version = StringField(choices=MCVERSIONS)
+    mc_version = StringField(required=True, choices=MCVERSIONS)
     # Minecraft Forge version
     ## If not defined, default to any version
     forge_min = StringField(max_length=FV)
@@ -53,7 +53,7 @@ class ModVersion(Document):
     mod_file_url = URLField()
     mod_file_url_md5 = StringField(max_length=32)
     # Reference Mod ModVersion belongs to
-    mod = ReferenceField('Mod', required=True)
+    mod = ReferenceField('Mod') # Required
     # Is a development version
     devel = BooleanField(default=False)
 

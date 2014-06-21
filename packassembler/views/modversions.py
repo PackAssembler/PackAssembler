@@ -19,18 +19,7 @@ class VersionViews(ViewBase):
 
         if 'submit' in post and form.validate() and not version_exists(mod, form.version.data):
             mv = ModVersion(mod=mod)
-            form.populate_obj(mv)
-            try:
-                mv.mod_file = post[form.mod_file.name].file
-                mv.mod_file_url = None
-            except AttributeError:
-                if form.upload_from_url.data:
-                    mv.mod_file = requests.get(form.mod_file_url.data).content
-                    mv.mod_file_url = None
-                else:
-                    mv.mod_file_url_md5, mv.mod_file_url = url_md5(form.mod_file_url.data)
-
-            mv.depends = get_depends(post)
+            populate(mv, form, post)
             mv.save()
 
             mod.versions.append(mv)
@@ -81,21 +70,7 @@ class VersionViews(ViewBase):
 
         if 'submit' in post and form.validate():
             if form.version.data == mv.version or not version_exists(mv.mod, form.version.data):
-                form.populate_obj(mv)
-                try:
-                    mv.mod_file = post[form.mod_file.name].file
-                    mv.mod_file_url = None
-                    mv.mod_file_url_md5 = None
-                except AttributeError:
-                    if mv.mod_file_url:
-                        if form.upload_from_url.data:
-                            mv.mod_file = requests.get(form.mod_file_url.data).content
-                            mv.mod_file_url = None
-                        else:
-                            mv.mod_file_url_md5, mv.mod_file_url = url_md5(form.mod_file_url.data)
-                            mv.mod_file = None
-
-                mv.depends = get_depends(post)
+                populate(mv, form, post)
                 mv.save()
 
                 self.request.flash('Changes to version saved.')
@@ -150,3 +125,26 @@ def get_depends(post):
 
 def version_exists(m, version):
     return any(x.version == version for x in m.versions)
+
+
+def populate(mv, form, post):
+    mv.mc_version = form.mc_version.data
+    mv.version = form.version.data
+    mv.devel = form.devel.data
+
+    mv.forge_min = form.forge_min.data if form.forge_min.data else None
+    mv.changelog = form.changelog.data if form.changelog.data else None
+
+    mv.depends = get_depends(post)
+
+    if form.upload_type.data in ['upload', 'url_upload']:
+        if form.upload_type.data == 'upload':
+            mv.mod_file = post[form.mod_file.name].file
+        else:
+            mv.mod_file = requests.get(form.mod_file_url.data).content
+        mv.mod_file_url = None
+        mv.mod_file_url_md5 = None
+    else:
+        mv.mod_file_url_md5, mv.mod_file_url = url_md5(form.mod_file_url.data)
+        if mv.mod_file:
+            mv.mod_file.delete()

@@ -38,3 +38,16 @@ class ModFactory(MongoEngineFactory):
     outdated = False
     owner = factory.SubFactory(UserFactory)
     author = 'SomeAuthor'
+
+
+class ModVersionFactory(MongoEngineFactory):
+    FACTORY_FOR = schema.ModVersion
+
+    version = "1.0.0"
+    mc_version = "1.6.4"
+
+    @factory.post_generation
+    def mod(self, create, extracted, **kwargs):
+        if create and extracted:
+            self.mod = extracted
+            self.save()

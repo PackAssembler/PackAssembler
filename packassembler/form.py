@@ -143,16 +143,24 @@ class BannerForm(SForm):
         'Text Color', validators=[validators.Optional(), iscolor])
 
 
+# Not using populate_obj, see populate_modversion in modversions.py
 class ModVersionForm(SForm):
     version = TextField('Version', validators=[validators.required()])
     changelog = urlfield('Changelog URL', v=[validators.Optional()])
     mc_version = mcvfield('Minecraft Version')
     forge_min = forgefield('Forge Min', v=[validators.Optional()])
     devel = BooleanField('Development Version')
+
+    upload_type = RadioField('Upload Type', choices=[
+        ('upload', 'Upload from Computer'),
+        ('url_upload', 'Upload From URL'),
+        ('direct', 'Direct Link')
+    ])
     mod_file = FileField('File')
-    mod_file_url = urlfield(
-        'File URL', v=[either_mod_file, validators.Optional()])
-    upload_from_url = BooleanField('Upload from URL')
+    mod_file_url = urlfield('File URL', v=[
+        either_mod_file,
+        validators.Optional()
+    ])
 
 
 class QuickModVersionForm(SForm):

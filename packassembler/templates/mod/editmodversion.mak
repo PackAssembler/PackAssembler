@@ -34,11 +34,11 @@
                     </table>
                 </%self:autopanel>
                 <%self:autopanel header="File" id="file-header">
+                    ${form.showradios(f.upload_type)}
                     <%form:showinput label="${f.mod_file.label.text}" name="${f.mod_file.name}">
                         ${f.mod_file()}
                     </%form:showinput>
                     ${form.showfield(f.mod_file_url)}
-                    ${form.showfield(f.upload_from_url)}
                 </%self:autopanel>
             </div>
             <hr>
@@ -100,6 +100,19 @@
             }
         }
 
+        function show_relevant_field(f_type){
+            return function(){
+                if (f_type == "text"){
+                    $('#mod_file').parent().parent().hide();
+                    $('#mod_file_url').parent().parent().show();
+                }
+                else{
+                    $('#mod_file_url').parent().parent().hide();
+                    $('#mod_file').parent().parent().show();
+                }
+            }
+        }
+
         $(document).ready(function(){
             $('#add_depends').change(function(){
                 // Assign useful variable to the data we want
@@ -116,6 +129,11 @@
                     add_one('${dep.name}', '${dep.id}');
                 % endfor
             % endif
+            $('input[value="upload"]').click(show_relevant_field("file"));
+            $('input[value="direct"]').click(show_relevant_field("text"));
+            var def = $('input[value="url_upload"]')
+            def.click(show_relevant_field("text"));
+            def.click();
         });
     </script>
 </%block>

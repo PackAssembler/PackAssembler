@@ -11,9 +11,8 @@ body {
     }
 }
 
-.padded-top {
-    padding-bottom: 100px;
-}
+.padded-top { padding-bottom: 100px; }
+.drop-left-padding { padding-left: 0; }
 
 /* Common */
 .bmargin {margin-bottom: 10px;}
