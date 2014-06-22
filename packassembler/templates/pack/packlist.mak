@@ -23,6 +23,5 @@ ${extras.flash()}
 </table>
 <small class="pull-right">${len(packs)} packs.</small>
 <%block name="endscripts">
-    <script src="${request.static_url('packassembler:static/dist/js/common.js')}"></script>
     <script type="text/javascript">$(document).ready(function(){common.linkRows();});</script>
 </%block>

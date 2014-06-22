@@ -12,7 +12,7 @@
         <div class="pull-right">
             <form id="search-form" class="form-inline" method="GET" action="${request.url}">
                 <div class="form-group">
-                    <input type="hidden" name="mc_version" value="${request.params.get('mc_version', '')}">
+                    <input type="hidden" name="mc_version" value="${request.params.get('mc_version', '')}" data-outdated="${'outdated' in request.params}">
                     <div id="version-dropdown" class="dropdown" display="none">
                         <button class="btn btn-default dropdown-toggle" type="button" id="version-dropdown-button" data-toggle="dropdown">
                             MC Version
@@ -78,24 +78,5 @@ ${extras.flash()}
 </form>
 <small class="pull-right">${len(mods)} mods, ${len(mods(outdated=True))} flagged.</small>
 <%block name="endscripts">
-    <script src="${request.static_url('packassembler:static/dist/js/common.js')}"></script>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            common.linkRows();
-            common.linkAutoCheck('topcheck', 'mods');
-            common.linkDynamicSubmit('form');
-
-            $('#version-dropdown').css('display', 'inline-block')
-            $('#version-dropdown > ul > li > a').click(function(){
-                var val = $(this).html();
-                $('input[name="mc_version"]').attr('value', val);
-            % if 'outdated' in request.params:
-                $('<input />').attr('type', 'hidden')
-                               .attr('name', 'outdated')
-                               .appendTo('#search-form');
-            % endif
-                $('#search-form').submit();
-            });
-        });
-    </script>
+    <script src="${request.static_url('packassembler:static/dist/js/modlist.js')}"></script>
 </%block>

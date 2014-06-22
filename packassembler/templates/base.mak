@@ -92,6 +92,7 @@
       ga('send', 'pageview');
 
     </script>
+    <script src="${request.static_url('packassembler:static/dist/js/common.js')}"></script>
     <%block name="endscripts">
     </%block>
 </body>

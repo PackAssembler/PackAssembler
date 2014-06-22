@@ -39,7 +39,7 @@ gulp.task('styles', function() {
 
 // Scripts task - Compiles livescript
 gulp.task('scripts', function() {
-  gsrc('scripts/*.ls')
+  gsrc('scripts/**/*.ls')
     .pipe(livescript({bare: true})
     .on('error', function(it){ throw it; }))
     .pipe(gdest('js'))
