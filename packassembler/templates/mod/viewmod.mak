@@ -195,37 +195,5 @@
 </%block>
 <%block name="endscripts">
     <script src="${request.static_url('packassembler:static/dist/js/lib/bootbox.min.js')}"></script>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            common.linkRows();
-            common.linkDynamicSubmit('form');
-            common.connectDelete('mod');
-            $('#flag').click(function(e){
-                e.preventDefault();
-                var $flag = $(this)
-
-                $.get($(this).attr('href'), function(data){
-                    if (data['success'] === true) {
-                        $flag.toggleClass('btn-default');
-                        $flag.toggleClass('btn-danger');
-                        if (data['outdated'] === true) {
-                            $flag.children().last().html('Unf');
-                        }
-                        else {
-                            $flag.children().last().html('F');
-                        }
-                    }
-                    else{
-                        window.location = $flag.attr('href');
-                    }
-                }, 'json');
-            });
-            $('.details').click(function(e){
-                e.preventDefault();
-                console.log($(this).attr('href'));
-                $('#details-modal-content').load($(this).attr('href'));
-                $('#details-modal').modal();
-            })
-        });
-    </script>
+    <script src="${request.static_url('packassembler:static/dist/js/viewmod.js')}"></script>
 </%block>

@@ -10,3 +10,4 @@ pytest
 pytest-cov
 pyramid_mako
 pyramid_mailer
+factory_boy
