@@ -19,7 +19,7 @@
     % if perm:
         <div class="btn-group pull-right tmargin">
             <a href="${request.route_url('editpack', id=pack.id)}" class="btn btn-info">Edit Pack</a>
-            <a id="delete" class="btn btn-danger">Delete Pack</a>
+            <a href="${request.route_url('deletepack', id=pack.id)}" id="delete" class="btn btn-danger">Delete Pack</a>
         </div>
     % endif
     </div>
@@ -164,12 +164,7 @@ ${extras.flash()}
                 $('form#bases').submit();
             })
         % endif
-            $('#delete').click(function(){
-                bootbox.confirm("Are you sure you want to delete this pack?", function(result){
-                    if (result)
-                        window.location = "${request.route_url('deletepack', id=pack.id)}";
-                });
-            });
+            common.connectDelete('pack');
             $('#showid').click(function(){
                 window.prompt("Copy to clipboard: Ctrl+C, Enter", "${pack.id}");
             });

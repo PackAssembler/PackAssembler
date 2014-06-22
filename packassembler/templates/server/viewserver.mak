@@ -13,7 +13,7 @@
     % if perm:
         <div class="btn-group pull-right tmargin">
             <a href="${request.route_url('editserver', id=server.id)}" class="btn btn-info">Edit Server</a>
-            <a id="delete" class="btn btn-danger">Delete Server</a>
+            <a href="${request.route_url('deleteserver', id=server.id)}" id="delete" class="btn btn-danger">Delete Server</a>
         </div>
     % endif
     </div>
@@ -69,12 +69,7 @@
     <script src="${request.static_url('packassembler:static/dist/js/lib/bootbox.min.js')}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
-            $('#delete').click(function(){
-                bootbox.confirm("Are you sure you want to delete this server?", function(result){
-                    if (result)
-                        window.location = "${request.route_url('deleteserver', id=server.id)}";
-                });
-            });
+            common.connectDelete('server');
             $('#showid').click(function(){
                 window.prompt("Copy to clipboard: Ctrl+C, Enter", "${server.id}");
             });

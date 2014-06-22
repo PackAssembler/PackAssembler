@@ -22,4 +22,12 @@ common =
         form .attr \action "/packs/" + ($ @ .data \id) + "/addmod"
         form .submit!
 
+    connectDelete: (doc) !->
+        e <-! $('#delete').click
+        e.preventDefault!
+        url = $ @ .attr 'href'
+        result <-! bootbox.confirm "Are you sure you want to delete this #{doc}?"
+        if result
+            window.location = url
+
     pyBool: (.toLowerCase! == "true")

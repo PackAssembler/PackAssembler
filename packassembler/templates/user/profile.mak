@@ -29,7 +29,7 @@
             <a href="${request.route_url('emailuser', id=owner.id)}" class="btn btn-default">Send Message</a>
             % if perm:
                 <a href="${request.route_url('edituser', id=owner.id)}" class="btn btn-info">Edit Account</a>
-                <a href="#" id="delete" class="btn btn-danger" data-url="${request.route_url('deleteuser', id=owner.id)}">Delete Account</a>
+                <a href="${request.route_url('deleteuser', id=owner.id)}" id="delete" class="btn btn-danger">Delete Account</a>
             % endif
         </div>
     </div>

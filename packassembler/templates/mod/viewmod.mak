@@ -28,7 +28,7 @@
     % if perm:
         <div class="btn-group pull-right tmargin">
             <a href="${request.route_url('editmod', id=mod.id)}" class="btn btn-info">Edit Mod</a>
-            <a id="delete" class="btn btn-danger">Delete Mod</a>
+            <a href="${request.route_url('deletemod', id=mod.id)}" id="delete" class="btn btn-danger">Delete Mod</a>
         </div>
     % endif
     </div>
@@ -199,12 +199,7 @@
         $(document).ready(function(){
             common.linkRows();
             common.linkDynamicSubmit('form');
-            $('#delete').click(function(){
-                bootbox.confirm("Are you sure you want to delete this mod?", function(result){
-                    if (result)
-                        window.location = "${request.route_url('deletemod', id=mod.id)}";
-                });
-            });
+            common.connectDelete('mod');
             $('#flag').click(function(e){
                 e.preventDefault();
                 var $flag = $(this)
