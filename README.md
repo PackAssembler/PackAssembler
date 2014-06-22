@@ -1,6 +1,9 @@
 PackAssembler
 ================
 
+[![Dependency Status](https://gemnasium.com/PackAssembler/PackAssembler.svg)](https://gemnasium.com/PackAssembler/PackAssembler)
+[![Build Status](https://travis-ci.org/PackAssembler/PackAssembler.svg?branch=master)](https://travis-ci.org/PackAssembler/PackAssembler)
+
 Managing Mods, Packs, and Servers easily and efficiently.
 
 
