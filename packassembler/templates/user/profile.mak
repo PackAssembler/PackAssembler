@@ -12,11 +12,10 @@
                 % endif
                 % if admin:
                     <form method="post" action="${request.route_url('edituser', id=owner.id)}">
-                        <select class="longer" id="group" name="group" value="">
-                            <option value="user">User</option>
-                            <option value="contributor">Contributor</option>
-                            <option value="moderator">Moderator</option>
-                            <option value="admin">Admin</option>
+                        <select class="longer" id="group" name="group">
+                        % for group_name in ['user', 'contributor', 'moderator', 'admin']:
+                            <option value="${group_name}" ${g.show_if('selected', owner.group == group_name)}>${group_name.capitalize()}</option>
+                        % endfor
                         </select>
                     </form>
                 % else:
@@ -30,7 +29,7 @@
             <a href="${request.route_url('emailuser', id=owner.id)}" class="btn btn-default">Send Message</a>
             % if perm:
                 <a href="${request.route_url('edituser', id=owner.id)}" class="btn btn-info">Edit Account</a>
-                <a href="#" id="delete" class="btn btn-danger">Delete Account</a>
+                <a href="#" id="delete" class="btn btn-danger" data-url="${request.route_url('deleteuser', id=owner.id)}">Delete Account</a>
             % endif
         </div>
     </div>
@@ -70,18 +69,5 @@
 
 <%block name="endscripts">
     <script src="${request.static_url('packassembler:static/dist/js/lib/bootbox.min.js')}"></script>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('#group').val('${owner.group}');
-            $('#group').change(function(){
-                $(this).parent().submit();
-            });
-            $('#delete').click(function(){
-                bootbox.confirm("Are you sure you want to delete this account?", function(result){
-                    if (result)
-                        window.location = "${request.route_url('deleteuser', id=owner.id)}";
-                });
-            });
-        });
-    </script>
+    <script src="${request.static_url('packassembler:static/dist/js/profile.js')}"></script>
 </%block>

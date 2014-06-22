@@ -5,8 +5,8 @@ bcrypt
 mandrill
 wtforms
 htmllaundry
-nose
-nose-mongoengine
 coverage
+pytest
+pytest-cov
 pyramid_mako
 pyramid_mailer
