@@ -4,6 +4,7 @@ python:
 install:
   - pip install -r requirements.txt
   - pip install coveralls
+  - python3 setup.py devel
 script:
   - py.test --pip8 coveralls -v --cov coveralls --cov-report term-missing
 after_success:
