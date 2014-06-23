@@ -19,15 +19,17 @@ class VersionViews(ViewBase):
 
         if 'submit' in post and form.validate() and not version_exists(mod, form.version.data):
             mv = ModVersion(mod=mod)
-            populate(mv, form, post)
-            mv.save()
+            if populate(mv, form, post, True):
+                mv.save()
 
-            mod.versions.append(mv)
-            mod.outdated = False
-            mod.save()
+                mod.versions.append(mv)
+                mod.outdated = False
+                mod.save()
 
-            self.request.flash('Version added successfully.')
-            return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
+                self.request.flash('Version added successfully.')
+                return HTTPFound(location=self.request.route_url('viewmod', id=mod.id))
+            else:
+                form.upload_type.errors.append('No file found')
 
         mv = (mod.versions[-1] if mod.versions else None)
         return self.return_dict(
@@ -70,7 +72,7 @@ class VersionViews(ViewBase):
 
         if 'submit' in post and form.validate():
             if form.version.data == mv.version or not version_exists(mv.mod, form.version.data):
-                populate(mv, form, post)
+                populate(mv, form, post, False)
                 mv.save()
 
                 self.request.flash('Changes to version saved.')
@@ -127,7 +129,7 @@ def version_exists(m, version):
     return any(x.version == version for x in m.versions)
 
 
-def populate(mv, form, post):
+def populate(mv, form, post, file_required):
     mv.mc_version = form.mc_version.data
     mv.version = form.version.data
     mv.devel = form.devel.data
@@ -137,14 +139,21 @@ def populate(mv, form, post):
 
     mv.depends = get_depends(post)
 
-    if form.upload_type.data in ['upload', 'url_upload']:
-        if form.upload_type.data == 'upload':
-            mv.mod_file = post[form.mod_file.name].file
-        else:
-            mv.mod_file = requests.get(form.mod_file_url.data).content
-        mv.mod_file_url = None
-        mv.mod_file_url_md5 = None
+    file_filled = hasattr(post[form.mod_file.name], 'file') or form.mod_file_url
+
+    if not file_required or file_filled:
+        if file_filled:
+            if form.upload_type.data in ['upload', 'url_upload']:
+                if form.upload_type.data == 'upload':
+                    mv.mod_file = post[form.mod_file.name].file
+                else:
+                    mv.mod_file = requests.get(form.mod_file_url.data).content
+                mv.mod_file_url = None
+                mv.mod_file_url_md5 = None
+            else:
+                mv.mod_file_url_md5, mv.mod_file_url = url_md5(form.mod_file_url.data)
+                if mv.mod_file:
+                    mv.mod_file.delete()
+        return True
     else:
-        mv.mod_file_url_md5, mv.mod_file_url = url_md5(form.mod_file_url.data)
-        if mv.mod_file:
-            mv.mod_file.delete()
+        return False
