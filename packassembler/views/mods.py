@@ -7,7 +7,6 @@ from .common import *
 
 
 class ModViews(ViewBase):
-
     @view_config(route_name='modlist', renderer='modlist.mak', http_cache=3600)
     def modlist(self):
         post = self.request.params
