@@ -50,9 +50,6 @@
                     ${genclass('FAQ')}
                         <a href="${request.route_url('faq')}">FAQ</a>
                     </li>
-                    <li>
-                        <a href="http://forums.stephenmac.com/">Forums</a>
-                    </li>
                 </ul>
                 <ul class="nav navbar-nav pull-right">
                     % if user == None:
